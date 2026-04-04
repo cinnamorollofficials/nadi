@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import Card from '../components/Card';
 import TextField from '../components/TextField';
-import Button from '../components/Button';
 import { useSettings } from '../context/SettingsContext';
 import apiClient from '../api/client';
 
 const Login = () => {
     const navigate = useNavigate();
-    const { logo } = useSettings();
+    const { logo, app_name } = useSettings();
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -23,13 +21,10 @@ const Login = () => {
             return response.data;
         },
         onSuccess: (data) => {
-            // Check if 2FA is required
             if (data.data.requires_2fa) {
-                // Navigate to 2FA challenge with temp token
                 navigate('/2fa-challenge', { state: { tempToken: data.data.temp_token } });
                 return;
             }
-            // Normal login: Save tokens and redirect
             localStorage.setItem('token', data.data.access_token);
             if (data.data.refresh_token) {
                 localStorage.setItem('refresh_token', data.data.refresh_token);
@@ -50,7 +45,6 @@ const Login = () => {
             ...prev, 
             [name]: type === 'checkbox' ? checked : value 
         }));
-        // Clear field error on change
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
@@ -59,113 +53,149 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setErrors({});
-
-        // Basic validation
         const newErrors = {};
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        }
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        }
-
+        if (!formData.email) newErrors.email = 'Email is required';
+        if (!formData.password) newErrors.password = 'Password is required';
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
-
         loginMutation.mutate(formData);
     };
 
     return (
-        <div className="min-h-screen bg-surface-variant flex items-center justify-center p-6">
-            <div className="w-full max-w-md">
-                {/* Logo/Header */}
-                <div className="text-center mb-8 flex flex-col items-center">
-                    {logo && (
-                        <div className="w-16 h-16 rounded-2xl border border-outline-variant/30 overflow-hidden bg-surface-container-high shadow-lg p-2.5 mb-6">
-                            <img 
-                                src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
-                                alt="Logo"
-                                className="w-full h-full object-contain"
-                                onError={(e) => { e.target.style.display = 'none'; }}
-                            />
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+
+            <div className="w-full max-w-sm relative z-10">
+                {/* Main Card */}
+                <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+                    {/* Card Header (Pola Desain File Sharer) */}
+                    <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
+                        <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                            Secure Access
+                        </p>
+                        <div className="flex items-center gap-1.5 opacity-60">
+                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                            <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Encrypted</span>
                         </div>
-                    )}
-                    <h1 className="text-4xl font-bold text-primary-500 mb-2">Welcome Back</h1>
-                    <p className="text-gray-600">Sign in to your account</p>
+                    </div>
+
+                    <div className="p-6">
+                        {/* Branding inside card body for modern look */}
+                        <div className="text-center mb-8">
+                            {logo ? (
+                                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
+                                    <img 
+                                        src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
+                                        alt="Logo"
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                </div>
+                            )}
+                            <h1 className="text-xl font-bold text-surface-on">Welcome Back</h1>
+                            <p className="text-xs text-surface-on-variant mt-1.5 opacity-80">Sign in to your account</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            {errors.submit && (
+                                <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium text-center">
+                                    {errors.submit}
+                                </div>
+                            )}
+
+                            <TextField
+                                label="Email address"
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="your@email.com"
+                                error={errors.email}
+                                required
+                            />
+
+                            <div className="space-y-1">
+                                <TextField
+                                    label="Password"
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder="••••••••"
+                                    error={errors.password}
+                                    required
+                                />
+                                <div className="flex justify-end pr-1">
+                                    <Link to="/forgot-password" title="forgot-password" className="text-[11px] font-semibold text-primary hover:underline">
+                                        Forgot password?
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center px-1">
+                                <label className="flex items-center cursor-pointer group">
+                                    <div className="relative flex items-center justify-center w-4 h-4 mr-2">
+                                        <input 
+                                            type="checkbox" 
+                                            name="remember_me"
+                                            checked={formData.remember_me}
+                                            onChange={handleChange}
+                                            className="peer appearance-none w-4 h-4 border border-outline rounded bg-surface-container-high checked:bg-primary checked:border-primary transition-all duration-200" 
+                                        />
+                                        <svg className="absolute w-3 h-3 text-on-primary opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <span className="text-[11px] text-surface-on-variant font-medium">Remember me for 30 days</span>
+                                </label>
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={loginMutation.isPending}
+                                className="w-full flex items-center justify-center gap-2 py-3 px-4 mt-2 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loginMutation.isPending ? (
+                                    <>
+                                        <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+                                        Verifying…
+                                    </>
+                                ) : 'Sign In'}
+                            </button>
+                        </form>
+
+                        <div className="mt-8 pt-6 border-t border-outline-variant/30 text-center">
+                            <p className="text-xs text-surface-on-variant">
+                                New to {app_name}?{' '}
+                                <Link to="/register" className="text-primary font-bold hover:underline">
+                                    Create account
+                                </Link>
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Login Card */}
-                <Card className="p-8">
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        {errors.submit && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md3">
-                                {errors.submit}
-                            </div>
-                        )}
-
-                        <TextField
-                            label="Email"
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="your@email.com"
-                            error={errors.email}
-                            required
-                        />
-
-                        <TextField
-                            label="Password"
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Enter your password"
-                            error={errors.password}
-                            required
-                        />
-
-                        <div className="flex items-center justify-between text-sm">
-                            <label className="flex items-center">
-                                <input 
-                                    type="checkbox" 
-                                    name="remember_me"
-                                    checked={formData.remember_me}
-                                    onChange={handleChange}
-                                    className="mr-2 rounded" 
-                                />
-                                <span className="text-gray-600">Remember me</span>
-                            </label>
-                            <Link to="/forgot-password" className="text-primary-500 hover:text-primary-600">
-                                Forgot password?
-                            </Link>
-                        </div>
-
-                        <Button
-                            type="submit"
-                            fullWidth
-                            disabled={loginMutation.isPending}
-                        >
-                            {loginMutation.isPending ? 'Signing in...' : 'Sign In'}
-                        </Button>
-                    </form>
-
-                    <div className="mt-6 text-center">
-                        <p className="text-gray-600">
-                            Don't have an account?{' '}
-                            <Link to="/register" className="text-primary-500 hover:text-primary-600 font-medium">
-                                Sign up
-                            </Link>
-                        </p>
-                    </div>
-                </Card>
-
-                {/* Back to Home */}
-                <div className="mt-6 text-center">
-                    <Link to="/" className="text-gray-600 hover:text-primary-500">
-                        ← Back to Home
+                {/* Bottom navigation */}
+                <div className="mt-6 flex items-center justify-center gap-4">
+                    <Link to="/" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">
+                        Home
+                    </Link>
+                    <span className="w-1 h-1 rounded-full bg-outline-variant/60" />
+                    <Link to="/help" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">
+                        Help
+                    </Link>
+                    <span className="w-1 h-1 rounded-full bg-outline-variant/60" />
+                    <Link to="/privacy" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">
+                        Privacy
                     </Link>
                 </div>
             </div>

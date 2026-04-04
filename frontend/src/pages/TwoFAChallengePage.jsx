@@ -1,14 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import Card from '../components/Card';
-import Button from '../components/Button';
 import apiClient from '../api/client';
-
 import { useSettings } from '../context/SettingsContext';
 
 const TwoFAChallengePage = () => {
-    const settings = useSettings();
+    const { logo, app_name } = useSettings();
     const navigate = useNavigate();
     const location = useLocation();
     const tempToken = location.state?.tempToken;
@@ -44,65 +41,102 @@ const TwoFAChallengePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-surface-variant flex items-center justify-center p-6">
-            <div className="w-full max-w-sm">
-                <div className="text-center mb-8 flex flex-col items-center">
-                    {settings.logo ? (
-                        <div className="mb-6 h-16 w-16 flex items-center justify-center overflow-hidden">
-                             <img 
-                                src={`${import.meta.env.VITE_API_URL}/public/storage/${settings.logo}`} 
-                                alt="Logo" 
-                                className="max-h-full max-w-full object-contain"
-                            />
+        <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
+            {/* Background decorative elements */}
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+
+            <div className="w-full max-w-sm relative z-10">
+                {/* Main Card */}
+                <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+                    {/* Card Header */}
+                    <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
+                        <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                            2FA Verification
+                        </p>
+                        <div className="flex items-center gap-1.5 opacity-60">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                            <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Shield Active</span>
                         </div>
-                    ) : (
-                        <div className="text-6xl mb-4">🔐</div>
-                    )}
-                    <h1 className="text-2xl font-bold text-surface-on mb-2">Two-Factor Authentication</h1>
-                    <p className="text-surface-on-variant text-sm">Enter the 6-digit code from your Authenticator app</p>
-                </div>
-                <Card className="p-8">
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md3 text-sm dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
-                                {error}
+                    </div>
+
+                    <div className="p-6">
+                        {/* Branding */}
+                        <div className="text-center mb-8">
+                            {logo ? (
+                                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
+                                    <img 
+                                        src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
+                                        alt="Logo"
+                                        className="w-full h-full object-contain"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                    </svg>
+                                </div>
+                            )}
+                            <h1 className="text-xl font-bold text-surface-on">Two-Factor Auth</h1>
+                            <p className="text-xs text-surface-on-variant mt-1.5 opacity-80">Enter the 6-digit code from your app</p>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            {error && (
+                                <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium text-center">
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest px-1">Verification Code</label>
+                                <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]{6}"
+                                    maxLength={6}
+                                    value={code}
+                                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                                    placeholder="000000"
+                                    className="w-full h-14 bg-surface-container-highest border border-outline rounded-xl text-center text-3xl tracking-[0.5em] font-mono text-surface-on focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
+                                    autoFocus
+                                    required
+                                />
                             </div>
-                        )}
-                        <div>
-                            <label className="text-field-label">Authentication Code</label>
-                            <input
-                                type="text"
-                                inputMode="numeric"
-                                pattern="[0-9]{6}"
-                                maxLength={6}
-                                value={code}
-                                onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                                placeholder="000000"
-                                className="text-field text-center text-2xl tracking-[0.5em] font-mono"
-                                autoFocus
-                            />
-                        </div>
-                        <Button type="submit" fullWidth disabled={verifyMutation.isPending || code.length !== 6}>
-                            {verifyMutation.isPending ? 'Verifying...' : 'Verify Code'}
-                        </Button>
-                        <div className="flex flex-col items-center space-y-3 pt-2">
+
+                            <button
+                                type="submit"
+                                disabled={verifyMutation.isPending || code.length !== 6}
+                                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {verifyMutation.isPending ? (
+                                    <>
+                                        <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
+                                        Verifying…
+                                    </>
+                                ) : 'Unlock Account'}
+                            </button>
+                        </form>
+
+                        <div className="mt-8 pt-6 border-t border-outline-variant/30 flex flex-col gap-3 items-center">
                             <button
                                 type="button"
                                 onClick={() => navigate('/twofa/reset-request', { state: { tempToken } })}
-                                className="text-sm text-primary hover:underline transition-all"
+                                className="text-xs font-bold text-primary hover:underline"
                             >
                                 Lost access to OTP?
                             </button>
                             <button
                                 type="button"
                                 onClick={() => navigate('/login')}
-                                className="w-full text-sm text-surface-on-variant hover:text-primary transition-colors"
+                                className="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider hover:text-primary transition-colors"
                             >
                                 ← Back to Login
                             </button>
                         </div>
-                    </form>
-                </Card>
+                    </div>
+                </div>
             </div>
         </div>
     );

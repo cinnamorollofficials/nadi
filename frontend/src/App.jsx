@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
+import { useEffect } from "react";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -24,8 +25,61 @@ import TwoFAResetRequestPage from "./pages/TwoFAResetRequestPage";
 import TwoFAResetConfirmPage from "./pages/TwoFAResetConfirmPage";
 
 import ApiKeyPage from "./pages/admin/ApiKeyPage";
+import UserLayout from "./layouts/UserLayout";
+import ClientDashboard from "./pages/client/Dashboard";
+import { PERMS } from "./utils/permissions";
+
+/**
+ * A wrapper component that checks if the logged-in user has the required permission.
+ * If not, it redirects them to the dashboard and shows an error.
+ */
+function PermissionGuard({ permission, children }) {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Navigate to="/login" replace />;
+  
+  const user = JSON.parse(userData);
+  const mask = BigInt(user.permissions_mask || 0n);
+  
+  const hasPermission = (mask & permission) !== 0n;
+  
+  // Also check if admin (role_id 1) to allow everything
+  if (user.role_id === 1 || hasPermission) {
+    return children;
+  }
+  
+  // Show error on next tick to avoid React warnings during render
+  setTimeout(() => toast.error("You don't have permission to access that page."), 0);
+  return <Navigate to="/dashboard" replace />;
+}
 
 // [GENERATOR_INSERT_IMPORT]
+
+function RoleBasedLayout() {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Navigate to="/login" replace />;
+  const user = JSON.parse(userData);
+  
+  // Role ID 1 is Admin, Role ID 3 is User (Module Client User)
+  // We'll treat Admin (1) and Auditor (2) as AdminLayout for now, 
+  // and Role ID 3 (Client) as UserLayout.
+  if (user.role_id === 3) {
+    return <UserLayout />;
+  }
+  
+  return <AdminLayout />;
+}
+
+function RoleBasedDashboard() {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Navigate to="/login" replace />;
+  const user = JSON.parse(userData);
+  
+  if (user.role_id === 3) {
+    return <ClientDashboard />;
+  }
+  
+  return <Dashboard />;
+}
 
 function App() {
   return (
@@ -41,10 +95,20 @@ function App() {
         <Route path="/twofa/reset-request" element={<TwoFAResetRequestPage />} />
         <Route path="/twofa/reset-confirm" element={<TwoFAResetConfirmPage />} />
 
-        {/* Admin Routes with Sidebar */}
-        <Route path="/" element={<AdminLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
+        {/* Dynamic Layout selection based on Role */}
+        <Route path="/" element={<RoleBasedLayout />}>
+          <Route path="dashboard" element={<RoleBasedDashboard />} />
           <Route path="profile" element={<ProfilePage />} />
+          
+          {/* Protected Storage Route */}
+          <Route 
+            path="storage" 
+            element={
+              <PermissionGuard permission={PERMS.GET_FILE}>
+                <StoragePage />
+              </PermissionGuard>
+            } 
+          />
           
           <Route path="admin">
             <Route path="apikeys" element={<ApiKeyPage />} />
@@ -64,7 +128,7 @@ function App() {
           // [GENERATOR_INSERT_ROUTE]
         </Route>
 
-        {/* Public share page — outside AdminLayout, no auth required */}
+        {/* Public share page — outside layout, no auth required */}
         <Route path="/share/:token" element={<SharePage />} />
       </Routes>
     </ThemeProvider>
