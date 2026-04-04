@@ -23,6 +23,7 @@ import SharePage from "./pages/SharePage";
 import SettingsPage from "./pages/admin/SettingsPage";
 import TwoFAResetRequestPage from "./pages/TwoFAResetRequestPage";
 import TwoFAResetConfirmPage from "./pages/TwoFAResetConfirmPage";
+import VerifyEmail from "./pages/VerifyEmail";
 
 import ApiKeyPage from "./pages/admin/ApiKeyPage";
 import UserLayout from "./layouts/UserLayout";
@@ -52,6 +53,7 @@ function PermissionGuard({ permission, children }) {
   return <Navigate to="/dashboard" replace />;
 }
 
+import BlogPostPage from './pages/admin/BlogPostPage';
 // [GENERATOR_INSERT_IMPORT]
 
 function RoleBasedLayout() {
@@ -91,6 +93,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/2fa-challenge" element={<TwoFAChallengePage />} />
         <Route path="/twofa/reset-request" element={<TwoFAResetRequestPage />} />
         <Route path="/twofa/reset-confirm" element={<TwoFAResetConfirmPage />} />
@@ -125,7 +128,8 @@ function App() {
             <Route path="settings/:category" element={<SettingsPage />} />
           </Route>
           
-          // [GENERATOR_INSERT_ROUTE]
+          					<Route path="admin/blogpost" element={<BlogPostPage />} />
+					// [GENERATOR_INSERT_ROUTE]
         </Route>
 
         {/* Public share page — outside layout, no auth required */}

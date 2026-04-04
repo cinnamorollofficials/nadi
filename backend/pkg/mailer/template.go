@@ -193,3 +193,94 @@ func GetTwoFAResetEmailNative(resetLink string, appName string, logoURL string) 
 </body>
 </html>`, logoHTML, resetLink, appName)
 }
+
+func GetVerificationEmailNative(verifyLink string, appName string, logoURL string) string {
+	if appName == "" {
+		appName = "Go-React Starter Team"
+	}
+	logoHTML := ""
+	if logoURL != "" {
+		logoHTML = fmt.Sprintf(`
+			<div style="background: rgba(255, 255, 255, 0.15); width: 64px; height: 64px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 1px solid rgba(255, 255, 255, 0.15); overflow: hidden;">
+				<img src="%s" alt="Logo" style="width: 100%%; height: 100%%; object-fit: contain;">
+			</div>`, logoURL)
+	} else {
+		logoHTML = `
+			<div style="background: rgba(255, 255, 255, 0.15); width: 64px; height: 64px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 24px; border: 1px solid rgba(255, 255, 255, 0.2);">
+				<span style="font-size: 32px; line-height: 1;">📧</span>
+			</div>`
+	}
+
+	return fmt.Sprintf(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Email</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f8fafc;font-family:'Inter', 'SF Pro Text', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, oxygen, ubuntu, cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; -webkit-font-smoothing: antialiased;">
+  <table width="100%%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8fafc;padding:48px 0;">
+    <tr>
+      <td align="center">
+        <!-- Main Container -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%%;background-color:#ffffff;border-radius:24px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.01);overflow:hidden;">
+          
+          <!-- Header Area -->
+          <tr>
+            <td align="center" style="background: linear-gradient(135deg, #4f46e5 0%%, #06b6d4 100%%); padding: 56px 40px 48px;">
+                %[1]s
+                <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2;">Verify Your Email</h1>
+                <p style="margin: 12px 0 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 400;">Welcome to %[3]s! Please confirm your email address.</p>
+            </td>
+          </tr>
+
+          <!-- Body Content -->
+          <tr>
+            <td style="padding: 48px 48px 40px;">
+              <p style="margin: 0 0 24px; color: #1e293b; font-size: 18px; font-weight: 600;">Welcome aboard!</p>
+              <p style="margin: 0 0 32px; color: #475569; font-size: 16px; line-height: 1.7;">
+                Thank you for joining %[3]s. To complete your registration and activate your account, please click the verification button below:
+              </p>
+
+              <!-- Action Button -->
+              <table width="100%%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center">
+                    <a href="%[2]s" style="display: inline-block; background: #4f46e5; color: #ffffff; font-size: 16px; font-weight: 700; text-decoration: none; padding: 18px 44px; border-radius: 14px; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3); transition: all 0.2s ease;">
+                      Verify Email Address
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin: 40px 0 0; color: #64748b; font-size: 14px; text-align: center;">
+                This link will expire in <strong style="color: #1e293b;">24 hours</strong> for your security.
+              </p>
+
+              <!-- Divider -->
+              <div style="height: 1px; background-color: #f1f5f9; margin: 40px 0 32px;"></div>
+
+              <!-- Manual Link -->
+              <p style="margin: 0 0 12px; color: #94a3b8; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em;">If the button doesn't work, copy this link:</p>
+              <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; word-break: break-all;">
+                <a href="%[2]s" style="color: #4f46e5; font-size: 13px; text-decoration: none; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;">%[2]s</a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer Area -->
+          <tr>
+            <td style="background-color: #f8fafc; padding: 32px 48px; border-top: 1px solid #edf2f7; text-align: center;">
+              <p style="margin: 0; color: #94a3b8; font-size: 13px; line-height: 1.5;">
+                Sent with ❤️ from <strong>%[3]s</strong>.<br>
+                &copy; 2026 %[3]s. All rights reserved.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`, logoHTML, verifyLink, appName)
+}

@@ -26,6 +26,7 @@ func (r *Router) setupPrivateRoutes(
 	settingHandler handler.SettingHandler,
 	apiKeyHandler handler.ApiKeyHandler,
 	permGuard *middleware.PermissionGuard,
+		blogpostHandler customHandler.BlogPostHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -75,6 +76,16 @@ func (r *Router) setupPrivateRoutes(
 		produk.DELETE("/:id", produkHandler.Delete)
 		produk.GET("/export", produkHandler.Export)
 	}
+		blogpost := v1.Group("/blogposts")
+	blogpost.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	{
+		blogpost.POST("", blogpostHandler.Create)
+		blogpost.GET("", blogpostHandler.GetAll)
+		blogpost.GET("/export", blogpostHandler.Export)
+		blogpost.GET("/:id", blogpostHandler.GetByID)
+		blogpost.PUT("/:id", blogpostHandler.Update)
+		blogpost.DELETE("/:id", blogpostHandler.Delete)
+	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")
 	{
@@ -84,6 +95,7 @@ func (r *Router) setupPrivateRoutes(
 		auth.POST("/forgot-password", authHandler.ForgotPassword)
 		auth.POST("/reset-password", authHandler.ResetPassword)
 		auth.POST("/refresh", authHandler.RefreshToken)
+		auth.POST("/verify-email", authHandler.VerifyEmail)
 		// 2FA routes
 		auth.POST("/2fa/verify", authHandler.Verify2FA) // Public: no JWT needed
 		auth.POST("/2fa/enroll", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Enroll2FA)

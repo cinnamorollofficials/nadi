@@ -11,7 +11,7 @@ import (
 	"github.com/hadi-projects/go-react-starter/pkg/response"
 )
 
-type {{.ModuleName}}Handler interface {
+type BlogPostHandler interface {
 	Create(c *gin.Context)
 	GetAll(c *gin.Context)
 	GetByID(c *gin.Context)
@@ -20,16 +20,16 @@ type {{.ModuleName}}Handler interface {
 	Export(c *gin.Context)
 }
 
-type {{.ModuleNameLower}}Handler struct {
-	service service.{{.ModuleName}}Service
+type blogpostHandler struct {
+	service service.BlogPostService
 }
 
-func New{{.ModuleName}}Handler(service service.{{.ModuleName}}Service) {{.ModuleName}}Handler {
-	return &{{.ModuleNameLower}}Handler{service: service}
+func NewBlogPostHandler(service service.BlogPostService) BlogPostHandler {
+	return &blogpostHandler{service: service}
 }
 
-func (h *{{.ModuleNameLower}}Handler) Create(c *gin.Context) {
-	var req dto.Create{{.ModuleName}}Request
+func (h *blogpostHandler) Create(c *gin.Context) {
+	var req dto.CreateBlogPostRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
@@ -41,10 +41,10 @@ func (h *{{.ModuleNameLower}}Handler) Create(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusCreated, "{{.ModuleName}} created successfully", res)
+	response.Success(c, http.StatusCreated, "BlogPost created successfully", res)
 }
 
-func (h *{{.ModuleNameLower}}Handler) GetAll(c *gin.Context) {
+func (h *blogpostHandler) GetAll(c *gin.Context) {
 	var pagination defaultDto.PaginationRequest
 	if err := c.ShouldBindQuery(&pagination); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
@@ -57,23 +57,23 @@ func (h *{{.ModuleNameLower}}Handler) GetAll(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "{{.ModuleName}}s retrieved successfully", res)
+	response.Success(c, http.StatusOK, "BlogPosts retrieved successfully", res)
 }
 
-func (h *{{.ModuleNameLower}}Handler) GetByID(c *gin.Context) {
+func (h *blogpostHandler) GetByID(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	res, err := h.service.GetByID(c.Request.Context(), uint(id))
 	if err != nil {
-		response.Error(c, http.StatusNotFound, "{{.ModuleName}} not found")
+		response.Error(c, http.StatusNotFound, "BlogPost not found")
 		return
 	}
 
-	response.Success(c, http.StatusOK, "{{.ModuleName}} retrieved successfully", res)
+	response.Success(c, http.StatusOK, "BlogPost retrieved successfully", res)
 }
 
-func (h *{{.ModuleNameLower}}Handler) Update(c *gin.Context) {
+func (h *blogpostHandler) Update(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
-	var req dto.Update{{.ModuleName}}Request
+	var req dto.UpdateBlogPostRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
@@ -85,20 +85,20 @@ func (h *{{.ModuleNameLower}}Handler) Update(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "{{.ModuleName}} updated successfully", res)
+	response.Success(c, http.StatusOK, "BlogPost updated successfully", res)
 }
 
-func (h *{{.ModuleNameLower}}Handler) Delete(c *gin.Context) {
+func (h *blogpostHandler) Delete(c *gin.Context) {
 	id, _ := strconv.Atoi(c.Param("id"))
 	if err := h.service.Delete(c.Request.Context(), uint(id)); err != nil {
 		response.Error(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	response.Success(c, http.StatusOK, "{{.ModuleName}} deleted successfully", nil)
+	response.Success(c, http.StatusOK, "BlogPost deleted successfully", nil)
 }
 
-func (h *{{.ModuleNameLower}}Handler) Export(c *gin.Context) {
+func (h *blogpostHandler) Export(c *gin.Context) {
 	format := c.DefaultQuery("format", "excel")
 	res, err := h.service.Export(c.Request.Context(), format)
 	if err != nil {
@@ -106,7 +106,7 @@ func (h *{{.ModuleNameLower}}Handler) Export(c *gin.Context) {
 		return
 	}
 
-	filename := "{{.ModuleNameLower}}." + format
+	filename := "blogpost." + format
 	contentType := "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 	if format == "csv" {
 		contentType = "text/csv"

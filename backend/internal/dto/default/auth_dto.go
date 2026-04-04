@@ -81,3 +81,7 @@ type TwoFAResetRequest struct {
 type TwoFAResetConfirmRequest struct {
 	Token string `json:"token" binding:"required"`
 }
+
+type VerifyEmailRequest struct {
+	Token string `json:"token" binding:"required"`
+}

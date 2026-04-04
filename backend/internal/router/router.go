@@ -79,12 +79,13 @@ func (r *Router) SetupRouter() *gin.Engine {
 	shareLinkRepo := customRepository.NewShareLinkRepository(db)
 	settingRepo := repository.NewSettingRepository(db)
 	apiKeyRepo := repository.NewApiKeyRepository(db)
+		blogpostRepo := customRepository.NewBlogPostRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
 	// Services
 	settingService := service.NewSettingService(settingRepo, r.config)
 	authService := service.NewAuthService(userRepo, tokenRepo, r.kafkaProducer, r.mailer, r.config, r.cache, settingService)
-	userService := service.NewUserService(userRepo, roleRepo, r.config, r.cache)
+	userService := service.NewUserService(userRepo, tokenRepo, roleRepo, r.config, r.cache, r.kafkaProducer, r.mailer, settingService)
 	permissionService := service.NewPermissionService(permissionRepo, r.cache)
 	roleService := service.NewRoleService(roleRepo, r.cache)
 	logService := service.NewLogService(r.config)
@@ -103,6 +104,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 		settingService,
 	)
 	apiKeyService := service.NewApiKeyService(apiKeyRepo, roleRepo, r.cache)
+		blogpostService := customService.NewBlogPostService(blogpostRepo, r.cache)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -122,6 +124,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	healthHandler := handler.NewHealthHandler(r.cache, r.kafkaProducer)
 	settingHandler := handler.NewSettingHandler(settingService)
 	apiKeyHandler := handler.NewApiKeyHandler(apiKeyService)
+		blogpostHandler := customHandler.NewBlogPostHandler(blogpostService)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -137,6 +140,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 			settingHandler,
 			apiKeyHandler,
 			middleware.NewPermissionGuard(r.cache, permissionRepo),
+				blogpostHandler,
 		// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}

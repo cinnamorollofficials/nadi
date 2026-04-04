@@ -37,6 +37,8 @@ func main() {
 		&customEntity.ShareLinkAccess{},
 		&entity.Setting{},
 		&entity.ApiKey{},
+		&entity.EmailVerificationToken{},
+				&customEntity.BlogPost{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 

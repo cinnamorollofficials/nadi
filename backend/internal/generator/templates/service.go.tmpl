@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"context"
 	"encoding/csv"
 	"fmt"
 	"math"
@@ -17,12 +18,12 @@ import (
 )
 
 type {{.ModuleName}}Service interface {
-	Create(req dto.Create{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error)
-	GetAll(pagination *defaultDto.PaginationRequest) (*defaultDto.PaginationResponse, error)
-	GetByID(id uint) (*dto.{{.ModuleName}}Response, error)
-	Update(id uint, req dto.Update{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error)
-	Delete(id uint) error
-	Export(format string) ([]byte, error)
+	Create(ctx context.Context, req dto.Create{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error)
+	GetAll(ctx context.Context, pagination *defaultDto.PaginationRequest) (*defaultDto.PaginationResponse, error)
+	GetByID(ctx context.Context, id uint) (*dto.{{.ModuleName}}Response, error)
+	Update(ctx context.Context, id uint, req dto.Update{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error)
+	Delete(ctx context.Context, id uint) error
+	Export(ctx context.Context, format string) ([]byte, error)
 }
 
 type {{.ModuleNameLower}}Service struct {
@@ -37,18 +38,18 @@ func New{{.ModuleName}}Service(repo repository.{{.ModuleName}}Repository, cache 
 	}
 }
 
-func (s *{{.ModuleNameLower}}Service) Create(req dto.Create{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error) {
+func (s *{{.ModuleNameLower}}Service) Create(ctx context.Context, req dto.Create{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error) {
 	entity := &entity.{{.ModuleName}}{
 		{{- range .Fields}}
 		{{.NameGo}}: req.{{.NameGo}},
 		{{- end}}
 	}
 
-	if err := s.repo.Create(entity); err != nil {
+	if err := s.repo.Create(ctx, entity); err != nil {
 		return nil, err
 	}
 
-	s.cache.DeletePattern("{{.TableName}}:*")
+	s.cache.DeletePattern(ctx, "{{.TableName}}:*")
 
 	{{if .AuditLog}}
 	logger.AuditLogger.Info().
@@ -60,14 +61,14 @@ func (s *{{.ModuleNameLower}}Service) Create(req dto.Create{{.ModuleName}}Reques
 	return s.mapToResponse(entity), nil
 }
 
-func (s *{{.ModuleNameLower}}Service) GetAll(pagination *defaultDto.PaginationRequest) (*defaultDto.PaginationResponse, error) {
+func (s *{{.ModuleNameLower}}Service) GetAll(ctx context.Context, pagination *defaultDto.PaginationRequest) (*defaultDto.PaginationResponse, error) {
 	cacheKey := fmt.Sprintf("{{.TableName}}:page:%d:limit:%d:search:%s", pagination.GetPage(), pagination.GetLimit(), pagination.Search)
 	var cached defaultDto.PaginationResponse
-	if err := s.cache.Get(cacheKey, &cached); err == nil {
+	if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
 		return &cached, nil
 	}
 
-	entities, total, err := s.repo.FindAll(pagination)
+	entities, total, err := s.repo.FindAll(ctx, pagination)
 	if err != nil {
 		return nil, err
 	}
@@ -87,29 +88,29 @@ func (s *{{.ModuleNameLower}}Service) GetAll(pagination *defaultDto.PaginationRe
 		},
 	}
 
-	s.cache.Set(cacheKey, response, 5*time.Minute)
+	s.cache.Set(ctx, cacheKey, response, 5*time.Minute)
 	return response, nil
 }
 
-func (s *{{.ModuleNameLower}}Service) GetByID(id uint) (*dto.{{.ModuleName}}Response, error) {
+func (s *{{.ModuleNameLower}}Service) GetByID(ctx context.Context, id uint) (*dto.{{.ModuleName}}Response, error) {
 	cacheKey := fmt.Sprintf("{{.TableName}}:%d", id)
 	var cached dto.{{.ModuleName}}Response
-	if err := s.cache.Get(cacheKey, &cached); err == nil {
+	if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
 		return &cached, nil
 	}
 
-	entity, err := s.repo.FindByID(id)
+	entity, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	response := s.mapToResponse(entity)
-	s.cache.Set(cacheKey, response, 5*time.Minute)
+	s.cache.Set(ctx, cacheKey, response, 5*time.Minute)
 	return response, nil
 }
 
-func (s *{{.ModuleNameLower}}Service) Update(id uint, req dto.Update{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error) {
-	entity, err := s.repo.FindByID(id)
+func (s *{{.ModuleNameLower}}Service) Update(ctx context.Context, id uint, req dto.Update{{.ModuleName}}Request) (*dto.{{.ModuleName}}Response, error) {
+	entity, err := s.repo.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -124,12 +125,12 @@ func (s *{{.ModuleNameLower}}Service) Update(id uint, req dto.Update{{.ModuleNam
 	{{- end}}
 	{{- end}}
 
-	if err := s.repo.Update(entity); err != nil {
+	if err := s.repo.Update(ctx, entity); err != nil {
 		return nil, err
 	}
 
-	s.cache.Delete(fmt.Sprintf("{{.TableName}}:%d", id))
-	s.cache.DeletePattern("{{.TableName}}:*")
+	s.cache.Delete(ctx, fmt.Sprintf("{{.TableName}}:%d", id))
+	s.cache.DeletePattern(ctx, "{{.TableName}}:*")
 
 	{{if .AuditLog}}
 	logger.AuditLogger.Info().
@@ -141,9 +142,9 @@ func (s *{{.ModuleNameLower}}Service) Update(id uint, req dto.Update{{.ModuleNam
 	return s.mapToResponse(entity), nil
 }
 
-func (s *{{.ModuleNameLower}}Service) Delete(id uint) error {
-	s.cache.Delete(fmt.Sprintf("{{.TableName}}:%d", id))
-	s.cache.DeletePattern("{{.TableName}}:*")
+func (s *{{.ModuleNameLower}}Service) Delete(ctx context.Context, id uint) error {
+	s.cache.Delete(ctx, fmt.Sprintf("{{.TableName}}:%d", id))
+	s.cache.DeletePattern(ctx, "{{.TableName}}:*")
 
 	{{if .AuditLog}}
 	logger.AuditLogger.Info().
@@ -152,16 +153,16 @@ func (s *{{.ModuleNameLower}}Service) Delete(id uint) error {
 		Msg("{{.ModuleNameLower}} deleted")
 	{{end}}
 
-	return s.repo.Delete(id)
+	return s.repo.Delete(ctx, id)
 }
 
-func (s *{{.ModuleNameLower}}Service) Export(format string) ([]byte, error) {
+func (s *{{.ModuleNameLower}}Service) Export(ctx context.Context, format string) ([]byte, error) {
 	pagination := &defaultDto.PaginationRequest{
 		Page:  1,
 		Limit: 1000000,
 	}
 
-	entities, _, err := s.repo.FindAll(pagination)
+	entities, _, err := s.repo.FindAll(ctx, pagination)
 	if err != nil {
 		return nil, err
 	}

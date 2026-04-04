@@ -14,7 +14,10 @@ import (
 	entity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	repository "github.com/hadi-projects/go-react-starter/internal/repository/default"
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
+	"github.com/hadi-projects/go-react-starter/pkg/kafka"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
+	"github.com/google/uuid"
+	"github.com/hadi-projects/go-react-starter/pkg/mailer"
 	"github.com/xuri/excelize/v2"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -30,18 +33,35 @@ type UserService interface {
 }
 
 type userService struct {
-	userRepo repository.UserRepository
-	roleRepo repository.RoleRepository
-	config   *config.Config
-	cache    cache.CacheService
+	userRepo       repository.UserRepository
+	tokenRepo      repository.TokenRepository
+	roleRepo       repository.RoleRepository
+	config         *config.Config
+	cache          cache.CacheService
+	producer       kafka.Producer
+	mailer         mailer.Mailer
+	settingService SettingService
 }
 
-func NewUserService(userRepo repository.UserRepository, roleRepo repository.RoleRepository, config *config.Config, cache cache.CacheService) UserService {
+func NewUserService(
+	userRepo repository.UserRepository,
+	tokenRepo repository.TokenRepository,
+	roleRepo repository.RoleRepository,
+	config *config.Config,
+	cache cache.CacheService,
+	producer kafka.Producer,
+	mailer mailer.Mailer,
+	settingService SettingService,
+) UserService {
 	return &userService{
-		userRepo: userRepo,
-		roleRepo: roleRepo,
-		config:   config,
-		cache:    cache,
+		userRepo:       userRepo,
+		tokenRepo:      tokenRepo,
+		roleRepo:       roleRepo,
+		config:         config,
+		cache:          cache,
+		producer:       producer,
+		mailer:         mailer,
+		settingService: settingService,
 	}
 }
 
@@ -68,11 +88,68 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterRequest) (*d
 		Email:    req.Email,
 		Password: string(hashedPassword),
 		RoleID:   roleID,
-		Status:   "active",
+		Status:   "pending",
 	}
 
 	if err := s.userRepo.Create(ctx, user); err != nil {
 		return nil, err
+	}
+
+	// 1. Generate verification token
+	token := uuid.New().String()
+	expiresAt := time.Now().Add(24 * time.Hour) // 24 hours expiry
+
+	verifyToken := &entity.EmailVerificationToken{
+		UserID:    user.ID,
+		Token:     token,
+		ExpiresAt: expiresAt,
+	}
+
+	if err := s.tokenRepo.CreateEmailVerificationToken(ctx, verifyToken); err != nil {
+		logger.SystemLogger.Error().Err(err).Msg("Failed to create email verification token")
+	}
+
+	// 2. Email Verification with Kafka Fallback
+	appName := s.settingService.GetConfigValue(ctx, "app_name")
+	logoID := s.settingService.GetConfigValue(ctx, "app_logo")
+	logoURL := ""
+	if logoID != "" {
+		logoURL = s.config.App.URL + "/api/v1/public/storage/" + logoID
+	}
+
+	frontendURL := s.config.Frontend.URL
+	if frontendURL == "" {
+		frontendURL = "http://localhost:5173"
+	}
+	verifyLink := frontendURL + "/verify-email?token=" + token
+
+	// Prepare Kafka message
+	msg := map[string]string{
+		"type":        "verification",
+		"email":       user.Email,
+		"token":       token,
+		"app_name":    appName,
+		"logo_url":    logoURL,
+		"verify_link": verifyLink,
+	}
+
+	var publishErr error
+	if s.producer != nil {
+		publishErr = s.producer.Publish(ctx, "user-registration", msg)
+	} else {
+		publishErr = errors.New("kafka producer not initialized")
+	}
+
+	if publishErr != nil {
+		logger.SystemLogger.Error().Err(publishErr).Msg("Failed to publish registration message to Kafka. Falling back to direct email.")
+		go func() {
+			body := mailer.GetVerificationEmailNative(verifyLink, appName, logoURL)
+			if err := s.mailer.SendEmail(context.Background(), user.Email, "Verify Your Email Address", body); err != nil {
+				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send verification email (fallback)")
+			} else {
+				logger.SystemLogger.Info().Str("email", user.Email).Msg("Verification email (fallback) sent successfully")
+			}
+		}()
 	}
 
 	// Invalidate users list cache

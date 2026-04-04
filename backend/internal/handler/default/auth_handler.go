@@ -22,6 +22,7 @@ type AuthHandler interface {
 	Disable2FA(c *gin.Context)
 	Request2FAReset(c *gin.Context)
 	Confirm2FAReset(c *gin.Context)
+	VerifyEmail(c *gin.Context)
 }
 
 type authHandler struct {
@@ -189,4 +190,20 @@ func (h *authHandler) Confirm2FAReset(c *gin.Context) {
 		return
 	}
 	response.Success(c, http.StatusOK, "2FA disabled successfully. You can now login.", nil)
+}
+
+func (h *authHandler) VerifyEmail(c *gin.Context) {
+	var req dto.VerifyEmailRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.service.VerifyEmail(c.Request.Context(), req.Token); err != nil {
+		logger.WithCtx(c, logger.SystemLogger).Error().Err(err).Msg("VerifyEmail failed")
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Email verified successfully! You can now log in.", nil)
 }

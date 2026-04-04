@@ -13,14 +13,16 @@ export const SettingsProvider = ({ children }) => {
 
     const refreshSettings = async () => {
         try {
-            // Fetch website and storage settings in parallel
-            const [webRes, storageRes] = await Promise.all([
+            // Fetch website, storage, and advance settings in parallel
+            const [webRes, storageRes, advanceRes] = await Promise.all([
                 getPublicSettings('website'),
-                getPublicSettings('storage').catch(() => ({ data: [] }))
+                getPublicSettings('storage').catch(() => ({ data: [] })),
+                getPublicSettings('advance').catch(() => ({ data: [] }))
             ]);
 
             const websiteSettings = webRes.data || [];
             const storageSettings = storageRes.data || [];
+            const advanceSettings = advanceRes.data || [];
 
             const newSettings = { ...settings };
             websiteSettings.forEach(s => {
@@ -33,6 +35,11 @@ export const SettingsProvider = ({ children }) => {
                 if (s.key === 'storage_max_file_size_mb') {
                     newSettings.max_file_size_mb = parseInt(s.value, 10) || 50;
                 }
+            });
+
+            advanceSettings.forEach(s => {
+                if (s.key === 'registration_open') newSettings.registration_open = s.value;
+                if (s.key === 'maintenance_mode') newSettings.maintenance_mode = s.value;
             });
 
             setSettings(newSettings);

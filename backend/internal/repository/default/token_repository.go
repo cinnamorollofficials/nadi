@@ -19,6 +19,9 @@ type TokenRepository interface {
 	FindByTwoFAResetToken(ctx context.Context, token string) (*entity.TwoFAResetToken, error)
 	DeleteTwoFAResetToken(ctx context.Context, token *entity.TwoFAResetToken) error
 	DeleteTwoFAResetTokenByUserID(ctx context.Context, userID uint) error
+	CreateEmailVerificationToken(ctx context.Context, token *entity.EmailVerificationToken) error
+	FindByEmailVerificationToken(ctx context.Context, token string) (*entity.EmailVerificationToken, error)
+	DeleteEmailVerificationTokenByUserID(ctx context.Context, userID uint) error
 }
 
 type tokenRepository struct {
@@ -86,4 +89,21 @@ func (r *tokenRepository) DeleteTwoFAResetToken(ctx context.Context, token *enti
 
 func (r *tokenRepository) DeleteTwoFAResetTokenByUserID(ctx context.Context, userID uint) error {
 	return r.db.WithContext(ctx).Where("user_id = ?", userID).Delete(&entity.TwoFAResetToken{}).Error
+}
+
+func (r *tokenRepository) CreateEmailVerificationToken(ctx context.Context, token *entity.EmailVerificationToken) error {
+	return r.db.WithContext(ctx).Create(token).Error
+}
+
+func (r *tokenRepository) FindByEmailVerificationToken(ctx context.Context, token string) (*entity.EmailVerificationToken, error) {
+	var t entity.EmailVerificationToken
+	err := r.db.WithContext(ctx).Preload("User").Where("token = ?", token).First(&t).Error
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func (r *tokenRepository) DeleteEmailVerificationTokenByUserID(ctx context.Context, userID uint) error {
+	return r.db.WithContext(ctx).Where("user_id = ?", userID).Delete(&entity.EmailVerificationToken{}).Error
 }

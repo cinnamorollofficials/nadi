@@ -32,6 +32,7 @@ type AuthService interface {
 	Verify2FA(ctx context.Context, req dto.TwoFAVerifyRequest) (*dto.LoginResponse, error)
 	Request2FAReset(ctx context.Context, req dto.TwoFAResetRequest) error
 	Confirm2FAReset(ctx context.Context, req dto.TwoFAResetConfirmRequest) error
+	VerifyEmail(ctx context.Context, token string) error
 }
 
 type authService struct {
@@ -75,7 +76,7 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 		return nil, errors.New("your account is frozen, please contact administrator")
 	}
 	if user.Status == "pending" {
-		return nil, errors.New("your account is pending approval")
+		return nil, errors.New("please verify your email before logging in")
 	}
 	// 2. Verify password
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
@@ -536,14 +537,34 @@ func (s *authService) Request2FAReset(ctx context.Context, req dto.TwoFAResetReq
 		logoURL = s.config.App.URL + "/api/v1/public/storage/" + logoID
 	}
 
-	go func() {
-		body := mailer.GetTwoFAResetEmailNative(resetLink, appName, logoURL)
-		if err := s.mailer.SendEmail(context.Background(), user.Email, "Reset Two-Factor Authentication", body); err != nil {
-			logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send 2FA reset email")
-		} else {
-			logger.SystemLogger.Info().Str("email", user.Email).Msg("2FA reset email sent successfully")
-		}
-	}()
+	// 2FA Reset Email with Kafka Fallback
+	msg := map[string]string{
+		"type":        "twofa-reset",
+		"email":       user.Email,
+		"token":       token,
+		"app_name":    appName,
+		"logo_url":    logoURL,
+		"reset_link":  resetLink,
+	}
+
+	var publishErr error
+	if s.producer != nil {
+		publishErr = s.producer.Publish(ctx, "twofa-reset", msg)
+	} else {
+		publishErr = errors.New("kafka producer not initialized")
+	}
+
+	if publishErr != nil {
+		logger.SystemLogger.Error().Err(publishErr).Msg("Failed to publish 2FA reset message to Kafka. Falling back to direct email.")
+		go func() {
+			body := mailer.GetTwoFAResetEmailNative(resetLink, appName, logoURL)
+			if err := s.mailer.SendEmail(context.Background(), user.Email, "Reset Two-Factor Authentication", body); err != nil {
+				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send 2FA reset email (fallback)")
+			} else {
+				logger.SystemLogger.Info().Str("email", user.Email).Msg("2FA reset email (fallback) sent successfully")
+			}
+		}()
+	}
 
 	return nil
 }
@@ -572,6 +593,36 @@ func (s *authService) Confirm2FAReset(ctx context.Context, req dto.TwoFAResetCon
 	}
 
 	logger.LogAudit(context.WithValue(context.WithValue(ctx, logger.CtxKeyUserID, user.ID), logger.CtxKeyUserEmail, user.Email), "RESET_2FA", "AUTH", fmt.Sprintf("%d", user.ID), "")
+
+	return nil
+}
+
+func (s *authService) VerifyEmail(ctx context.Context, token string) error {
+	// 1. Find token
+	verifyToken, err := s.tokenRepo.FindByEmailVerificationToken(ctx, token)
+	if err != nil {
+		return errors.New("invalid or expired verification token")
+	}
+
+	// 2. Check expiration
+	if time.Now().After(verifyToken.ExpiresAt) {
+		return errors.New("verification token has expired")
+	}
+
+	// 3. Update user status
+	user := verifyToken.User
+	user.Status = "active"
+	if err := s.userRepo.Update(ctx, &user); err != nil {
+		return err
+	}
+
+	// 4. Delete all verification tokens for this user
+	if err := s.tokenRepo.DeleteEmailVerificationTokenByUserID(ctx, user.ID); err != nil {
+		logger.SystemLogger.Error().Err(err).Msg("Failed to delete verification tokens")
+	}
+
+	// Audit log
+	logger.LogAudit(context.WithValue(context.WithValue(ctx, logger.CtxKeyUserID, user.ID), logger.CtxKeyUserEmail, user.Email), "VERIFY_EMAIL", "AUTH", fmt.Sprintf("%d", user.ID), "")
 
 	return nil
 }
