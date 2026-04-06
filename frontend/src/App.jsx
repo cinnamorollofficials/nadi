@@ -42,6 +42,7 @@ import NutrisiList from "./pages/client/medicpedia/NutrisiList";
 import NutrisiDetail from "./pages/client/medicpedia/NutrisiDetail";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import NotFoundPage from "./pages/NotFoundPage";
 
 /**
  * A wrapper component that checks if the logged-in user has the required permission.
@@ -176,6 +177,9 @@ function App() {
 
         {/* Public share page — outside layout, no auth required */}
         <Route path="/share/:token" element={<SharePage />} />
+
+        {/* 404 Catch All */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </ThemeProvider>
   );
