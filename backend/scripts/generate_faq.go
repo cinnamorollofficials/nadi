@@ -23,6 +23,7 @@ func main() {
 		Fields: []generator.Field{
 			{Name: "question", Type: "string", Binding: "required", Searchable: true, Unique: true},
 			{Name: "answer", Type: "wysiwyg", Binding: "required", Searchable: true},
+			{Name: "category", Type: "string", Binding: "required", Searchable: true},
 			{Name: "status", Type: "enum", Binding: "required", Searchable: true},
 		},
 	}

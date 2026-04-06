@@ -41,6 +41,7 @@ import PenyakitList from "./pages/client/medicpedia/PenyakitList";
 import PenyakitDetail from "./pages/client/medicpedia/PenyakitDetail";
 import NutrisiList from "./pages/client/medicpedia/NutrisiList";
 import NutrisiDetail from "./pages/client/medicpedia/NutrisiDetail";
+import PublicFaqPage from "./pages/client/FaqPage";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -109,6 +110,7 @@ function App() {
           />
           <Route path="/medicpedia/nutrisi" element={<NutrisiList />} />
           <Route path="/medicpedia/nutrisi/:slug" element={<NutrisiDetail />} />
+          <Route path="/faq" element={<PublicFaqPage />} />
           <Route path="/terms" element={<TermsConditions />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
         </Route>

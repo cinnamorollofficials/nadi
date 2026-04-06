@@ -23,9 +23,13 @@ const Landing = () => {
     <div className="bg-navy-950 min-h-screen">
       {/* HERO SECTION */}
       <section className="relative pt-12 pb-32 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-accent-red/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[150px]" />
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-accent-red/20 rounded-full blur-[120px] animate-blob" />
+          <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[150px] animate-blob animation-delay-2000" />
+          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-[100px] animate-blob animation-delay-4000" />
+          
+          {/* Subtle Grid Pattern */}
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 pointer-events-none mix-blend-overlay"></div>
         </div>
 
         <div className="container mx-auto px-6 relative z-10">
@@ -398,7 +402,7 @@ const Landing = () => {
         <div className="container mx-auto px-6 max-w-3xl">
           <div className="space-y-4">
             {faqs.length > 0 ? (
-              faqs.map((faq) => (
+              faqs.slice(0, 5).map((faq) => (
                 <div
                   key={faq.id}
                   onClick={() =>
@@ -439,6 +443,23 @@ const Landing = () => {
             ) : (
               <div className="text-center text-white/40 italic py-10 font-medium">
                 Belum ada pertanyaan umum.
+              </div>
+            )}
+
+            {/* View All Button */}
+            {faqs.length > 5 && (
+              <div className="mt-12 text-center">
+                <Link to="/faq">
+                  <button className="group relative px-8 py-4 bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-accent-red/50 transition-all active:scale-95">
+                    <div className="absolute inset-0 bg-accent-red/0 group-hover:bg-accent-red/5 transition-all" />
+                    <span className="relative text-white/40 group-hover:text-white font-black uppercase italic tracking-widest text-sm flex items-center justify-center gap-3">
+                      Lihat Semua FAQ
+                      <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </span>
+                  </button>
+                </Link>
               </div>
             )}
           </div>

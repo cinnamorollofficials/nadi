@@ -37,6 +37,7 @@ const FaqPage = () => {
     question: "",
     answer: "",
     status: "",
+    category: "",
   });
 
   // Debounce search term
@@ -65,6 +66,10 @@ const FaqPage = () => {
       render: (row) => (
         <div className="max-w-xs truncate">{stripHtml(row.answer)}</div>
       ),
+    },
+    {
+      header: "Category",
+      accessor: "category",
     },
     {
       header: "Status",
@@ -104,6 +109,7 @@ const FaqPage = () => {
         question: item.question,
         answer: item.answer,
         status: item.status,
+        category: item.category || "",
       });
     } else {
       setEditingId(null);
@@ -111,6 +117,7 @@ const FaqPage = () => {
         question: "",
         answer: "",
         status: "",
+        category: "",
       });
     }
     setIsModalOpen(true);
@@ -311,6 +318,15 @@ const FaqPage = () => {
             value={formData.answer}
             onChange={(e) =>
               setFormData({ ...formData, answer: e.target.value })
+            }
+            required
+          />
+          <TextField
+            label="Category"
+            name="category"
+            value={formData.category.toString()}
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
             }
             required
           />

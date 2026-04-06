@@ -41,8 +41,9 @@ func NewFaqService(repo repository.FaqRepository, cache cache.CacheService) FaqS
 func (s *faqService) Create(ctx context.Context, req dto.CreateFaqRequest) (*dto.FaqResponse, error) {
 	entity := &entity.Faq{
 		Question: req.Question,
-		Answer: req.Answer,
-		Status: req.Status,
+		Answer:   req.Answer,
+		Category: req.Category,
+		Status:   req.Status,
 	}
 
 	if err := s.repo.Create(ctx, entity); err != nil {
@@ -118,6 +119,7 @@ func (s *faqService) Update(ctx context.Context, id uint, req dto.UpdateFaqReque
 		entity.Question = req.Question
 	}
 	entity.Answer = req.Answer
+	entity.Category = req.Category
 	entity.Status = req.Status
 
 	if err := s.repo.Update(ctx, entity); err != nil {
@@ -228,8 +230,9 @@ func (s *faqService) mapToResponse(entity *entity.Faq) *dto.FaqResponse {
 	return &dto.FaqResponse{
 		ID:        entity.ID,
 		Question: entity.Question,
-		Answer: entity.Answer,
-		Status: entity.Status,
+		Answer:   entity.Answer,
+		Category: entity.Category,
+		Status:   entity.Status,
 		CreatedAt: entity.CreatedAt,
 		UpdatedAt: entity.UpdatedAt,
 	}
