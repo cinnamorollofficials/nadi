@@ -39,6 +39,8 @@ func main() {
 		&entity.ApiKey{},
 		&entity.EmailVerificationToken{},
 				&customEntity.BlogPost{},
+				&customEntity.MedicpediaPenyakit{},
+				&customEntity.MedicpediaNutrisi{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 

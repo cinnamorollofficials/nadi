@@ -80,6 +80,8 @@ func (r *Router) SetupRouter() *gin.Engine {
 	settingRepo := repository.NewSettingRepository(db)
 	apiKeyRepo := repository.NewApiKeyRepository(db)
 		blogpostRepo := customRepository.NewBlogPostRepository(db)
+		medicpediapenyakitRepo := customRepository.NewMedicpediaPenyakitRepository(db)
+		medicpedianutrisiRepo := customRepository.NewMedicpediaNutrisiRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
 	// Services
@@ -105,6 +107,8 @@ func (r *Router) SetupRouter() *gin.Engine {
 	)
 	apiKeyService := service.NewApiKeyService(apiKeyRepo, roleRepo, r.cache)
 		blogpostService := customService.NewBlogPostService(blogpostRepo, r.cache)
+		medicpediapenyakitService := customService.NewMedicpediaPenyakitService(medicpediapenyakitRepo, r.cache)
+		medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -125,6 +129,8 @@ func (r *Router) SetupRouter() *gin.Engine {
 	settingHandler := handler.NewSettingHandler(settingService)
 	apiKeyHandler := handler.NewApiKeyHandler(apiKeyService)
 		blogpostHandler := customHandler.NewBlogPostHandler(blogpostService)
+		medicpediapenyakitHandler := customHandler.NewMedicpediaPenyakitHandler(medicpediapenyakitService)
+		medicpedianutrisiHandler := customHandler.NewMedicpediaNutrisiHandler(medicpedianutrisiService)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -141,6 +147,8 @@ func (r *Router) SetupRouter() *gin.Engine {
 			apiKeyHandler,
 			middleware.NewPermissionGuard(r.cache, permissionRepo),
 				blogpostHandler,
+				medicpediapenyakitHandler,
+				medicpedianutrisiHandler,
 		// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}

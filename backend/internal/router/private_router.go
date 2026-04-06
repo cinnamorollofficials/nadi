@@ -27,6 +27,8 @@ func (r *Router) setupPrivateRoutes(
 	apiKeyHandler handler.ApiKeyHandler,
 	permGuard *middleware.PermissionGuard,
 		blogpostHandler customHandler.BlogPostHandler,
+		medicpediapenyakitHandler customHandler.MedicpediaPenyakitHandler,
+		medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -64,6 +66,12 @@ func (r *Router) setupPrivateRoutes(
 		publicGroup.GET("/share/:token/download", storageHandler.PublicDownload)
 		publicGroup.GET("/storage/:id", storageHandler.PublicSystemFile)
 		publicGroup.GET("/settings/:category", settingHandler.GetPublicByCategory)
+		
+		// Medicpedia Public Routes
+		publicGroup.GET("/medicpedia/penyakit", medicpediapenyakitHandler.GetPublicAll)
+		publicGroup.GET("/medicpedia/penyakit/:slug", medicpediapenyakitHandler.GetBySlug)
+		publicGroup.GET("/medicpedia/nutrisi", medicpedianutrisiHandler.GetPublicAll)
+		publicGroup.GET("/medicpedia/nutrisi/:slug", medicpedianutrisiHandler.GetBySlug)
 	}
 
 	produk := v1.Group("/produk")
@@ -85,6 +93,26 @@ func (r *Router) setupPrivateRoutes(
 		blogpost.GET("/:id", blogpostHandler.GetByID)
 		blogpost.PUT("/:id", blogpostHandler.Update)
 		blogpost.DELETE("/:id", blogpostHandler.Delete)
+	}
+		medicpediapenyakit := v1.Group("/medicpedia_penyakit")
+	medicpediapenyakit.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	{
+		medicpediapenyakit.POST("", medicpediapenyakitHandler.Create)
+		medicpediapenyakit.GET("", medicpediapenyakitHandler.GetAll)
+		medicpediapenyakit.GET("/export", medicpediapenyakitHandler.Export)
+		medicpediapenyakit.GET("/:id", medicpediapenyakitHandler.GetByID)
+		medicpediapenyakit.PUT("/:id", medicpediapenyakitHandler.Update)
+		medicpediapenyakit.DELETE("/:id", medicpediapenyakitHandler.Delete)
+	}
+		medicpedianutrisi := v1.Group("/medicpedia_nutrisi")
+	medicpedianutrisi.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	{
+		medicpedianutrisi.POST("", medicpedianutrisiHandler.Create)
+		medicpedianutrisi.GET("", medicpedianutrisiHandler.GetAll)
+		medicpedianutrisi.GET("/export", medicpedianutrisiHandler.Export)
+		medicpedianutrisi.GET("/:id", medicpedianutrisiHandler.GetByID)
+		medicpedianutrisi.PUT("/:id", medicpedianutrisiHandler.Update)
+		medicpedianutrisi.DELETE("/:id", medicpedianutrisiHandler.Delete)
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")
