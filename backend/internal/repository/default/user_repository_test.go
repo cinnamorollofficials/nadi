@@ -35,10 +35,11 @@ func (s *UserRepositoryTestSuite) SetupTest() {
 }
 
 func (s *UserRepositoryTestSuite) TestCreate_Success() {
+	password := "password"
 	user := &entity.User{
 		Name:     "Test User",
 		Email:    "test@example.com",
-		Password: "password",
+		Password: &password,
 		RoleID:   1,
 	}
 

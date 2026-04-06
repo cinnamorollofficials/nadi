@@ -127,6 +127,7 @@ func (r *Router) setupPrivateRoutes(
 		auth.POST("/reset-password", authHandler.ResetPassword)
 		auth.POST("/refresh", authHandler.RefreshToken)
 		auth.POST("/verify-email", authHandler.VerifyEmail)
+		auth.POST("/google", authHandler.LoginWithGoogle)
 		// 2FA routes
 		auth.POST("/2fa/verify", authHandler.Verify2FA) // Public: no JWT needed
 		auth.POST("/2fa/enroll", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Enroll2FA)

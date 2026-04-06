@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { GoogleLogin } from '@react-oauth/google';
 import TextField from '../components/TextField';
 import { useSettings } from '../context/SettingsContext';
 import apiClient from '../api/client';
@@ -35,6 +36,26 @@ const Login = () => {
         onError: (error) => {
             setErrors({
                 submit: error.response?.data?.meta?.message || 'Invalid email or password',
+            });
+        },
+    });
+
+    const googleLoginMutation = useMutation({
+        mutationFn: async (credential) => {
+            const response = await apiClient.post('/auth/google', { credential });
+            return response.data;
+        },
+        onSuccess: (data) => {
+            localStorage.setItem('token', data.data.access_token);
+            if (data.data.refresh_token) {
+                localStorage.setItem('refresh_token', data.data.refresh_token);
+            }
+            localStorage.setItem('user', JSON.stringify(data.data.user));
+            navigate('/dashboard');
+        },
+        onError: (error) => {
+            setErrors({
+                submit: error.response?.data?.meta?.message || 'Google login failed',
             });
         },
     });
@@ -171,6 +192,30 @@ const Login = () => {
                                     </>
                                 ) : 'Sign In'}
                             </button>
+
+                            <div className="relative py-2">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-outline-variant/30"></div>
+                                </div>
+                                <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-surface-container px-2">
+                                    Or continue with
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center">
+                                <GoogleLogin
+                                    onSuccess={(credentialResponse) => {
+                                        googleLoginMutation.mutate(credentialResponse.credential);
+                                    }}
+                                    onError={() => {
+                                        setErrors({ submit: 'Google Login Failed' });
+                                    }}
+                                    useOneTap
+                                    theme="filled_blue"
+                                    shape="pill"
+                                    width="100%"
+                                />
+                            </div>
                         </form>
 
                         <div className="mt-8 pt-6 border-t border-outline-variant/30 text-center">

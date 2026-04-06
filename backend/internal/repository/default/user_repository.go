@@ -17,6 +17,7 @@ type UserRepository interface {
 	FindRoleByName(ctx context.Context, name string) (*entity.Role, error)
 	Update(ctx context.Context, user *entity.User) error
 	Delete(ctx context.Context, id uint) error
+	FindByGoogleID(ctx context.Context, googleID string) (*entity.User, error)
 }
 
 type userRepository struct {
@@ -98,4 +99,13 @@ func (r *userRepository) Update(ctx context.Context, user *entity.User) error {
 
 func (r *userRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&entity.User{}, id).Error
+}
+
+func (r *userRepository) FindByGoogleID(ctx context.Context, googleID string) (*entity.User, error) {
+	var user entity.User
+	err := r.db.WithContext(ctx).Preload("Role.Permissions").Where("google_id = ?", googleID).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

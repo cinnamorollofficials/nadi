@@ -83,10 +83,11 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterRequest) (*d
 		roleID = role.ID
 	}
 
+	hashedPasswordStr := string(hashedPassword)
 	user := &entity.User{
 		Name:     req.Name,
 		Email:    req.Email,
-		Password: string(hashedPassword),
+		Password: &hashedPasswordStr,
 		RoleID:   roleID,
 		Status:   "pending",
 	}
@@ -198,9 +199,10 @@ func (s *userService) CreateUser(ctx context.Context, req dto.CreateUserRequest)
 		return nil, fmt.Errorf("role category must be 'user' for human users")
 	}
 
+	hashedPasswordStr := string(hashedPassword)
 	user := &entity.User{
 		Email:    req.Email,
-		Password: string(hashedPassword),
+		Password: &hashedPasswordStr,
 		RoleID:   req.RoleID,
 		Status:   status,
 	}
@@ -326,15 +328,13 @@ func (s *userService) Update(ctx context.Context, id uint, req dto.UpdateUserReq
 	if req.Name != "" {
 		user.Name = req.Name
 	}
-	if req.Email != "" {
-		user.Email = req.Email
-	}
 	if req.Password != "" {
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), s.config.Security.BCryptCost)
 		if err != nil {
 			return nil, err
 		}
-		user.Password = string(hashedPassword)
+		hashedPasswordStr := string(hashedPassword)
+		user.Password = &hashedPasswordStr
 	}
 	if req.RoleID != 0 {
 		role, err := s.roleRepo.FindByID(ctx, req.RoleID)
