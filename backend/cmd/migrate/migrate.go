@@ -40,6 +40,7 @@ func main() {
 		&customEntity.BlogPost{},
 		&customEntity.MedicpediaPenyakit{},
 		&customEntity.MedicpediaNutrisi{},
+				&customEntity.Faq{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 

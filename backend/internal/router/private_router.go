@@ -28,6 +28,7 @@ func (r *Router) setupPrivateRoutes(
 	blogpostHandler customHandler.BlogPostHandler,
 	medicpediapenyakitHandler customHandler.MedicpediaPenyakitHandler,
 	medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
+		faqHandler customHandler.FaqHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -71,6 +72,9 @@ func (r *Router) setupPrivateRoutes(
 		publicGroup.GET("/medicpedia/penyakit/:slug", medicpediapenyakitHandler.GetBySlug)
 		publicGroup.GET("/medicpedia/nutrisi", medicpedianutrisiHandler.GetPublicAll)
 		publicGroup.GET("/medicpedia/nutrisi/:slug", medicpedianutrisiHandler.GetBySlug)
+
+		// FAQ Public Routes
+		publicGroup.GET("/faqs", faqHandler.GetAll)
 	}
 
 	blogpost := v1.Group("/blogposts")
@@ -102,6 +106,16 @@ func (r *Router) setupPrivateRoutes(
 		medicpedianutrisi.GET("/:id", medicpedianutrisiHandler.GetByID)
 		medicpedianutrisi.PUT("/:id", medicpedianutrisiHandler.Update)
 		medicpedianutrisi.DELETE("/:id", medicpedianutrisiHandler.Delete)
+	}
+		faq := v1.Group("/faqs")
+	faq.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	{
+		faq.POST("", faqHandler.Create)
+		faq.GET("", faqHandler.GetAll)
+		faq.GET("/export", faqHandler.Export)
+		faq.GET("/:id", faqHandler.GetByID)
+		faq.PUT("/:id", faqHandler.Update)
+		faq.DELETE("/:id", faqHandler.Delete)
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")

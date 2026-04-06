@@ -33,6 +33,7 @@ import { PERMS } from "./utils/permissions";
 import BlogPostPage from "./pages/admin/BlogPostPage";
 import MedicpediaPenyakitPage from "./pages/admin/MedicpediaPenyakitPage";
 import MedicpediaNutrisiPage from "./pages/admin/MedicpediaNutrisiPage";
+import FaqPage from './pages/admin/FaqPage';
 // [GENERATOR_INSERT_IMPORT]
 
 // Client / reader pages
@@ -171,6 +172,7 @@ function App() {
               path="medicpedianutrisi"
               element={<MedicpediaNutrisiPage />}
             />
+            <Route path="faq" element={<FaqPage />} />
             {/* [GENERATOR_INSERT_ROUTE] */}
           </Route>
         </Route>

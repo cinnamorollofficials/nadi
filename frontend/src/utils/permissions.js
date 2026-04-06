@@ -57,4 +57,10 @@ export const PERMS = {
   CREATE_MEDICPEDIANUTRISI: 1n << 36n,
   UPDATE_MEDICPEDIANUTRISI: 1n << 37n,
   DELETE_MEDICPEDIANUTRISI: 1n << 38n,
+
+  // Faq Module
+  GET_FAQ: 1n << 39n,
+  CREATE_FAQ: 1n << 40n,
+  UPDATE_FAQ: 1n << 41n,
+  DELETE_FAQ: 1n << 42n,
 };

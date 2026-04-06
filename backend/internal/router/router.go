@@ -85,6 +85,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostRepo := customRepository.NewBlogPostRepository(db)
 	medicpediapenyakitRepo := customRepository.NewMedicpediaPenyakitRepository(db)
 	medicpedianutrisiRepo := customRepository.NewMedicpediaNutrisiRepository(db)
+		faqRepo := customRepository.NewFaqRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
 	// Services
@@ -111,6 +112,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostService := customService.NewBlogPostService(blogpostRepo, r.cache)
 	medicpediapenyakitService := customService.NewMedicpediaPenyakitService(medicpediapenyakitRepo, r.cache)
 	medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
+		faqService := customService.NewFaqService(faqRepo, r.cache)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -132,6 +134,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostHandler := customHandler.NewBlogPostHandler(blogpostService)
 	medicpediapenyakitHandler := customHandler.NewMedicpediaPenyakitHandler(medicpediapenyakitService)
 	medicpedianutrisiHandler := customHandler.NewMedicpediaNutrisiHandler(medicpedianutrisiService)
+		faqHandler := customHandler.NewFaqHandler(faqService)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -149,6 +152,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 			blogpostHandler,
 			medicpediapenyakitHandler,
 			medicpedianutrisiHandler,
+				faqHandler,
 		// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}
