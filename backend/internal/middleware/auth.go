@@ -45,7 +45,6 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			logger.SystemLogger.Info().Msgf("DEBUG: AuthMiddleware claims=%v", claims)
 			var userID uint
 			var userEmail string
 
@@ -59,7 +58,6 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 				c.Set("user_email", userEmail)
 			}
 			c.Set("role", claims["role"])
-			logger.SystemLogger.Info().Msgf("DEBUG: AuthMiddleware set role=%v", claims["role"])
 
 			// Also set in request context for logger.WithCtx compatibility
 			ctx := c.Request.Context()
@@ -74,9 +72,7 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 			if permissionsMaskFloat, ok := claims["permissions_mask"].(float64); ok {
 				permissionsMask := uint64(permissionsMaskFloat)
 				c.Set("permissions_mask", permissionsMask)
-				logger.SystemLogger.Info().Msgf("DEBUG: AuthMiddleware set permissions_mask=%d", permissionsMask)
 			} else {
-				logger.SystemLogger.Info().Msgf("DEBUG: AuthMiddleware permissions_mask claim missing or invalid type: %T", claims["permissions_mask"])
 				// Set empty mask to avoid "not found" error in guard
 				c.Set("permissions_mask", uint64(0))
 			}
