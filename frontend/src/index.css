@@ -59,6 +59,12 @@ html.dark,
     --md-sys-color-on-error: 96 20 16;
     --md-sys-color-error-container: 140 29 24;
     --md-sys-color-on-error-container: 249 222 220;
+
+    /* Design-specific Deep Navy/Black */
+    --color-navy-950: 5 7 10;
+    --color-navy-900: 10 15 25;
+    --color-navy-800: 20 25 35;
+    --color-accent-red: 239 68 68;
 }
 
 @layer base {
@@ -237,5 +243,25 @@ html.dark,
 
     .surface-container-highest {
         background-color: theme("colors.surface.container-highest");
+    }
+
+    /* Custom Design Utilities */
+    .bg-navy-950 { background-color: rgb(var(--color-navy-950)); }
+    .bg-navy-900 { background-color: rgb(var(--color-navy-900)); }
+    .bg-navy-800 { background-color: rgb(var(--color-navy-800)); }
+    .text-accent { color: rgb(var(--color-accent-red)); }
+    .border-navy-700 { border-color: rgb(var(--color-navy-800) / 0.5); }
+    
+    .rounded-4xl { border-radius: 2rem; }
+    .rounded-5xl { border-radius: 3rem; }
+    
+    .shadow-glow-red {
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+    }
+
+    .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 }

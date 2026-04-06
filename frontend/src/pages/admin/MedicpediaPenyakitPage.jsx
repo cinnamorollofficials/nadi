@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination';
 import TextField from '../../components/TextField';
 import WysiwygEditor from '../../components/WysiwygEditor';
 import usePermission from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 import { 
     getAllMedicpediaPenyakits, 
     createMedicpediaPenyakit, 
@@ -39,7 +40,7 @@ const MedicpediaPenyakitPage = () => {
         diagnosis: '',
         when_to_see_doctor: '',
         prevention: '',
-        status: '',
+        status: 'Published',
     });
 
     // Debounce search term
@@ -178,7 +179,7 @@ const MedicpediaPenyakitPage = () => {
                 diagnosis: '',
                 when_to_see_doctor: '',
                 prevention: '',
-                status: '',
+                status: 'Published',
             });
         }
         setIsModalOpen(true);
@@ -234,8 +235,8 @@ const MedicpediaPenyakitPage = () => {
     };
 
     const tableActions = [
-        ...(can('update-medicpedia_penyakit') ? [{ label: 'Edit', onClick: handleOpenModal }] : []),
-        ...(can('delete-medicpedia_penyakit') ? [{ label: 'Delete', onClick: (row) => handleDelete(row.id), className: 'text-error' }] : []),
+        ...(can(PERMS.UPDATE_MEDICPEDIAPENYAKIT) ? [{ label: 'Edit', onClick: handleOpenModal }] : []),
+        ...(can(PERMS.DELETE_MEDICPEDIAPENYAKIT) ? [{ label: 'Delete', onClick: (row) => handleDelete(row.id), className: 'text-error' }] : []),
     ];
 
     return (
@@ -264,7 +265,7 @@ const MedicpediaPenyakitPage = () => {
                             CSV
                         </button>
                     </div>
-                    {can('create-medicpedia_penyakit') && (
+                    {can(PERMS.CREATE_MEDICPEDIAPENYAKIT) && (
                         <Button variant="primary" onClick={() => handleOpenModal()}>
                             Add MedicpediaPenyakit
                         </Button>
@@ -390,15 +391,20 @@ const MedicpediaPenyakitPage = () => {
                         onChange={(e) => setFormData({ ...formData, prevention: e.target.value })}
                         required
                     />
-                    <TextField
-                        label="Status"
-                        name="status"
-                        value={formData.status.toString()}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        
-                        
-                        required
-                    />
+                    <div className="space-y-1.5 px-1">
+                        <label className="text-sm font-medium text-surface-on block uppercase tracking-widest text-[10px]">Status</label>
+                        <select
+                            className="text-field bg-surface-container-high"
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                            required
+                        >
+                            <option value="Published">Published</option>
+                            <option value="Draft">Draft</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                        <p className="text-[10px] text-surface-on-variant font-medium uppercase tracking-[0.1em]">Hanya status "Published" yang akan muncul di halaman publik.</p>
+                    </div>
                     <div className="flex justify-end gap-3 pt-4">
                         <Button type="button" variant="tonal" onClick={() => setIsModalOpen(false)}>
                             Cancel

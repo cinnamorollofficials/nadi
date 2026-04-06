@@ -14,7 +14,6 @@ import Logs from "./pages/admin/Logs";
 import HttpLogs from "./pages/admin/HttpLogs";
 import GeneratorPage from "./pages/admin/GeneratorPage";
 import { ThemeProvider } from "./context/ThemeContext";
-import ProdukPage from "./pages/admin/ProdukPage";
 import TwoFAChallengePage from "./pages/TwoFAChallengePage";
 import ProfilePage from "./pages/admin/ProfilePage";
 import StoragePage from "./pages/admin/StoragePage";
@@ -25,7 +24,9 @@ import TwoFAResetConfirmPage from "./pages/TwoFAResetConfirmPage";
 import VerifyEmail from "./pages/VerifyEmail";
 import ApiKeyPage from "./pages/admin/ApiKeyPage";
 import UserLayout from "./layouts/UserLayout";
+import PublicLayout from "./layouts/PublicLayout";
 import ClientDashboard from "./pages/client/Dashboard";
+import MedicpediaHome from "./pages/client/medicpedia/MedicpediaHome";
 import { PERMS } from "./utils/permissions";
 
 // Admin pages
@@ -39,6 +40,8 @@ import PenyakitList from "./pages/client/medicpedia/PenyakitList";
 import PenyakitDetail from "./pages/client/medicpedia/PenyakitDetail";
 import NutrisiList from "./pages/client/medicpedia/NutrisiList";
 import NutrisiDetail from "./pages/client/medicpedia/NutrisiDetail";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 /**
  * A wrapper component that checks if the logged-in user has the required permission.
@@ -57,7 +60,10 @@ function PermissionGuard({ permission, children }) {
     return children;
   }
 
-  setTimeout(() => toast.error("You don't have permission to access that page."), 0);
+  setTimeout(
+    () => toast.error("You don't have permission to access that page."),
+    0,
+  );
   return <Navigate to="/dashboard" replace />;
 }
 
@@ -90,18 +96,38 @@ function App() {
     <ThemeProvider>
       <Toaster position="top-right" />
       <Routes>
-        {/* Public standalone pages */}
-        <Route path="/" element={<Landing />} />
+        {/* Public Routes with Shared Layout */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Landing />} />
+          <Route path="/medicpedia" element={<MedicpediaHome />} />
+          <Route path="/medicpedia/penyakit" element={<PenyakitList />} />
+          <Route
+            path="/medicpedia/penyakit/:slug"
+            element={<PenyakitDetail />}
+          />
+          <Route path="/medicpedia/nutrisi" element={<NutrisiList />} />
+          <Route path="/medicpedia/nutrisi/:slug" element={<NutrisiDetail />} />
+          <Route path="/terms" element={<TermsConditions />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+        </Route>
+
+        {/* Public standalone pages (No shared layout) */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/2fa-challenge" element={<TwoFAChallengePage />} />
-        <Route path="/twofa/reset-request" element={<TwoFAResetRequestPage />} />
-        <Route path="/twofa/reset-confirm" element={<TwoFAResetConfirmPage />} />
+        <Route
+          path="/twofa/reset-request"
+          element={<TwoFAResetRequestPage />}
+        />
+        <Route
+          path="/twofa/reset-confirm"
+          element={<TwoFAResetConfirmPage />}
+        />
 
-        {/* Dynamic Layout based on Role */}
+        {/* Dynamic Layout based on Role (Logged-in only) */}
         <Route path="/" element={<RoleBasedLayout />}>
           <Route path="dashboard" element={<RoleBasedDashboard />} />
           <Route path="profile" element={<ProfilePage />} />
@@ -122,25 +148,30 @@ function App() {
             <Route path="users" element={<Users />} />
             <Route path="roles" element={<Roles />} />
             <Route path="permissions" element={<Permissions />} />
-            <Route path="logs" element={<Navigate to="/admin/logs/all" replace />} />
+            <Route
+              path="logs"
+              element={<Navigate to="/admin/logs/all" replace />}
+            />
             <Route path="logs/http" element={<HttpLogs />} />
             <Route path="logs/:type" element={<Logs />} />
             <Route path="generator" element={<GeneratorPage />} />
-            <Route path="produk" element={<ProdukPage />} />
             <Route path="storage" element={<StoragePage />} />
-            <Route path="settings" element={<Navigate to="/admin/settings/website" replace />} />
+            <Route
+              path="settings"
+              element={<Navigate to="/admin/settings/website" replace />}
+            />
             <Route path="settings/:category" element={<SettingsPage />} />
             <Route path="blogpost" element={<BlogPostPage />} />
-            <Route path="medicpediapenyakit" element={<MedicpediaPenyakitPage />} />
-            <Route path="medicpedianutrisi" element={<MedicpediaNutrisiPage />} />
+            <Route
+              path="medicpediapenyakit"
+              element={<MedicpediaPenyakitPage />}
+            />
+            <Route
+              path="medicpedianutrisi"
+              element={<MedicpediaNutrisiPage />}
+            />
             {/* [GENERATOR_INSERT_ROUTE] */}
           </Route>
-
-          {/* Medicpedia Reader Routes (accessible within layout) */}
-          <Route path="medicpedia/penyakit" element={<PenyakitList />} />
-          <Route path="medicpedia/penyakit/:slug" element={<PenyakitDetail />} />
-          <Route path="medicpedia/nutrisi" element={<NutrisiList />} />
-          <Route path="medicpedia/nutrisi/:slug" element={<NutrisiDetail />} />
         </Route>
 
         {/* Public share page — outside layout, no auth required */}

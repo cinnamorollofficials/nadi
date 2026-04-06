@@ -20,15 +20,14 @@ func (r *Router) setupPrivateRoutes(
 	systemLogHandler handler.SystemLogHandler,
 	auditLogHandler handler.AuditLogHandler,
 	generatorHandler handler.GeneratorHandler,
-	produkHandler customHandler.ProdukHandler,
 	storageHandler customHandler.StorageHandler,
 	healthHandler handler.HealthHandler,
 	settingHandler handler.SettingHandler,
 	apiKeyHandler handler.ApiKeyHandler,
 	permGuard *middleware.PermissionGuard,
-		blogpostHandler customHandler.BlogPostHandler,
-		medicpediapenyakitHandler customHandler.MedicpediaPenyakitHandler,
-		medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
+	blogpostHandler customHandler.BlogPostHandler,
+	medicpediapenyakitHandler customHandler.MedicpediaPenyakitHandler,
+	medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -66,7 +65,7 @@ func (r *Router) setupPrivateRoutes(
 		publicGroup.GET("/share/:token/download", storageHandler.PublicDownload)
 		publicGroup.GET("/storage/:id", storageHandler.PublicSystemFile)
 		publicGroup.GET("/settings/:category", settingHandler.GetPublicByCategory)
-		
+
 		// Medicpedia Public Routes
 		publicGroup.GET("/medicpedia/penyakit", medicpediapenyakitHandler.GetPublicAll)
 		publicGroup.GET("/medicpedia/penyakit/:slug", medicpediapenyakitHandler.GetBySlug)
@@ -74,17 +73,7 @@ func (r *Router) setupPrivateRoutes(
 		publicGroup.GET("/medicpedia/nutrisi/:slug", medicpedianutrisiHandler.GetBySlug)
 	}
 
-	produk := v1.Group("/produk")
-	produk.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
-	{
-		produk.POST("", produkHandler.Create)
-		produk.GET("", produkHandler.GetAll)
-		produk.GET("/:id", produkHandler.GetByID)
-		produk.PUT("/:id", produkHandler.Update)
-		produk.DELETE("/:id", produkHandler.Delete)
-		produk.GET("/export", produkHandler.Export)
-	}
-		blogpost := v1.Group("/blogposts")
+	blogpost := v1.Group("/blogposts")
 	blogpost.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
 	{
 		blogpost.POST("", blogpostHandler.Create)
@@ -94,7 +83,7 @@ func (r *Router) setupPrivateRoutes(
 		blogpost.PUT("/:id", blogpostHandler.Update)
 		blogpost.DELETE("/:id", blogpostHandler.Delete)
 	}
-		medicpediapenyakit := v1.Group("/medicpedia_penyakit")
+	medicpediapenyakit := v1.Group("/medicpedia_penyakit")
 	medicpediapenyakit.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
 	{
 		medicpediapenyakit.POST("", medicpediapenyakitHandler.Create)
@@ -104,7 +93,7 @@ func (r *Router) setupPrivateRoutes(
 		medicpediapenyakit.PUT("/:id", medicpediapenyakitHandler.Update)
 		medicpediapenyakit.DELETE("/:id", medicpediapenyakitHandler.Delete)
 	}
-		medicpedianutrisi := v1.Group("/medicpedia_nutrisi")
+	medicpedianutrisi := v1.Group("/medicpedia_nutrisi")
 	medicpedianutrisi.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
 	{
 		medicpedianutrisi.POST("", medicpedianutrisiHandler.Create)

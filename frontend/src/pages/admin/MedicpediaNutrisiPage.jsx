@@ -8,6 +8,7 @@ import Pagination from '../../components/Pagination';
 import TextField from '../../components/TextField';
 import WysiwygEditor from '../../components/WysiwygEditor';
 import usePermission from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 import { 
     getAllMedicpediaNutrisis, 
     createMedicpediaNutrisi, 
@@ -38,7 +39,7 @@ const MedicpediaNutrisiPage = () => {
         sources: '',
         daily_needs: '',
         risks_deficiency: '',
-        status: '',
+        status: 'Published',
     });
 
     // Debounce search term
@@ -166,7 +167,7 @@ const MedicpediaNutrisiPage = () => {
                 sources: '',
                 daily_needs: '',
                 risks_deficiency: '',
-                status: '',
+                status: 'Published',
             });
         }
         setIsModalOpen(true);
@@ -222,8 +223,8 @@ const MedicpediaNutrisiPage = () => {
     };
 
     const tableActions = [
-        ...(can('update-medicpedia_nutrisi') ? [{ label: 'Edit', onClick: handleOpenModal }] : []),
-        ...(can('delete-medicpedia_nutrisi') ? [{ label: 'Delete', onClick: (row) => handleDelete(row.id), className: 'text-error' }] : []),
+        ...(can(PERMS.UPDATE_MEDICPEDIANUTRISI) ? [{ label: 'Edit', onClick: handleOpenModal }] : []),
+        ...(can(PERMS.DELETE_MEDICPEDIANUTRISI) ? [{ label: 'Delete', onClick: (row) => handleDelete(row.id), className: 'text-error' }] : []),
     ];
 
     return (
@@ -252,7 +253,7 @@ const MedicpediaNutrisiPage = () => {
                             CSV
                         </button>
                     </div>
-                    {can('create-medicpedia_nutrisi') && (
+                    {can(PERMS.CREATE_MEDICPEDIANUTRISI) && (
                         <Button variant="primary" onClick={() => handleOpenModal()}>
                             Add MedicpediaNutrisi
                         </Button>
@@ -371,15 +372,20 @@ const MedicpediaNutrisiPage = () => {
                         onChange={(e) => setFormData({ ...formData, risks_deficiency: e.target.value })}
                         required
                     />
-                    <TextField
-                        label="Status"
-                        name="status"
-                        value={formData.status.toString()}
-                        onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                        
-                        
-                        required
-                    />
+                    <div className="space-y-1.5 px-1">
+                        <label className="text-sm font-medium text-surface-on block uppercase tracking-widest text-[10px]">Status</label>
+                        <select
+                            className="text-field bg-surface-container-high"
+                            value={formData.status}
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                            required
+                        >
+                            <option value="Published">Published</option>
+                            <option value="Draft">Draft</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                        <p className="text-[10px] text-surface-on-variant font-medium uppercase tracking-[0.1em]">Hanya status "Published" yang akan muncul di halaman publik.</p>
+                    </div>
                     <div className="flex justify-end gap-3 pt-4">
                         <Button type="button" variant="tonal" onClick={() => setIsModalOpen(false)}>
                             Cancel
