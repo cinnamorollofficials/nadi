@@ -111,24 +111,24 @@ const PublicLayout = () => {
                     />
                   </div>
                 )}
-                <span className="text-xl font-bold text-white tracking-tight">
+                <span className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
                   {app_name}
                 </span>
               </Link>
-              <p className="text-slate-500 max-w-sm leading-relaxed font-medium">
+              <p className="text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed font-medium text-sm">
                 Cerdas Menjaga Kesehatan. Solusi kesehatan digital terintegrasi
                 untuk masa depan yang lebih baik.
               </p>
             </div>
             <div>
-              <h4 className="text-slate-300 font-bold uppercase tracking-widest text-xs mb-6 px-1 border-l-2 border-primary/40">
+              <h4 className="text-slate-500 dark:text-slate-300 font-bold uppercase tracking-widest text-[10px] mb-6 px-3 border-l-2 border-primary">
                 Layanan
               </h4>
               <ul className="space-y-4">
                 <li>
                   <Link
                     to="/medicpedia"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Medicpedia
                   </Link>
@@ -136,7 +136,7 @@ const PublicLayout = () => {
                 <li>
                   <Link
                     to="#"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Cek Gejala AI
                   </Link>
@@ -144,14 +144,14 @@ const PublicLayout = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-slate-300 font-bold uppercase tracking-widest text-xs mb-6 px-1 border-l-2 border-primary/40">
+              <h4 className="text-slate-500 dark:text-slate-300 font-bold uppercase tracking-widest text-[10px] mb-6 px-3 border-l-2 border-primary">
                 Perusahaan
               </h4>
               <ul className="space-y-4">
                 <li>
                   <Link
                     to="#"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Tentang Kami
                   </Link>
@@ -159,7 +159,7 @@ const PublicLayout = () => {
                 <li>
                   <Link
                     to="#"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Kontak
                   </Link>
@@ -167,7 +167,7 @@ const PublicLayout = () => {
                 <li>
                   <Link
                     to="/terms"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Syarat & Ketentuan
                   </Link>
@@ -175,7 +175,7 @@ const PublicLayout = () => {
                 <li>
                   <Link
                     to="/privacy"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
+                    className="text-slate-500 dark:text-white/40 hover:text-primary dark:hover:text-white transition-colors font-medium text-sm"
                   >
                     Kebijakan Privasi
                   </Link>
@@ -184,20 +184,23 @@ const PublicLayout = () => {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-xs font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest text-center">
+            <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-[0.2em] text-center">
               &copy; {new Date().getFullYear()} {app_name}. Seluruh Hak Cipta
               Dilindungi.
             </p>
-            <div className="flex gap-6">
-              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
-                IG
-              </div>
-              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
-                TW
-              </div>
-              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
-                FB
-              </div>
+            <div className="flex gap-4">
+              {[
+                { name: "IG", path: "#" },
+                { name: "TW", path: "#" },
+                { name: "FB", path: "#" },
+              ].map((social) => (
+                <div
+                  key={social.name}
+                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-white/5 flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
+                >
+                  {social.name}
+                </div>
+              ))}
             </div>
           </div>
         </div>
