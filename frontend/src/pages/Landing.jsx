@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
+import SymptomCheckerModal from "../components/SymptomCheckerModal";
 import { getPublicFaqs } from "../api/faq";
 
 const Landing = () => {
   const [faqs, setFaqs] = useState([]);
   const [openFaqId, setOpenFaqId] = useState(null);
+  const [isSymptomModalOpen, setIsSymptomModalOpen] = useState(false);
 
   useEffect(() => {
     getPublicFaqs({ limit: 10 })
@@ -29,6 +31,10 @@ const Landing = () => {
   return (
     <div className="bg-slate-100 dark:bg-navy-950 min-h-screen font-sans selection:bg-primary/30 selection:text-primary transition-colors duration-300">
       <MedicalDisclaimer />
+      <SymptomCheckerModal 
+        isOpen={isSymptomModalOpen} 
+        onClose={() => setIsSymptomModalOpen(false)} 
+      />
       {/* HERO SECTION */}
       <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden transition-all duration-500">
         {/* Animated Gradient Background for Light Mode - Maximum Visibility */}
@@ -107,10 +113,15 @@ const Landing = () => {
                   <div className="relative">
                     <input
                       type="text"
+                      readOnly
+                      onClick={() => setIsSymptomModalOpen(true)}
                       placeholder="Apa yang kamu rasakan hari ini?"
-                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium"
+                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium cursor-pointer"
                     />
-                    <button className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all">
+                    <button 
+                      onClick={() => setIsSymptomModalOpen(true)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
+                    >
                       <svg
                         className="w-5 h-5 text-white"
                         fill="none"
@@ -130,6 +141,7 @@ const Landing = () => {
                     {["Pusing", "Demam", "Batuk", "Mual"].map((tag) => (
                       <span
                         key={tag}
+                        onClick={() => setIsSymptomModalOpen(true)}
                         className="text-[10px] font-bold text-slate-400 border border-white/10 px-3 py-1.5 rounded-lg hover:text-white hover:bg-primary/20 hover:border-primary/30 cursor-pointer transition-all uppercase tracking-widest"
                       >
                         {tag}

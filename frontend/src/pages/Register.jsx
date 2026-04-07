@@ -132,9 +132,10 @@ const Register = () => {
 
     return (
         <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Background decorative elements */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+            {/* Background decorative elements - Humanist Health Style */}
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] animate-pulse" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-500/5 rounded-full blur-[150px]" />
 
             <div className="w-full max-w-md relative z-10">
                 {/* Main Card */}
@@ -203,7 +204,7 @@ const Register = () => {
                                 {/* Branding */}
                                 <div className="text-center mb-6">
                                     {logo ? (
-                                        <div className="w-12 h-12 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2 mb-3 shadow-sm">
+                                        <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-white dark:bg-white/5 p-3 mb-3 shadow-sm">
                                             <img 
                                                 src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
                                                 alt="Logo"
@@ -304,7 +305,7 @@ const Register = () => {
                                     <button
                                         type="submit"
                                         disabled={registerMutation.isPending}
-                                        className="w-full flex items-center justify-center gap-2 py-3 px-4 mt-2 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full flex items-center justify-center gap-2 py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {registerMutation.isPending ? (
                                             <>
@@ -323,7 +324,7 @@ const Register = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex justify-center">
+                                    <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30">
                                         <GoogleLogin
                                             onSuccess={(credentialResponse) => {
                                                 googleLoginMutation.mutate(credentialResponse.credential);
@@ -332,8 +333,8 @@ const Register = () => {
                                                 setErrors({ submit: 'Google registration failed' });
                                             }}
                                             useOneTap
-                                            theme="filled_blue"
-                                            shape="pill"
+                                            theme="outline"
+                                            shape="rectangular"
                                             width="100%"
                                         />
                                     </div>
