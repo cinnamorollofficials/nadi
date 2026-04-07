@@ -50,15 +50,21 @@ const Sidebar = ({
       style={{ overflow: "hidden" }}
     >
       {/* Header with toggle button */}
-      <div className={`h-12 flex items-center flex-shrink-0 ${collapsed ? "justify-center px-2" : "justify-between px-3"}`}>
+      <div
+        className={`h-12 flex items-center flex-shrink-0 ${collapsed ? "justify-center px-2" : "justify-between px-3"}`}
+      >
         <div className="flex items-center gap-2 overflow-hidden">
           {logo && (
-            <div className={`flex-shrink-0 transition-all duration-300 ${collapsed ? 'w-8 h-8' : 'w-7 h-7'} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20`}>
-              <img 
-                src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
+            <div
+              className={`flex-shrink-0 transition-all duration-300 ${collapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20`}
+            >
+              <img
+                src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                 alt="Logo"
                 className="w-full h-full object-contain"
-                onError={(e) => { e.target.style.display = 'none'; }}
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
               />
             </div>
           )}
@@ -125,7 +131,7 @@ const Sidebar = ({
                         }`}
                       >
                         {item.icon}
-                        
+
                         {/* Tooltip */}
                         <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
                           {item.label}

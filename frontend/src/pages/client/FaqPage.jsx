@@ -43,7 +43,7 @@ const FaqPage = () => {
         <div className="absolute bottom-0 right-10 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl animate-blob animation-delay-2000" />
 
         <div className="relative z-10 container mx-auto px-6 text-center max-w-4xl pt-20 pb-10">
-          <h1 className="text-5xl md:text-6xl font-black text-white uppercase italic tracking-tighter leading-none mb-6">
+          <h1 className="text-5xl md:text-6xl font-black text-white uppercase tracking-tighter leading-none mb-6">
             Pusat <span className="text-rose-400">Bantuan</span> & FAQ.
           </h1>
           <p className="text-white/60 font-medium text-lg leading-relaxed max-w-2xl mx-auto mb-10">
@@ -81,7 +81,7 @@ const FaqPage = () => {
               {Object.entries(groupedFaqs).map(([category, items]) => (
                 <div key={category}>
                   <div className="flex items-center gap-4 mb-8">
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase italic tracking-tight">{category}</h2>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{category}</h2>
                     <div className="h-px bg-slate-200 dark:bg-white/10 flex-grow" />
                   </div>
                   <div className="space-y-4">
@@ -92,7 +92,7 @@ const FaqPage = () => {
                         className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-2xl p-6 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 transition-all shadow-sm hover:shadow-md dark:shadow-none"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="text-slate-700 dark:text-white/60 font-black uppercase italic tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
+                          <span className="text-slate-700 dark:text-white/60 font-black uppercase tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
                             {faq.question}
                           </span>
                           <div
@@ -119,12 +119,12 @@ const FaqPage = () => {
             </div>
           ) : (
             <div className="text-center py-20 bg-white dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
-              <p className="text-slate-400 dark:text-white/40 font-bold italic uppercase tracking-widest text-sm">Tidak ada hasil yang ditemukan untuk "{searchTerm}"</p>
+              <p className="text-slate-400 dark:text-white/40 font-bold uppercase tracking-widest text-sm">Tidak ada hasil yang ditemukan untuk "{searchTerm}"</p>
             </div>
           )}
 
           <div className="mt-20 p-12 bg-rose-500 rounded-[3rem] text-center shadow-2xl shadow-rose-500/20">
-             <h3 className="text-3xl font-black text-white uppercase italic tracking-tighter mb-4">Masih ada pertanyaan?</h3>
+             <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-4">Masih ada pertanyaan?</h3>
              <p className="text-white/80 font-bold mb-8 max-w-md mx-auto">Tim kami siap membantu Anda 24/7 untuk setiap kendala medis atau teknis.</p>
              <Link to="/contact">
                 <button className="bg-white text-rose-500 font-black px-10 py-4 rounded-2xl uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all shadow-xl">

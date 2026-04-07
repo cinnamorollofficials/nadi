@@ -305,8 +305,8 @@ const Landing = () => {
                 </svg>
               </Link>
             </div>
-            <div className="space-y-6">
-              <div className="glass-card rounded-[2rem] p-8 group hover:bg-slate-100 dark:hover:bg-white/5 transition-all border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5">
+            <div className="space-y-6 flex flex-col h-[450px]">
+              <div className="glass-card rounded-[2rem] p-8 group hover:bg-slate-100 dark:hover:bg-white/5 transition-all border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 flex-1 flex flex-col">
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <svg
                     className="w-6 h-6 text-primary"
@@ -333,7 +333,7 @@ const Landing = () => {
                   <div className="w-2/3 h-full bg-gradient-to-r from-primary to-blue-400 shadow-glow-primary" />
                 </div>
               </div>
-              <div className="glass-card rounded-[2rem] p-8 group hover:bg-blue-600/5 dark:hover:bg-blue-600/10 transition-all border-blue-600/10 dark:border-blue-600/10 bg-blue-50/30 dark:bg-blue-600/5">
+              <div className="glass-card rounded-[2rem] p-8 group hover:bg-blue-600/5 dark:hover:bg-blue-600/10 transition-all border-blue-600/10 dark:border-blue-600/10 bg-blue-50/30 dark:bg-blue-600/5 flex-1 flex flex-col">
                 <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center mb-6">
                   <svg
                     className="w-6 h-6 text-blue-500 dark:text-blue-400"
@@ -396,7 +396,7 @@ const Landing = () => {
                 memastikan setiap riwayat medis dan data pribadi Anda tersimpan
                 dalam enkripsi berlapis.
               </p>
-              <Button className="border-2 border-primary/20 text-primary font-bold px-10 py-4 uppercase tracking-widest text-xs hover:bg-primary hover:text-white transition-all rounded-2xl">
+              <Button className="border-2 border-primary/20 text-primary font-bold px-10 py-4 uppercase tracking-widest text-xs hover:bg-primary text-white transition-all rounded-2xl">
                 Pelajari Protokol Kami
               </Button>
             </div>
@@ -457,7 +457,7 @@ const Landing = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center text-slate-500 italic py-10 font-medium">
+              <div className="text-center text-slate-500 py-10 font-medium">
                 Belum ada pertanyaan umum.
               </div>
             )}

@@ -153,6 +153,7 @@ const Register = () => {
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
+                  onClick={() => navigate("/")}
                   className="w-full h-full object-contain brightness-0 invert"
                 />
               </div>

@@ -29,38 +29,7 @@ const MedicpediaHome = () => {
           {/* Penyakit A-Z Card */}
           <Link to="/medicpedia/penyakit" className="group">
             <Card className="p-8 h-full border-none shadow-2xl shadow-primary/5 group-hover:shadow-primary/20 transition-all duration-500 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-bl-full flex items-center justify-center translate-x-10 -translate-y-10 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform duration-500">
-                <svg
-                  className="w-12 h-12 text-red-500/20"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L5.596 15.12a2 2 0 00-1.022.547l-1.028 1.028A2 2 0 004.5 20h15a2 2 0 001.454-3.546l-1.526-1.026z"
-                  />
-                </svg>
-              </div>
-
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-red-100/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-300 transform-gpu">
-                  <svg
-                    className="w-8 h-8 text-red-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </div>
                 <h2 className="text-3xl font-black text-surface-on mb-4 group-hover:text-red-600 transition-colors">
                   Penyakit A-Z
                 </h2>
@@ -70,7 +39,7 @@ const MedicpediaHome = () => {
                 </p>
                 <Button
                   variant="tonal"
-                  className="w-full justify-between items-center bg-red-50 hover:bg-red-100 text-red-700 font-bold border-none shadow-sm shadow-red-200"
+                  className="w-full flex py-6 justify-between items-center bg-red-50 hover:bg-red-100 text-red-700 font-bold border-none shadow-sm shadow-red-200"
                 >
                   Lihat Semua Penyakit
                   <svg
@@ -94,38 +63,7 @@ const MedicpediaHome = () => {
           {/* Nutrisi A-Z Card */}
           <Link to="/medicpedia/nutrisi" className="group">
             <Card className="p-8 h-full border-none shadow-2xl shadow-secondary/5 group-hover:shadow-secondary/20 transition-all duration-500 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-bl-full flex items-center justify-center translate-x-10 -translate-y-10 group-hover:translate-x-4 group-hover:-translate-y-4 transition-transform duration-500">
-                <svg
-                  className="w-12 h-12 text-green-500/20"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 01-1.5-.454M9 16v2m3-6v6m3-8v8m-7 0a1 1 0 001 1h4a1 1 0 001-1m-5-1v-1h4v1m-4-1a1 1 0 011-1h4a1 1 0 011 1v1M9 6.75V4.5a1 1 0 011-1h4a1 1 0 011 1v2.25M9 6.75h6"
-                  />
-                </svg>
-              </div>
-
               <div className="relative z-10">
-                <div className="w-14 h-14 bg-green-100/50 rounded-2xl flex items-center justify-center mb-6 shadow-inner group-hover:scale-110 transition-transform duration-300 transform-gpu">
-                  <svg
-                    className="w-8 h-8 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M12 3v1m0 16v1m9-9h1M3 12h1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                    />
-                  </svg>
-                </div>
                 <h2 className="text-3xl font-black text-surface-on mb-4 group-hover:text-green-600 transition-colors">
                   Nutrisi A-Z
                 </h2>
@@ -135,7 +73,7 @@ const MedicpediaHome = () => {
                 </p>
                 <Button
                   variant="tonal"
-                  className="w-full justify-between items-center bg-green-50 hover:bg-green-100 text-green-700 font-bold border-none shadow-sm shadow-green-200"
+                  className="w-full flex py-6 justify-between items-center bg-green-50 hover:bg-green-100 text-green-700 font-bold border-none shadow-sm shadow-green-200"
                 >
                   Lihat Semua Nutrisi
                   <svg
