@@ -8,17 +8,27 @@ export default {
   theme: {
     extend: {
       colors: {
-        // MD3 Purple Theme - Expressive (Theme-aware via CSS Variables with Opacity Support)
+        // Humanist Health + AI Theme
         primary: {
-          DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-primary) / ${opacityValue})` : `rgb(var(--md-sys-color-primary))`,
-          500: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-primary) / ${opacityValue})` : `rgb(var(--md-sys-color-primary))`,
-          container: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-primary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-primary-container))`,
-          'on-container': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-primary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-on-primary-container))`,
+          DEFAULT: 'rgb(var(--md-sys-color-primary) / <alpha-value>)',
+          '50': '#f0fdfa',
+          '100': '#ccfbf1',
+          '400': '#2dd4bf',
+          '500': '#14b8a6',
+          '600': '#0d9488',
         },
         secondary: {
           DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-secondary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-secondary-container))`,
           container: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-secondary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-secondary-container))`,
           'on-container': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-secondary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-on-secondary-container))`,
+        },
+        nadi: {
+          rose: 'rgb(var(--color-nadi-red) / <alpha-value>)',
+        },
+        navy: {
+          950: 'rgb(var(--color-navy-950) / <alpha-value>)',
+          900: 'rgb(var(--color-navy-900) / <alpha-value>)',
+          800: 'rgb(var(--color-navy-800) / <alpha-value>)',
         },
         surface: {
           DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-surface) / ${opacityValue})` : `rgb(var(--md-sys-color-surface))`,
@@ -30,34 +40,23 @@ export default {
           'container-high': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-surface-container-high) / ${opacityValue})` : `rgb(var(--md-sys-color-surface-container-high))`,
           'container-highest': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-surface-container-highest) / ${opacityValue})` : `rgb(var(--md-sys-color-surface-container-highest))`,
         },
-        'on-primary': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-primary) / ${opacityValue})` : `rgb(var(--md-sys-color-on-primary))`,
-        'on-secondary': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-secondary) / ${opacityValue})` : `rgb(var(--md-sys-color-on-secondary))`,
-        outline: {
-          DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-outline) / ${opacityValue})` : `rgb(var(--md-sys-color-outline))`,
-          variant: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-outline-variant) / ${opacityValue})` : `rgb(var(--md-sys-color-outline-variant))`,
-        },
-        error: {
-          DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-error) / ${opacityValue})` : `rgb(var(--md-sys-color-error))`,
-          'on': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-error) / ${opacityValue})` : `rgb(var(--md-sys-color-on-error))`,
-          container: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-error-container) / ${opacityValue})` : `rgb(var(--md-sys-color-error-container))`,
-          'on-container': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-error-container) / ${opacityValue})` : `rgb(var(--md-sys-color-on-error-container))`,
-        },
       },
       fontSize: {
-        // MD3 Typography Scale - Refined (smaller)
-        'xs': ['0.75rem', { lineHeight: '1rem' }],      // 12px
-        'sm': ['0.875rem', { lineHeight: '1.25rem' }],  // 14px
-        'base': ['0.9375rem', { lineHeight: '1.375rem' }], // 15px
-        'lg': ['1rem', { lineHeight: '1.5rem' }],       // 16px
-        'xl': ['1.125rem', { lineHeight: '1.75rem' }],  // 18px
-        '2xl': ['1.375rem', { lineHeight: '2rem' }],    // 22px
-        '3xl': ['1.75rem', { lineHeight: '2.25rem' }],  // 28px
+        'xs': ['0.75rem', { lineHeight: '1rem' }],
+        'sm': ['0.875rem', { lineHeight: '1.25rem' }],
+        'base': ['0.9375rem', { lineHeight: '1.375rem' }],
+        'lg': ['1rem', { lineHeight: '1.5rem' }],
+        'xl': ['1.125rem', { lineHeight: '1.75rem' }],
+        '2xl': ['1.375rem', { lineHeight: '2rem' }],
+        '3xl': ['1.75rem', { lineHeight: '2.25rem' }],
       },
       borderRadius: {
         'md3-sm': '8px',
         'md3': '12px',
         'md3-lg': '16px',
         'md3-xl': '28px',
+        '4xl': '2rem',
+        '5xl': '3.5rem',
       },
       boxShadow: {
         'md3-1': '0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15)',
@@ -67,7 +66,7 @@ export default {
         'md3-5': '0px 8px 12px 6px rgba(0, 0, 0, 0.15), 0px 4px 4px 0px rgba(0, 0, 0, 0.3)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
       },
     },
   },

@@ -1,18 +1,20 @@
 import { Link, Outlet } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
+import { useTheme } from "../context/ThemeContext";
 import Button from "../components/Button";
 
 const PublicLayout = () => {
   const { app_name, logo } = useSettings();
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen flex flex-col bg-navy-950 text-white font-sans">
+    <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-navy-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       {/* Header / Navigation */}
-      <header className="sticky top-0 z-50 bg-navy-950/80 backdrop-blur-xl border-b border-white/5">
+      <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-navy-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5">
         <nav className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             {logo && (
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-white/5 flex items-center justify-center p-1.5 border border-white/10 transition-all group-hover:scale-110 group-hover:border-accent-red/30">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20 transition-all group-hover:scale-110 group-hover:border-primary/40 shadow-lg shadow-primary/5">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -23,7 +25,7 @@ const PublicLayout = () => {
                 />
               </div>
             )}
-            <span className="text-2xl font-black tracking-tighter text-white group-hover:text-accent-red transition-colors uppercase italic">
+            <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-primary transition-colors">
               {app_name}
             </span>
           </Link>
@@ -31,39 +33,57 @@ const PublicLayout = () => {
           <div className="hidden md:flex items-center gap-10">
             <Link
               to="/"
-              className="text-sm font-bold text-white/60 hover:text-white transition-colors tracking-wide uppercase"
+              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
             >
               Home
             </Link>
             <Link
               to="/medicpedia"
-              className="text-sm font-bold text-white/60 hover:text-white transition-colors tracking-wide uppercase"
+              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
             >
               Medicpedia
             </Link>
+
             <Link
-              to="#"
-              className="text-sm font-bold text-white/60 hover:text-white transition-colors tracking-wide uppercase"
+              to="/faq"
+              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
             >
-              Produk
+              FAQ
             </Link>
             <Link
               to="#"
-              className="text-sm font-bold text-white/60 hover:text-white transition-colors tracking-wide uppercase"
+              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
             >
               Tentang
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-all active:scale-95 group"
+              title={`Beralih ke mode ${theme === "light" ? "gelap" : "terang"}`}
+            >
+              {theme === "light" ? (
+                <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l-.707-.707M6.343 6.343l-.707-.707" />
+                </svg>
+              )}
+            </button>
+
             <Link
               to="/login"
-              className="hidden sm:block text-sm font-bold text-white/80 hover:text-white transition-colors uppercase tracking-widest"
+              className="hidden sm:block text-sm font-bold text-slate-500 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors tracking-widest uppercase"
             >
               Masuk
             </Link>
             <Link to="/register">
-              <Button className="bg-white text-black hover:bg-white/90 px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-full shadow-xl shadow-white/5 transition-all hover:scale-105 active:scale-95">
+              <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
                 Daftar Sekarang
               </Button>
             </Link>
@@ -77,13 +97,13 @@ const PublicLayout = () => {
       </main>
 
       {/* Footer Area */}
-      <footer className="bg-navy-950 border-t border-white/5 pt-24 pb-12">
+      <footer className="bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-white/5 pt-24 pb-12 transition-colors duration-300">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="md:col-span-2">
               <Link to="/" className="flex items-center gap-3 mb-6">
                 {logo && (
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center p-1 opacity-50 grayscale hover:grayscale-0 transition-all">
+                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center p-1 opacity-50 grayscale hover:grayscale-0 transition-all hover:opacity-100">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"
@@ -91,17 +111,17 @@ const PublicLayout = () => {
                     />
                   </div>
                 )}
-                <span className="text-xl font-black text-white italic uppercase">
+                <span className="text-xl font-bold text-white tracking-tight">
                   {app_name}
                 </span>
               </Link>
-              <p className="text-white/40 max-w-sm leading-relaxed font-medium">
+              <p className="text-slate-500 max-w-sm leading-relaxed font-medium">
                 Cerdas Menjaga Kesehatan. Solusi kesehatan digital terintegrasi
                 untuk masa depan yang lebih baik.
               </p>
             </div>
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-sm mb-6">
+              <h4 className="text-slate-300 font-bold uppercase tracking-widest text-xs mb-6 px-1 border-l-2 border-primary/40">
                 Layanan
               </h4>
               <ul className="space-y-4">
@@ -121,26 +141,10 @@ const PublicLayout = () => {
                     Cek Gejala AI
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
-                  >
-                    Tanya Dokter
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="#"
-                    className="text-white/40 hover:text-white transition-colors font-medium"
-                  >
-                    Beli Obat
-                  </Link>
-                </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-black uppercase tracking-widest text-sm mb-6">
+              <h4 className="text-slate-300 font-bold uppercase tracking-widest text-xs mb-6 px-1 border-l-2 border-primary/40">
                 Perusahaan
               </h4>
               <ul className="space-y-4">
@@ -179,19 +183,19 @@ const PublicLayout = () => {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p className="text-xs font-bold text-white/20 uppercase tracking-widest text-center">
+          <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="text-xs font-bold text-slate-400 dark:text-white/20 uppercase tracking-widest text-center">
               &copy; {new Date().getFullYear()} {app_name}. Seluruh Hak Cipta
               Dilindungi.
             </p>
             <div className="flex gap-6">
-              <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:border-white/20 transition-all cursor-pointer">
+              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
                 IG
               </div>
-              <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:border-white/20 transition-all cursor-pointer">
+              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
                 TW
               </div>
-              <div className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-white/20 hover:text-white hover:border-white/20 transition-all cursor-pointer">
+              <div className="w-10 h-10 rounded-full border border-slate-200 dark:border-white/5 flex items-center justify-center text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-white/20 transition-all cursor-pointer">
                 FB
               </div>
             </div>
