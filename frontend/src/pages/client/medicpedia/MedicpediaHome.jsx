@@ -6,17 +6,17 @@ const MedicpediaHome = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-900 text-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-10 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-teal-950 via-teal-900 to-slate-900 text-white min-h-[50vh] flex items-center">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-0 right-10 w-96 h-96 bg-primary rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
-        <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 text-center">
+        <div className="relative z-10 max-w-5xl mx-auto px-6 py-16 text-center w-full">
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none">
-            Solusi <span className="text-primary-300">Kesehatan</span> <br />
+            Solusi <span className="text-teal-300">Kesehatan</span> <br />
             Dalam Genggaman.
           </h1>
-          <p className="text-primary-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-90 leading-relaxed font-medium">
+          <p className="text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Temukan informasi lengkap mengenai kesehatan, penyakit, dan nutrisi
             untuk mendukung gaya hidup sehat Anda.
           </p>
@@ -24,7 +24,7 @@ const MedicpediaHome = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-6xl mx-auto px-6 py-20 -mt-20">
+      <div className="max-w-6xl mx-auto px-6 py-20">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Penyakit A-Z Card */}
           <Link to="/medicpedia/penyakit" className="group">
