@@ -31,9 +31,9 @@ const Landing = () => {
   return (
     <div className="bg-slate-100 dark:bg-navy-950 min-h-screen font-sans selection:bg-primary/30 selection:text-primary transition-colors duration-300">
       <MedicalDisclaimer />
-      <SymptomCheckerModal 
-        isOpen={isSymptomModalOpen} 
-        onClose={() => setIsSymptomModalOpen(false)} 
+      <SymptomCheckerModal
+        isOpen={isSymptomModalOpen}
+        onClose={() => setIsSymptomModalOpen(false)}
       />
       {/* HERO SECTION */}
       <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden transition-all duration-500">
@@ -72,19 +72,6 @@ const Landing = () => {
                     Mulai Sekarang
                   </Button>
                 </Link>
-                <div className="flex -space-x-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div
-                      key={i}
-                      className="w-12 h-12 rounded-full border-2 border-white dark:border-navy-950 bg-slate-100 dark:bg-navy-800 overflow-hidden ring-2 ring-slate-100 dark:ring-white/5"
-                    >
-                      <div className="w-full h-full bg-gradient-to-br from-white/10 to-white/5" />
-                    </div>
-                  ))}
-                  <div className="w-12 h-12 rounded-full border-2 border-white dark:border-navy-950 bg-nadi-rose flex items-center justify-center text-[10px] font-bold text-white ring-2 ring-slate-200 dark:ring-white/5 uppercase">
-                    10K+
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -118,7 +105,7 @@ const Landing = () => {
                       placeholder="Apa yang kamu rasakan hari ini?"
                       className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium cursor-pointer"
                     />
-                    <button 
+                    <button
                       onClick={() => setIsSymptomModalOpen(true)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
                     >

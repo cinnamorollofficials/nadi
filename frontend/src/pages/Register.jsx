@@ -91,22 +91,17 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         if (isRegistrationClosed) {
-            toast.error('Registration is currently closed by the administrator.');
+            toast.error('Registration is currently closed.');
             return;
         }
-
         setErrors({});
         const validationErrors = validateForm();
-        
-        // Final password strength check (Must be Green/Strong)
         const strength = getPasswordStrength(formData.password);
         if (strength.strength < 4) {
-            toast.error('Password is not strong enough! Please ensure it reaches the green indicator level (Strong/Very Strong).');
+            toast.error('Please use a stronger password.');
             return;
         }
-
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
@@ -122,7 +117,6 @@ const Register = () => {
         if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
         if (/\d/.test(password)) strength++;
         if (/[^a-zA-Z0-9]/.test(password)) strength++;
-
         const labels = ['', 'Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
         const colors = ['', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500', 'bg-green-600'];
         return { strength, label: labels[strength], color: colors[strength] };
@@ -131,97 +125,99 @@ const Register = () => {
     const passwordStrength = getPasswordStrength(formData.password);
 
     return (
-        <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
-            {/* Background decorative elements - Humanist Health Style */}
-            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] animate-pulse" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-blue-500/5 rounded-full blur-[150px]" />
-
-            <div className="w-full max-w-md relative z-10">
-                {/* Main Card */}
-                <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
-                    {/* Card Header */}
-                    <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
-                        <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                            {isRegistered ? 'Success' : isRegistrationClosed ? 'Registration Closed' : `Join ${app_name}`}
+        <div className="min-h-screen bg-surface flex flex-col lg:flex-row relative overflow-hidden">
+            {/* LEFT PANEL - Branding Visual (LG only) */}
+            <div className="hidden lg:flex lg:w-[45%] xl:w-[40%] relative overflow-hidden bg-slate-950">
+                <img 
+                    src="/Users/hadigunawan/.gemini/antigravity/brain/e1d60941-6366-4919-bff9-48eb95d732d0/medical_ai_login_bg_1775549021496.png"
+                    alt="Medical AI Branding"
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 scale-110 animate-pulse-slow"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent" />
+                
+                <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
+                    <div className="animate-slide-up">
+                        {logo ? (
+                            <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-3 mb-6 shadow-2xl">
+                                <img 
+                                    src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
+                                    alt="Logo"
+                                    className="w-full h-full object-contain brightness-0 invert"
+                                />
+                            </div>
+                        ) : (
+                            <div className="w-16 h-16 rounded-2xl bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary mb-6 border border-white/10 shadow-2xl shadow-primary/20">
+                                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                            </div>
+                        )}
+                        <h1 className="text-3xl font-bold text-white tracking-tight">
+                            {isRegistered ? 'Success' : isRegistrationClosed ? 'Locked' : 'Create Account'}
+                        </h1>
+                        <p className="text-slate-400 mt-2 font-medium">
+                            {isRegistered ? 'Check your mailbox' : isRegistrationClosed ? 'Registration closed' : 'Start your journey with NADI'}
                         </p>
-                        <div className="flex items-center gap-1.5 opacity-60">
-                            <span className={`w-1.5 h-1.5 rounded-full ${isRegistered ? 'bg-green-500' : isRegistrationClosed ? 'bg-error' : 'bg-primary'}`} />
-                            <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                                {isRegistered ? 'Sent' : isRegistrationClosed ? 'Disabled' : 'New Account'}
-                            </span>
-                        </div>
                     </div>
 
-                    <div className="p-6">
+                    <div className="max-w-md space-y-6 animate-slide-up">
+                        <div className="w-16 h-1 w-16 bg-primary rounded-full" />
+                        <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight">
+                            Bergabung Bersama <br />
+                            <span className="text-primary">Nadi</span> <br />
+                            Sekarang
+                        </h2>
+                        <p className="text-lg text-slate-300 font-medium leading-relaxed">
+                            Mulai perjalanan kesehatan Anda dengan platform terpercaya. Data aman, diagnosis cerdas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {/* RIGHT PANEL - Form Side */}
+            <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-white dark:bg-slate-950/20">
+                <div className="lg:hidden absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] animate-pulse" />
+                <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
+
+                <div className="w-full max-w-md relative">
+                    <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 shadow-2xl overflow-hidden p-8">
                         {isRegistered ? (
-                            <div className="text-center py-8 space-y-6">
+                            <div className="text-center py-4 space-y-6">
                                 <div className="w-20 h-20 mx-auto rounded-3xl bg-green-500/10 flex items-center justify-center text-green-500 mb-6 shadow-inner">
                                     <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
                                 <div className="space-y-3">
-                                    <h1 className="text-2xl font-bold text-surface-on tracking-tight">Check Your Inbox</h1>
+                                    <h2 className="text-2xl font-bold text-surface-on tracking-tight">Check Your Inbox</h2>
                                     <p className="text-sm text-surface-on-variant leading-relaxed px-6 opacity-80">
                                         We've sent a verification link to <span className="font-bold text-primary">{formData.email}</span>. 
-                                        Please click the link to activate your account.
                                     </p>
                                 </div>
                                 <div className="pt-6">
                                     <button 
                                         onClick={() => navigate('/login')}
-                                        className="w-full py-3 px-8 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                                        className="w-full py-3 px-8 rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 hover:brightness-110 transition-all font-bold"
                                     >
                                         Return to Sign In
                                     </button>
                                 </div>
-                                <p className="text-[10px] text-surface-on-variant uppercase tracking-widest font-bold opacity-50 pt-2">
-                                    Didn't get the email? Check your spam folder.
-                                </p>
                             </div>
                         ) : isRegistrationClosed ? (
-                            <div className="text-center py-8 space-y-6">
+                            <div className="text-center py-6 space-y-6">
                                 <div className="w-16 h-16 mx-auto rounded-2xl bg-error/10 flex items-center justify-center text-error mb-4">
                                     <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                 </div>
-                                <div className="space-y-2">
-                                    <h1 className="text-xl font-bold text-surface-on">Public Registration Disabled</h1>
-                                    <p className="text-xs text-surface-on-variant leading-relaxed px-4 opacity-80">
-                                        We are not accepting new registrations at this time. Please contact the administrator if you believe this is an error.
-                                    </p>
-                                </div>
+                                <p className="text-sm text-surface-on-variant px-4">Registration is currently disabled.</p>
                                 <div className="pt-4">
-                                    <Link to="/login" className="px-8 py-3 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 hover:brightness-110 inline-block transition-all">
-                                        ← Back to Login
-                                    </Link>
+                                    <Link to="/login" className="px-8 py-3 rounded-full bg-primary text-white text-sm font-bold inline-block">← Back to Login</Link>
                                 </div>
                             </div>
                         ) : (
                             <>
-                                {/* Branding */}
-                                <div className="text-center mb-6">
-                                    {logo ? (
-                                        <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-white dark:bg-white/5 p-3 mb-3 shadow-sm">
-                                            <img 
-                                                src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} 
-                                                alt="Logo"
-                                                className="w-full h-full object-contain"
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="w-12 h-12 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-3">
-                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                                            </svg>
-                                        </div>
-                                    )}
-                                    <h1 className="text-xl font-bold text-surface-on">Create Account</h1>
-                                    <p className="text-xs text-surface-on-variant mt-1 opacity-80">Start your journey with us</p>
-                                </div>
-
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     {errors.submit && (
                                         <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium text-center">
@@ -229,143 +225,53 @@ const Register = () => {
                                         </div>
                                     )}
 
-                                    <TextField
-                                        label="Full name"
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="John Doe"
-                                        error={errors.name}
-                                        required
-                                    />
-
-                                    <TextField
-                                        label="Email address"
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="your@email.com"
-                                        error={errors.email}
-                                        required
-                                    />
-
+                                    <TextField label="Full name" type="text" name="name" value={formData.name} onChange={handleChange} placeholder="John Doe" error={errors.name} required />
+                                    <TextField label="Email address" type="email" name="email" value={formData.email} onChange={handleChange} placeholder="your@email.com" error={errors.email} required />
                                     <div className="space-y-2">
-                                        <TextField
-                                            label="Password"
-                                            type="password"
-                                            name="password"
-                                            value={formData.password}
-                                            onChange={handleChange}
-                                            placeholder="••••••••"
-                                            error={errors.password}
-                                            required
-                                        />
+                                        <TextField label="Password" type="password" name="password" value={formData.password} onChange={handleChange} placeholder="••••••••" error={errors.password} required />
                                         {formData.password && (
-                                            <div className="px-1">
-                                                <div className="flex gap-1 mb-1">
-                                                    {[1, 2, 3, 4, 5].map((level) => (
-                                                        <div
-                                                            key={level}
-                                                            className={`h-1 flex-1 rounded ${level <= passwordStrength.strength ? passwordStrength.color : 'bg-outline-variant/30'}`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <p className="text-[10px] font-bold uppercase tracking-tight text-surface-on-variant opacity-70">
-                                                    Strength: {passwordStrength.label}
-                                                </p>
+                                            <div className="flex gap-1">
+                                                {[1, 2, 3, 4, 5].map((level) => (
+                                                    <div key={level} className={`h-1 flex-1 rounded ${level <= passwordStrength.strength ? passwordStrength.color : 'bg-outline-variant/30'}`} />
+                                                ))}
                                             </div>
                                         )}
                                     </div>
+                                    <TextField label="Confirm password" type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="••••••••" error={errors.confirmPassword} required />
 
-                                    <TextField
-                                        label="Confirm password"
-                                        type="password"
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
-                                        onChange={handleChange}
-                                        placeholder="••••••••"
-                                        error={errors.confirmPassword}
-                                        required
-                                    />
-
-                                    <div className="pt-2 px-1">
-                                        <label className="flex items-start cursor-pointer">
-                                            <input type="checkbox" className="mr-2 mt-0.5 rounded border-outline" required />
-                                            <span className="text-[11px] text-surface-on-variant leading-relaxed">
-                                                I agree to the{' '}
-                                                <a href="#" className="text-primary font-bold hover:underline">Terms of Service</a>
-                                                {' '}and{' '}
-                                                <a href="#" className="text-primary font-bold hover:underline">Privacy Policy</a>
-                                            </span>
-                                        </label>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        disabled={registerMutation.isPending}
-                                        className="w-full flex items-center justify-center gap-2 py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {registerMutation.isPending ? (
-                                            <>
-                                                <span className="w-4 h-4 border-2 border-on-primary border-t-transparent rounded-full animate-spin" />
-                                                Creating Account…
-                                            </>
-                                        ) : 'Create Account'}
+                                    <button type="submit" disabled={registerMutation.isPending} className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50">
+                                        {registerMutation.isPending ? 'Creating Account…' : 'Create Account'}
                                     </button>
 
                                     <div className="relative py-2">
-                                        <div className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-outline-variant/30"></div>
-                                        </div>
-                                        <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-surface-container px-2">
-                                            Or sign up with
-                                        </div>
+                                        <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-outline-variant/30"></div></div>
+                                        <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-white dark:bg-slate-900 px-2">Or sign up with</div>
                                     </div>
 
                                     <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30">
-                                        <GoogleLogin
-                                            onSuccess={(credentialResponse) => {
-                                                googleLoginMutation.mutate(credentialResponse.credential);
-                                            }}
-                                            onError={() => {
-                                                setErrors({ submit: 'Google registration failed' });
-                                            }}
-                                            useOneTap
-                                            theme="outline"
-                                            shape="rectangular"
-                                            width="100%"
-                                        />
+                                        <GoogleLogin onSuccess={(res) => googleLoginMutation.mutate(res.credential)} onError={() => setErrors({ submit: 'Google failed' })} useOneTap theme="outline" shape="rectangular" width="100%" />
                                     </div>
                                 </form>
-
                                 <div className="mt-8 pt-6 border-t border-outline-variant/30 text-center">
-                                    <p className="text-xs text-surface-on-variant">
-                                        Already have an account?{' '}
-                                        <Link to="/login" className="text-primary font-bold hover:underline">
-                                            Sign in
-                                        </Link>
-                                    </p>
+                                    <p className="text-xs text-surface-on-variant">Already have an account? <Link to="/login" className="text-primary font-bold hover:underline">Sign in</Link></p>
                                 </div>
                             </>
                         )}
                     </div>
+                    {(!isRegistrationClosed && !isRegistered) && (
+                        <div className="mt-6 flex items-center justify-center gap-4">
+                            <Link to="/" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">Home</Link>
+                            <span className="w-1 h-1 rounded-full bg-outline-variant/60" />
+                            <Link to="/help" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">Help</Link>
+                        </div>
+                    )}
                 </div>
-
-                {/* Bottom navigation */}
-                {(!isRegistrationClosed && !isRegistered) && (
-                    <div className="mt-6 flex items-center justify-center gap-4">
-                        <Link to="/" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">
-                            Home
-                        </Link>
-                        <span className="w-1 h-1 rounded-full bg-outline-variant/60" />
-                        <Link to="/help" className="text-[11px] font-bold text-surface-on-variant hover:text-primary uppercase tracking-wider transition-colors">
-                            Help
-                        </Link>
-                    </div>
-                )}
             </div>
+
+            <style dangerouslySetInnerHTML={{ __html: `
+                @keyframes pulse-slow { 0%, 100% { opacity: 0.5; transform: scale(1.1); } 50% { opacity: 0.7; transform: scale(1.15); } }
+                .animate-pulse-slow { animation: pulse-slow 10s ease-in-out infinite; }
+            `}} />
         </div>
     );
 };
