@@ -40,6 +40,10 @@ export default {
           'container-high': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-surface-container-high) / ${opacityValue})` : `rgb(var(--md-sys-color-surface-container-high))`,
           'container-highest': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-surface-container-highest) / ${opacityValue})` : `rgb(var(--md-sys-color-surface-container-highest))`,
         },
+        outline: {
+          DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-outline) / ${opacityValue})` : `rgb(var(--md-sys-color-outline))`,
+          variant: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-outline-variant) / ${opacityValue})` : `rgb(var(--md-sys-color-outline-variant))`,
+        },
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],

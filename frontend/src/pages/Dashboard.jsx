@@ -150,7 +150,7 @@ const Dashboard = () => {
           ? [1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="bg-surface-container rounded-2xl p-5 border border-outline-variant/30 animate-pulse"
+                className="bg-surface-container rounded-2xl p-5 border border-outline-variant/30 dark:border-transparent animate-pulse"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-surface-variant/40" />
@@ -164,7 +164,7 @@ const Dashboard = () => {
           : stats.map((stat) => (
               <div
                 key={stat.id}
-                className="group relative bg-surface-container rounded-2xl border border-outline-variant/30 p-5 
+                className="group relative bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent p-5 
                            transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 
                            active:scale-[0.98] overflow-hidden"
               >
@@ -190,7 +190,7 @@ const Dashboard = () => {
       {/* ── Main Layout ──────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-surface-container rounded-2xl border border-outline-variant/30 shadow-sm overflow-hidden flex flex-col">
+        <div className="lg:col-span-2 bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent shadow-sm overflow-hidden flex flex-col">
           <div className="px-5 py-3 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
             <h2 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
               Recent Activity
@@ -243,7 +243,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions Container */}
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent shadow-sm overflow-hidden flex flex-col">
           <div className="px-5 py-3 border-b border-outline-variant/20 bg-surface-container-low">
             <h2 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
               Quick Actions

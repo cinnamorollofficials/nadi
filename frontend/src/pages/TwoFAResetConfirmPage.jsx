@@ -113,10 +113,7 @@ const TwoFAResetConfirmPage = () => {
                   <img
                     src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                     alt="Logo"
-                    onClick={
-                      // navigate to home page
-                      navigate("/")
-                    }
+                    onClick={() => navigate("/")}
                     className="w-full h-full object-contain"
                   />
                 </div>

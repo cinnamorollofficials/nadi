@@ -30,7 +30,7 @@ const MedicalDisclaimer = ({ onAccept }) => {
             />
 
             {/* Modal Container */}
-            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-white/5 overflow-hidden animate-slide-up">
+            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up">
                 {/* Close Button */}
                 <button 
                     onClick={() => setIsVisible(false)}

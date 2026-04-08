@@ -76,7 +76,7 @@ const Landing = () => {
             </div>
 
             <div className="lg:w-2/5 w-full">
-              <div className="glass-card rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200 dark:shadow-black relative group overflow-hidden border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 backdrop-blur-xl">
+              <div className="glass-card rounded-[2.5rem] p-8 shadow-2xl shadow-slate-200 dark:shadow-black relative group overflow-hidden border-slate-200 dark:border-outline-variant/20 bg-white/70 dark:bg-white/5 backdrop-blur-xl">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 blur-3xl group-hover:bg-primary/30 transition-all duration-700" />
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight flex items-center gap-2">
                   <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
@@ -103,7 +103,7 @@ const Landing = () => {
                       readOnly
                       onClick={() => setIsSymptomModalOpen(true)}
                       placeholder="Apa yang kamu rasakan hari ini?"
-                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium cursor-pointer"
+                      className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium cursor-pointer"
                     />
                     <button
                       onClick={() => setIsSymptomModalOpen(true)}
@@ -143,7 +143,7 @@ const Landing = () => {
       </section>
 
       {/* PARTNERS LOGO */}
-      <section className="py-20 border-y border-slate-200 dark:border-white/5 bg-slate-200/50 dark:bg-navy-900/20">
+      <section className="py-20 border-y border-slate-200 dark:border-outline-variant/20 bg-slate-200/50 dark:bg-navy-900/20">
         <div className="container mx-auto px-6 overflow-hidden">
           <p className="text-center text-[10px] font-bold tracking-[0.4em] mb-12 text-slate-500 uppercase">
             Dipercaya Oleh Institusi Terkemuka
@@ -246,7 +246,7 @@ const Landing = () => {
       </section>
 
       {/* ECOSYSTEM SECTION */}
-      <section className="py-32 bg-slate-200/50 dark:bg-navy-900/50 border-y border-slate-200 dark:border-white/5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent">
+      <section className="py-32 bg-slate-200/50 dark:bg-navy-900/50 border-y border-slate-200 dark:border-outline-variant/20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent">
         <div className="container mx-auto px-6 text-center max-w-4xl mb-20">
           <h2 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
             Ekosistem <span className="text-primary">Masa Depan.</span>
@@ -259,7 +259,7 @@ const Landing = () => {
 
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 glass-card rounded-[2.5rem] p-12 group hover:bg-white/5 transition-all h-[450px] flex flex-col justify-end border-slate-200 dark:border-white/10 relative overflow-hidden bg-slate-100/50 dark:bg-white/5">
+            <div className="md:col-span-2 glass-card rounded-[2.5rem] p-12 group hover:bg-white/5 transition-all h-[450px] flex flex-col justify-end border-slate-200 dark:border-outline-variant/20 relative overflow-hidden bg-slate-100/50 dark:bg-white/5">
               <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
               <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-8 border border-primary/20">
                 <svg
@@ -306,7 +306,7 @@ const Landing = () => {
               </Link>
             </div>
             <div className="space-y-6 flex flex-col h-[450px]">
-              <div className="glass-card rounded-[2rem] p-8 group hover:bg-slate-100 dark:hover:bg-white/5 transition-all border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 flex-1 flex flex-col">
+              <div className="glass-card rounded-[2rem] p-8 group hover:bg-slate-100 dark:hover:bg-white/5 transition-all border-slate-200 dark:border-outline-variant/20 bg-slate-50 dark:bg-white/5 flex-1 flex flex-col">
                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
                   <svg
                     className="w-6 h-6 text-primary"
@@ -375,7 +375,7 @@ const Landing = () => {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="glass-card p-10 rounded-[2.5rem] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 flex flex-col items-center justify-center text-center group hover:bg-primary/5 hover:border-primary/20 transition-all cursor-default duration-500"
+                  className="glass-card p-10 rounded-[2.5rem] bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 flex flex-col items-center justify-center text-center group hover:bg-primary/5 hover:border-primary/20 transition-all cursor-default duration-500"
                 >
                   <div className="text-4xl mb-6 transform group-hover:scale-110 transition-transform">
                     {item.icon}
@@ -405,7 +405,7 @@ const Landing = () => {
       </section>
 
       {/* FAQ SECTION */}
-      <section className="py-32 border-t border-slate-200 dark:border-white/5 bg-slate-200/50 dark:bg-navy-900/10">
+      <section className="py-32 border-t border-slate-200 dark:border-outline-variant/20 bg-slate-200/50 dark:bg-navy-900/10">
         <div className="container mx-auto px-6 text-center mb-24 max-w-2xl">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight mb-4">
             Pertanyaan Umum
@@ -424,7 +424,7 @@ const Landing = () => {
                   onClick={() =>
                     setOpenFaqId(openFaqId === faq.id ? null : faq.id)
                   }
-                  className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-3xl p-8 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 hover:border-primary/40 dark:hover:border-primary/20 transition-all shadow-sm hover:shadow-md"
+                  className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-3xl p-8 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 hover:border-primary/40 dark:hover:border-primary/20 transition-all shadow-sm hover:shadow-md"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-slate-700 dark:text-slate-300 font-bold tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
@@ -450,7 +450,7 @@ const Landing = () => {
                   </div>
                   {openFaqId === faq.id && (
                     <div
-                      className="mt-4 pt-4 border-t border-slate-200 dark:border-white/5 text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed prose dark:prose-invert max-w-none break-words overflow-x-auto"
+                      className="mt-4 pt-4 border-t border-slate-200 dark:border-outline-variant/20 text-slate-600 dark:text-slate-400 text-sm font-medium leading-relaxed prose dark:prose-invert max-w-none break-words overflow-x-auto"
                       dangerouslySetInnerHTML={{ __html: faq.answer }}
                     />
                   )}
@@ -466,7 +466,7 @@ const Landing = () => {
             {faqs.length > 5 && (
               <div className="mt-12 text-center">
                 <Link to="/faq">
-                  <button className="group relative px-8 py-4 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden hover:border-primary/50 transition-all active:scale-95 text-slate-500 dark:text-slate-400">
+                  <button className="group relative px-8 py-4 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl overflow-hidden hover:border-primary/50 transition-all active:scale-95 text-slate-500 dark:text-slate-400">
                     <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-all" />
                     <span className="relative group-hover:text-primary dark:group-hover:text-white font-bold tracking-widest text-sm flex items-center justify-center gap-3">
                       Lihat Semua FAQ

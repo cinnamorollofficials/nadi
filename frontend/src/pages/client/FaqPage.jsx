@@ -57,7 +57,7 @@ const FaqPage = () => {
               placeholder="Cari pertanyaan atau kategori..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-2xl py-5 px-8 text-white placeholder-white/40 focus:outline-none focus:border-primary/50 focus:bg-white/20 transition-all font-medium text-base backdrop-blur-sm"
+              className="w-full bg-white/10 dark:bg-white/5 border border-white/20 dark:border-outline-variant/20 rounded-2xl py-5 px-8 text-white placeholder-white/40 focus:outline-none focus:border-primary/50 focus:bg-white/20 transition-all font-medium text-base backdrop-blur-sm"
             />
             <div className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@ const FaqPage = () => {
                       <div
                         key={faq.id}
                         onClick={() => setOpenFaqId(openFaqId === faq.id ? null : faq.id)}
-                        className="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 rounded-2xl p-6 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 transition-all shadow-sm hover:shadow-md dark:shadow-none"
+                        className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl p-6 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 transition-all shadow-sm hover:shadow-md dark:shadow-none"
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-slate-700 dark:text-white/60 font-black uppercase tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
@@ -107,7 +107,7 @@ const FaqPage = () => {
                         </div>
                         {openFaqId === faq.id && (
                           <div
-                            className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5 text-slate-600 dark:text-white/60 text-sm font-medium leading-relaxed prose dark:prose-invert max-w-none break-words overflow-x-auto"
+                            className="mt-4 pt-4 border-t border-slate-100 dark:border-outline-variant/20 text-slate-600 dark:text-white/60 text-sm font-medium leading-relaxed prose dark:prose-invert max-w-none break-words overflow-x-auto"
                             dangerouslySetInnerHTML={{ __html: faq.answer }}
                           />
                         )}
@@ -118,7 +118,7 @@ const FaqPage = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-white/10 shadow-sm dark:shadow-none">
+            <div className="text-center py-20 bg-white dark:bg-white/5 rounded-3xl border border-dashed border-slate-200 dark:border-outline-variant/20 shadow-sm dark:shadow-none">
               <p className="text-slate-400 dark:text-white/40 font-bold uppercase tracking-widest text-sm">Tidak ada hasil yang ditemukan untuk "{searchTerm}"</p>
             </div>
           )}

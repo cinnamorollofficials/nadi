@@ -156,7 +156,7 @@ const Login = () => {
         <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
 
         <div className="w-full max-w-sm relative">
-          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 shadow-2xl overflow-hidden p-8">
+          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 dark:border-transparent shadow-2xl overflow-hidden p-8">
             <form onSubmit={handleSubmit} className="space-y-4">
               {errors.submit && (
                 <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium text-center">
@@ -222,14 +222,14 @@ const Login = () => {
 
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-outline-variant/30"></div>
+                  <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
                 </div>
                 <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-white dark:bg-slate-900 px-2">
                   Or continue with
                 </div>
               </div>
 
-              <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30">
+              <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-transparent">
                 <GoogleLogin
                   onSuccess={(credentialResponse) =>
                     googleLoginMutation.mutate(credentialResponse.credential)
@@ -243,7 +243,7 @@ const Login = () => {
               </div>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-outline-variant/30 text-center">
+            <div className="mt-8 pt-6 border-t border-outline-variant/30 dark:border-transparent text-center">
               <p className="text-xs text-surface-on-variant">
                 New to {app_name}?{" "}
                 <Link

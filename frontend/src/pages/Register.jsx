@@ -211,7 +211,7 @@ const Register = () => {
         <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
 
         <div className="w-full max-w-md relative">
-          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 shadow-2xl overflow-hidden p-8">
+          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 dark:border-transparent shadow-2xl overflow-hidden p-8">
             {isRegistered ? (
               <div className="text-center py-4 space-y-6">
                 <div className="w-20 h-20 mx-auto rounded-3xl bg-green-500/10 flex items-center justify-center text-green-500 mb-6 shadow-inner">
@@ -342,14 +342,14 @@ const Register = () => {
 
                   <div className="relative py-2">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-outline-variant/30"></div>
+                      <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
                     </div>
                     <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-white dark:bg-slate-900 px-2">
                       Or sign up with
                     </div>
                   </div>
 
-                  <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30">
+                  <div className="w-full rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-transparent">
                     <GoogleLogin
                       onSuccess={(res) =>
                         googleLoginMutation.mutate(res.credential)
@@ -362,7 +362,7 @@ const Register = () => {
                     />
                   </div>
                 </form>
-                <div className="mt-8 pt-6 border-t border-outline-variant/30 text-center">
+                <div className="mt-8 pt-6 border-t border-outline-variant/30 dark:border-transparent text-center">
                   <p className="text-xs text-surface-on-variant">
                     Already have an account?{" "}
                     <Link

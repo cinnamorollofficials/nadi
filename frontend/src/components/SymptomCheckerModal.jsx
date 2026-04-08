@@ -44,9 +44,9 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-white/5 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
         {/* Header / Progress */}
-        <div className="p-8 pb-4 border-b border-slate-100 dark:border-white/5">
+        <div className="p-8 pb-4 border-b border-slate-100 dark:border-outline-variant/20">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -96,7 +96,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
               </p>
               <textarea
                 autoFocus
-                className="w-full h-48 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-6 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/50 transition-all font-medium resize-none shadow-inner"
+                className="w-full h-48 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl p-6 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/50 transition-all font-medium resize-none shadow-inner"
                 placeholder="Contoh: Sudah 2 hari saya merasa demam dan batuk berdahak di malam hari..."
                 value={formData.symptoms}
                 onChange={(e) =>
@@ -127,12 +127,12 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                       setFormData({ ...formData, duration: opt });
                       nextStep();
                     }}
-                    className={`w-full p-6 rounded-2xl text-left border-2 transition-all font-bold group ${formData.duration === opt ? "border-primary bg-primary/5 text-primary" : "border-slate-100 dark:border-white/5 hover:border-primary/30 text-slate-700 dark:text-slate-300"}`}
+                    className={`w-full p-6 rounded-2xl text-left border-2 transition-all font-bold group ${formData.duration === opt ? "border-primary bg-primary/5 text-primary" : "border-slate-100 dark:border-outline-variant/20 hover:border-primary/30 text-slate-700 dark:text-slate-300"}`}
                   >
                     <div className="flex items-center justify-between">
                       {opt}
                       <div
-                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${formData.duration === opt ? "bg-primary border-primary" : "border-slate-300 dark:border-white/20 group-hover:border-primary/50"}`}
+                        className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${formData.duration === opt ? "bg-primary border-primary" : "border-slate-300 dark:border-outline-variant/20 group-hover:border-primary/50"}`}
                       >
                         {formData.duration === opt && (
                           <div className="w-2.5 h-2.5 bg-white rounded-full" />
@@ -163,7 +163,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                   </label>
                   <input
                     type="number"
-                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold"
+                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold"
                     placeholder="170"
                     value={formData.height}
                     onChange={(e) =>
@@ -177,7 +177,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                   </label>
                   <input
                     type="number"
-                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold"
+                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold"
                     placeholder="65"
                     value={formData.weight}
                     onChange={(e) =>
@@ -190,7 +190,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                     Gol. Darah
                   </label>
                   <select
-                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold appearance-none cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold appearance-none cursor-pointer"
                     value={formData.bloodType}
                     onChange={(e) =>
                       setFormData({ ...formData, bloodType: e.target.value })
@@ -211,7 +211,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                     Kelamin
                   </label>
                   <select
-                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold appearance-none cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-xl px-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:border-primary/50 font-bold appearance-none cursor-pointer"
                     value={formData.gender}
                     onChange={(e) =>
                       setFormData({ ...formData, gender: e.target.value })
@@ -234,7 +234,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
           {step > 1 && (
             <button
               onClick={prevStep}
-              className="flex-1 py-5 rounded-2xl border-2 border-slate-100 dark:border-white/5 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
+              className="flex-1 py-5 rounded-2xl border-2 border-slate-100 dark:border-outline-variant/20 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-50 dark:hover:bg-white/5 transition-all"
             >
               Kembali
             </button>

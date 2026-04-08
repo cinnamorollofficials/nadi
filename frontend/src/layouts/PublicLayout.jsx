@@ -10,7 +10,7 @@ const PublicLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-navy-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       {/* Header / Navigation */}
-      <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-navy-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5">
+      <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-navy-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-outline-variant/20">
         <nav className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             {logo && (
@@ -63,7 +63,7 @@ const PublicLayout = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-all active:scale-95 group"
+              className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-all active:scale-95 group"
               title={`Beralih ke mode ${theme === "light" ? "gelap" : "terang"}`}
             >
               {theme === "light" ? (
@@ -118,7 +118,7 @@ const PublicLayout = () => {
       </main>
 
       {/* Footer Area */}
-      <footer className="bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-white/5 pt-24 pb-12 transition-colors duration-300">
+      <footer className="bg-white dark:bg-navy-950 border-t border-slate-200 dark:border-outline-variant/20 pt-24 pb-12 transition-colors duration-300">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="md:col-span-2">
@@ -205,7 +205,7 @@ const PublicLayout = () => {
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-slate-200 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="pt-8 border-t border-slate-200 dark:border-outline-variant/20 flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-[10px] font-bold text-slate-400 dark:text-white/20 uppercase tracking-[0.2em] text-center">
               &copy; {new Date().getFullYear()} {app_name}. Seluruh Hak Cipta
               Dilindungi.
@@ -218,7 +218,7 @@ const PublicLayout = () => {
               ].map((social) => (
                 <div
                   key={social.name}
-                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-white/5 flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
+                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-outline-variant/20 flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
                 >
                   {social.name}
                 </div>

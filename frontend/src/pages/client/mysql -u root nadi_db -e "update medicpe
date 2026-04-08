@@ -1,0 +1,1 @@
+mysql -u root nadi_db -e "update medicpedia_penyakits set status = published"
