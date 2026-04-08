@@ -1,6 +1,6 @@
-# Go-React Starter
+![Nadi](./nadi-logo.png)
 
-A full-stack application starter template featuring a Go (Gin) backend and a React (Vite) frontend, complete with Docker support.
+A full-stack application featuring a Go (Gin) backend and a React (Vite) frontend, complete with Docker support.
 
 ## Tech Stack
 
