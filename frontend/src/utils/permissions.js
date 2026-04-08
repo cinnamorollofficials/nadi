@@ -63,4 +63,9 @@ export const PERMS = {
   CREATE_FAQ: 1n << 40n,
   UPDATE_FAQ: 1n << 41n,
   DELETE_FAQ: 1n << 42n,
+
+  // API Key Module
+  GET_API_KEY: 1n << 43n,
+  CREATE_API_KEY: 1n << 44n,
+  DELETE_API_KEY: 1n << 45n,
 };

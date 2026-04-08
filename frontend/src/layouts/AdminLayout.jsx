@@ -506,6 +506,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/website",
               label: "Website",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -525,6 +526,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/smtp",
               label: "Email (SMTP)",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -543,7 +545,8 @@ const AdminLayout = () => {
             },
             {
               path: "/admin/settings/storage",
-              label: "Storage",
+              label: "Storages",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -563,6 +566,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/security",
               label: "Security",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -582,6 +586,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/internal",
               label: "Infrastructure",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -601,6 +606,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/advance",
               label: "Advanced",
+              permission: PERMS.GET_SETTING,
               icon: (
                 <svg
                   className="w-4 h-4"

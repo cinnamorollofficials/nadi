@@ -57,8 +57,13 @@ function PermissionGuard({ permission, children }) {
 
   const user = JSON.parse(userData);
   const mask = BigInt(user.permissions_mask || 0n);
+  
+  const checkPermission = (p) => {
+    if (Array.isArray(p)) return p.some(perm => (mask & perm) !== 0n);
+    return (mask & p) !== 0n;
+  };
 
-  const hasPermission = (mask & permission) !== 0n;
+  const hasPermission = checkPermission(permission);
 
   if (user.role_id === 1 || hasPermission) {
     return children;
@@ -150,33 +155,47 @@ function App() {
 
             {/* Admin Routes */}
             <Route path="admin">
-              <Route path="apikeys" element={<ApiKeyPage />} />
-              <Route path="users" element={<Users />} />
-              <Route path="roles" element={<Roles />} />
-              <Route path="permissions" element={<Permissions />} />
+              <Route path="apikeys" element={<PermissionGuard permission={PERMS.GET_API_KEY}><ApiKeyPage /></PermissionGuard>} />
+              <Route path="users" element={<PermissionGuard permission={PERMS.GET_USER}><Users /></PermissionGuard>} />
+              <Route path="roles" element={<PermissionGuard permission={PERMS.GET_ROLE}><Roles /></PermissionGuard>} />
+              <Route path="permissions" element={<PermissionGuard permission={PERMS.GET_PERMISSION}><Permissions /></PermissionGuard>} />
               <Route
                 path="logs"
                 element={<Navigate to="/admin/logs/all" replace />}
               />
-              <Route path="logs/http" element={<HttpLogs />} />
-              <Route path="logs/:type" element={<Logs />} />
-              <Route path="generator" element={<GeneratorPage />} />
-              <Route path="storage" element={<StoragePage />} />
+              <Route path="logs/http" element={<PermissionGuard permission={PERMS.GET_HTTP_LOG}><HttpLogs /></PermissionGuard>} />
+              <Route
+                path="logs/:type"
+                element={
+                  <PermissionGuard
+                    permission={[
+                      PERMS.GET_ALL_LOGS,
+                      PERMS.GET_AUDIT_LOG,
+                      PERMS.GET_AUTH_LOG,
+                      PERMS.GET_OWN_LOGS,
+                    ]}
+                  >
+                    <Logs />
+                  </PermissionGuard>
+                }
+              />
+              <Route path="generator" element={<PermissionGuard permission={PERMS.CREATE_MODULE}><GeneratorPage /></PermissionGuard>} />
+              <Route path="storage" element={<PermissionGuard permission={PERMS.GET_FILE}><StoragePage /></PermissionGuard>} />
               <Route
                 path="settings"
                 element={<Navigate to="/admin/settings/website" replace />}
               />
-              <Route path="settings/:category" element={<SettingsPage />} />
-              <Route path="blogpost" element={<BlogPostPage />} />
+              <Route path="settings/:category" element={<PermissionGuard permission={PERMS.GET_SETTING}><SettingsPage /></PermissionGuard>} />
+              <Route path="blogpost" element={<PermissionGuard permission={PERMS.GET_BLOGPOST}><BlogPostPage /></PermissionGuard>} />
               <Route
                 path="medicpediapenyakit"
-                element={<MedicpediaPenyakitPage />}
+                element={<PermissionGuard permission={PERMS.GET_MEDICPEDIAPENYAKIT}><MedicpediaPenyakitPage /></PermissionGuard>}
               />
               <Route
                 path="medicpedianutrisi"
-                element={<MedicpediaNutrisiPage />}
+                element={<PermissionGuard permission={PERMS.GET_MEDICPEDIANUTRISI}><MedicpediaNutrisiPage /></PermissionGuard>}
               />
-              <Route path="faq" element={<FaqPage />} />
+              <Route path="faq" element={<PermissionGuard permission={PERMS.GET_FAQ}><FaqPage /></PermissionGuard>} />
               {/* [GENERATOR_INSERT_ROUTE] */}
             </Route>
           </Route>

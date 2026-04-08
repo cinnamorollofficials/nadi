@@ -145,10 +145,10 @@ func (r *Router) setupPrivateRoutes(
 		logs.GET("/export", logHandler.Export) // Combined logs export
 		logs.GET("/http", permGuard.Check("get-http-log"), httpLogHandler.GetAll)
 		logs.GET("/http/export", permGuard.Check("get-http-log"), httpLogHandler.Export)
-		logs.GET("/system", permGuard.Check("get-http-log"), systemLogHandler.GetAll) // Use same permission for now
-		logs.GET("/system/export", permGuard.Check("get-http-log"), systemLogHandler.Export)
-		logs.GET("/audit", permGuard.Check("get-http-log"), auditLogHandler.GetAll) // Use same permission for now
-		logs.GET("/audit/export", permGuard.Check("get-http-log"), auditLogHandler.Export)
+		logs.GET("/system", permGuard.Check("get-all-logs"), systemLogHandler.GetAll)
+		logs.GET("/system/export", permGuard.Check("get-all-logs"), systemLogHandler.Export)
+		logs.GET("/audit", permGuard.Check("get-audit-log"), auditLogHandler.GetAll)
+		logs.GET("/audit/export", permGuard.Check("get-audit-log"), auditLogHandler.Export)
 	}
 
 	users := v1.Group("/users")
