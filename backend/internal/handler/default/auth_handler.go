@@ -23,6 +23,7 @@ type AuthHandler interface {
 	Request2FAReset(c *gin.Context)
 	Confirm2FAReset(c *gin.Context)
 	VerifyEmail(c *gin.Context)
+	LoginWithGoogle(c *gin.Context)
 }
 
 type authHandler struct {
@@ -206,4 +207,21 @@ func (h *authHandler) VerifyEmail(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Email verified successfully! You can now log in.", nil)
+}
+
+func (h *authHandler) LoginWithGoogle(c *gin.Context) {
+	var req dto.GoogleLoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	res, err := h.service.LoginWithGoogle(c.Request.Context(), req)
+	if err != nil {
+		logger.WithCtx(c, logger.SystemLogger).Error().Err(err).Msg("Google login failed")
+		response.Error(c, http.StatusUnauthorized, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Login successful", res)
 }

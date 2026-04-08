@@ -1,33 +1,38 @@
 import axios from './client';
 
-const API_PATH = '/produk';
+const API_PATH = '/faqs';
 
-export const getAllProduks = async (params) => {
+export const getAllFaqs = async (params) => {
     const response = await axios.get(API_PATH, { params });
     return response.data;
 };
 
-export const getProdukById = async (id) => {
+export const getPublicFaqs = async (params) => {
+    const response = await axios.get(`/public${API_PATH}`, { params });
+    return response.data;
+};
+
+export const getFaqById = async (id) => {
     const response = await axios.get(`${API_PATH}/${id}`);
     return response.data;
 };
 
-export const createProduk = async (data) => {
+export const createFaq = async (data) => {
     const response = await axios.post(API_PATH, data);
     return response.data;
 };
 
-export const updateProduk = async (id, data) => {
+export const updateFaq = async (id, data) => {
     const response = await axios.put(`${API_PATH}/${id}`, data);
     return response.data;
 };
 
-export const deleteProduk = async (id) => {
+export const deleteFaq = async (id) => {
     const response = await axios.delete(`${API_PATH}/${id}`);
     return response.data;
 };
 
-export const exportProduk = async (format = 'excel') => {
+export const exportFaq = async (format = 'excel') => {
     return axios.get(`${API_PATH}/export?format=${format}`, {
         responseType: 'blob',
     });

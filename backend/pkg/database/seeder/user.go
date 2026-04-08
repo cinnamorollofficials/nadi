@@ -41,7 +41,13 @@ func SeedUser(db *gorm.DB, bcryptCost int) {
 			continue
 		}
 
-		user = entity.User{Email: email, Password: string(hashedPassword), RoleID: uint(roleId)}
+		hashedPasswordStr := string(hashedPassword)
+		user = entity.User{
+			Email:    email,
+			Password: &hashedPasswordStr,
+			RoleID:   uint(roleId),
+			Name:     email, // Temporary: using email as name if not provided
+		}
 		if err := repository.NewUserRepository(db).Create(context.Background(), &user); err != nil {
 			logger.SystemLogger.Error().Err(err).Msgf("Failed to create user %s", email)
 		} else {

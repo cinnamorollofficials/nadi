@@ -31,16 +31,16 @@ func main() {
 		&entity.AuditLog{},
 		&entity.RefreshToken{},
 		&entity.TwoFAResetToken{},
-		&customEntity.Produk{},
 		&customEntity.StorageFile{},
 		&customEntity.ShareLink{},
 		&customEntity.ShareLinkAccess{},
 		&entity.Setting{},
 		&entity.ApiKey{},
 		&entity.EmailVerificationToken{},
-				&customEntity.BlogPost{},
-				&customEntity.MedicpediaPenyakit{},
-				&customEntity.MedicpediaNutrisi{},
+		&customEntity.BlogPost{},
+		&customEntity.MedicpediaPenyakit{},
+		&customEntity.MedicpediaNutrisi{},
+				&customEntity.Faq{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 

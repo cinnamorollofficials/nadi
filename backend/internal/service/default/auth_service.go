@@ -18,6 +18,7 @@ import (
 	"github.com/hadi-projects/go-react-starter/pkg/mailer"
 	"github.com/pquerna/otp/totp"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/api/idtoken"
 )
 
 type AuthService interface {
@@ -33,6 +34,7 @@ type AuthService interface {
 	Request2FAReset(ctx context.Context, req dto.TwoFAResetRequest) error
 	Confirm2FAReset(ctx context.Context, req dto.TwoFAResetConfirmRequest) error
 	VerifyEmail(ctx context.Context, token string) error
+	LoginWithGoogle(ctx context.Context, req dto.GoogleLoginRequest) (*dto.LoginResponse, error)
 }
 
 type authService struct {
@@ -79,7 +81,10 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 		return nil, errors.New("please verify your email before logging in")
 	}
 	// 2. Verify password
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if user.Password == nil {
+		return nil, errors.New("this account does not have a password set, please login with Google")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(*user.Password), []byte(req.Password))
 	if err != nil {
 		return nil, errors.New("invalid email or password")
 	}
@@ -332,7 +337,8 @@ func (s *authService) ResetPassword(ctx context.Context, req dto.ResetPasswordRe
 
 	// 4. Update user password
 	user := resetToken.User
-	user.Password = string(hashedPassword)
+	hashedPasswordStr := string(hashedPassword)
+	user.Password = &hashedPasswordStr
 	if err := s.userRepo.Update(ctx, &user); err != nil {
 		return err
 	}
@@ -625,4 +631,60 @@ func (s *authService) VerifyEmail(ctx context.Context, token string) error {
 	logger.LogAudit(context.WithValue(context.WithValue(ctx, logger.CtxKeyUserID, user.ID), logger.CtxKeyUserEmail, user.Email), "VERIFY_EMAIL", "AUTH", fmt.Sprintf("%d", user.ID), "")
 
 	return nil
+}
+
+func (s *authService) LoginWithGoogle(ctx context.Context, req dto.GoogleLoginRequest) (*dto.LoginResponse, error) {
+	// 1. Verify Google ID Token
+	payload, err := idtoken.Validate(ctx, req.Credential, "") // In production, provide ClientID
+	if err != nil {
+		return nil, errors.New("invalid google token")
+	}
+
+	googleID := payload.Subject
+	email := payload.Claims["email"].(string)
+	name := payload.Claims["name"].(string)
+	picture := payload.Claims["picture"].(string)
+
+	// 2. Find user by GoogleID
+	user, err := s.userRepo.FindByGoogleID(ctx, googleID)
+	if err != nil {
+		// 3. If not found by GoogleID, check by Email
+		user, err = s.userRepo.FindByEmail(ctx, email)
+		if err != nil {
+			// 4. Not found by Email either: Create new user
+			roleID := uint(2) // Default fallback
+			role, err := s.userRepo.FindRoleByName(ctx, "user")
+			if err == nil {
+				roleID = role.ID
+			}
+
+			user = &entity.User{
+				Name:      name,
+				Email:     email,
+				GoogleID:  &googleID,
+				AvatarURL: &picture,
+				RoleID:    roleID,
+				Status:    "active", // Google users are pre-verified
+			}
+			if err := s.userRepo.Create(ctx, user); err != nil {
+				return nil, err
+			}
+			// Fetch fresh user with Role/Permissions
+			user, _ = s.userRepo.FindByID(ctx, user.ID)
+		} else {
+			// 5. Found by Email: Link GoogleID
+			user.GoogleID = &googleID
+			user.AvatarURL = &picture
+			if err := s.userRepo.Update(ctx, user); err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	if user.Status == "freezed" {
+		return nil, errors.New("your account is frozen")
+	}
+
+	// 6. Generate standard login response
+	return s.generateLoginResponse(ctx, user)
 }

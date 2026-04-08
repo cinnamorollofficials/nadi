@@ -27,6 +27,7 @@ type Config struct {
 	Kafka     KafkaConfig
 	Frontend  FrontendConfig
 	Storage   StorageConfig
+	Google    GoogleConfig
 }
 
 type StorageConfig struct {
@@ -49,6 +50,9 @@ type KafkaConfig struct {
 
 type FrontendConfig struct {
 	URL string
+}
+type GoogleConfig struct {
+	ClientID string
 }
 
 func LoadConfig() (config Config) {
@@ -114,6 +118,7 @@ func LoadConfig() (config Config) {
 		"FRONTEND_URL",
 		"STORAGE_BASE_PATH",
 		"STORAGE_MAX_FILE_SIZE_MB",
+		"GOOGLE_CLIENT_ID",
 	}
 
 	for _, envVar := range envVars {
@@ -206,6 +211,10 @@ func LoadConfig() (config Config) {
 	config.Storage = StorageConfig{
 		BasePath:      viper.GetString("STORAGE_BASE_PATH"),
 		MaxFileSizeMB: viper.GetInt64("STORAGE_MAX_FILE_SIZE_MB"),
+	}
+
+	config.Google = GoogleConfig{
+		ClientID: viper.GetString("GOOGLE_CLIENT_ID"),
 	}
 
 	return config
