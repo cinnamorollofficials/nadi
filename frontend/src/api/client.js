@@ -24,13 +24,20 @@ apiClient.interceptors.request.use(
 );
 
 // Response interceptor for error handling
+let isLoggingOut = false;
+
 apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
         
-        // If 401 and not from login and not already retried
-        if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url.includes('/auth/login')) {
+        // If 401 and not from login/logout and not already retried
+        if (
+            error.response?.status === 401 && 
+            !originalRequest._retry && 
+            !originalRequest.url.includes('/auth/login') &&
+            !originalRequest.url.includes('/auth/logout')
+        ) {
             originalRequest._retry = true;
             
             const refreshToken = localStorage.getItem('refresh_token');
@@ -51,18 +58,25 @@ apiClient.interceptors.response.use(
             }
 
             // If we're here, either no refresh token or refresh failed
-            // Attempt to log logout before clearing token
-            try {
-                const logoutApi = (await import('./auth')).logoutApi;
-                await logoutApi('system');
-            } catch (err) {
-                // Ignore errors
+            if (!isLoggingOut) {
+                isLoggingOut = true;
+                
+                // Attempt to log logout before clearing token
+                try {
+                    const { logoutApi } = await import('./auth');
+                    await logoutApi('system');
+                } catch (err) {
+                    // Ignore errors
+                }
+
+                // Clear token and redirect to login
+                localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                
+                // Use replace to avoid back-button loops
+                window.location.replace('/login');
             }
-            // Clear token and redirect to login
-            localStorage.removeItem('token');
-            localStorage.removeItem('refresh_token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
         }
         return Promise.reject(error);
     }

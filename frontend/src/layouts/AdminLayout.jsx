@@ -93,7 +93,16 @@ const AdminLayout = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    navigate("/login");
+    try {
+      const { logoutApi } = await import("../api/auth");
+      await logoutApi("user_clicked");
+    } catch (err) {
+      console.error("Logout API failed:", err);
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user");
+    navigate("/login", { replace: true });
   };
 
   // Update document title dynamically

@@ -55,10 +55,17 @@ const UserLayout = () => {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const { logoutApi } = await import("../api/auth");
+      await logoutApi("user_clicked");
+    } catch (err) {
+      console.error("Logout API failed:", err);
+    }
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   useEffect(() => {
