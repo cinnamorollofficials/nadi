@@ -15,7 +15,7 @@ import {
     updateMedicpediaPenyakit, 
     deleteMedicpediaPenyakit,
     exportMedicpediaPenyakit
-} from '../../api/medicpediaPenyakit';
+} from '../../api/medicpediapenyakit';
 
 const MedicpediaPenyakitPage = () => {
     const can = usePermission();

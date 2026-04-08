@@ -1,0 +1,13 @@
+[Unit]
+Description=Nadi
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/var/www/html/nadi/backend
+ExecStart=/var/www/html/nadi/backend/nadi
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
