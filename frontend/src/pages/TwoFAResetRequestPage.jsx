@@ -94,20 +94,7 @@ const TwoFAResetRequestPage = () => {
     <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-primary/5 blur-[120px]" />
       <div className="w-full max-w-sm relative z-10">
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
-          {/* Card Header */}
-          <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
-            <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-              2FA Recovery
-            </p>
-            <div className="flex items-center gap-1.5 opacity-60">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-              <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                Identity Mode
-              </span>
-            </div>
-          </div>
-
+        <div className="bg-surface-container rounded-2xl shadow-xl overflow-hidden">
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">

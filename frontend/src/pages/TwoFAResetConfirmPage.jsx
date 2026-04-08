@@ -92,19 +92,6 @@ const TwoFAResetConfirmPage = () => {
       <div className="absolute top-0 left-0 w-full h-full bg-primary/5 blur-[120px]" />
       <div className="w-full max-w-sm relative z-10">
         <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
-          {/* Card Header */}
-          <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
-            <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-              Final Confirmation
-            </p>
-            <div className="flex items-center gap-1.5 opacity-60">
-              <span className="w-1.5 h-1.5 rounded-full bg-error" />
-              <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                Action Required
-              </span>
-            </div>
-          </div>
-
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">

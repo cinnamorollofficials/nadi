@@ -126,8 +126,8 @@ const Sidebar = ({
                         to={href || "#"}
                         className={`group relative flex items-center justify-center w-full p-2 rounded-full transition-all duration-200 ${
                           active
-                            ? "bg-secondary-container text-secondary-on-container"
-                            : "text-surface-on-variant hover:bg-surface-container-high hover:text-surface-on"
+                            ? "bg-primary/15 text-primary"
+                            : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                         }`}
                       >
                         {item.icon}
@@ -149,8 +149,8 @@ const Sidebar = ({
                           onClick={() => toggleSection(item.label)}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-full transition-all duration-300 group ${
                             active
-                              ? "bg-secondary-container/50 text-secondary-on-container"
-                              : "text-surface-on-variant hover:bg-surface-container-high hover:text-surface-on"
+                              ? "bg-primary/10 text-primary"
+                              : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                           }`}
                         >
                           <div className="flex items-center gap-2">
@@ -188,8 +188,8 @@ const Sidebar = ({
                                     to={sub.path}
                                     className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 group ${
                                       subActive
-                                        ? "bg-secondary-container text-secondary-on-container shadow-sm"
-                                        : "text-surface-on-variant hover:bg-surface-container-high hover:text-surface-on"
+                                        ? "bg-primary/15 text-primary shadow-sm"
+                                        : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                                     }`}
                                   >
                                     <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
@@ -210,8 +210,8 @@ const Sidebar = ({
                         to={item.path}
                         className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 group ${
                           active
-                            ? "bg-secondary-container text-secondary-on-container"
-                            : "text-surface-on-variant hover:bg-surface-container-high hover:text-surface-on"
+                            ? "bg-primary/15 text-primary"
+                            : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                         }`}
                       >
                         <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
@@ -236,7 +236,7 @@ const Sidebar = ({
       >
         <button
           onClick={onLogout}
-          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-surface-container-high hover:text-surface-on transition-all duration-300 ${collapsed ? "justify-center w-full" : "w-full"}`}
+          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${collapsed ? "justify-center w-full" : "w-full"}`}
         >
           <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
             <svg

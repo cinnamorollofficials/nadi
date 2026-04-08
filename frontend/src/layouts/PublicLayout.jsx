@@ -10,7 +10,7 @@ const PublicLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-100 dark:bg-navy-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       {/* Header / Navigation */}
-      <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-navy-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-outline-variant/20">
+      <header className="sticky top-0 z-50 bg-slate-100/80 dark:bg-navy-950/80 backdrop-blur-xl dark:border-outline-variant/20">
         <nav className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3 group">
             {logo && (
@@ -34,26 +34,26 @@ const PublicLayout = () => {
           <div className="hidden md:flex items-center gap-10">
             <Link
               to="/"
-              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
+              className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors tracking-wide"
             >
               Home
             </Link>
             <Link
               to="/medicpedia"
-              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
+              className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors tracking-wide"
             >
               Medicpedia
             </Link>
 
             <Link
               to="/faq"
-              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
+              className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors tracking-wide"
             >
               FAQ
             </Link>
             <Link
               to="#"
-              className="text-sm font-semibold text-slate-400 hover:text-white transition-colors tracking-wide"
+              className="text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white transition-colors tracking-wide"
             >
               Tentang
             </Link>
@@ -210,20 +210,6 @@ const PublicLayout = () => {
               &copy; {new Date().getFullYear()} {app_name}. Seluruh Hak Cipta
               Dilindungi.
             </p>
-            <div className="flex gap-4">
-              {[
-                { name: "IG", path: "#" },
-                { name: "TW", path: "#" },
-                { name: "FB", path: "#" },
-              ].map((social) => (
-                <div
-                  key={social.name}
-                  className="w-10 h-10 rounded-xl border border-slate-200 dark:border-outline-variant/20 flex items-center justify-center text-[10px] font-bold text-slate-400 dark:text-white/20 hover:text-primary dark:hover:text-white hover:border-primary dark:hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer group"
-                >
-                  {social.name}
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </footer>

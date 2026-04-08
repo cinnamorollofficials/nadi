@@ -72,16 +72,24 @@ const NutrisiList = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-900 text-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-10 w-80 h-80 bg-emerald-300 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full blur-3xl" />
+      <div 
+        className="relative overflow-hidden"
+        style={{ 
+          backgroundImage: "url('/assets/medicpedia-bg-nutrisi.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
+          <div className="absolute top-10 right-10 w-80 h-80 bg-emerald-300 rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight">
-            Ensiklopedia Nutrisi <span className="text-emerald-200">A-Z</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
+            Ensiklopedia Nutrisi <span className="text-teal-600 dark:text-teal-400">A-Z</span>
           </h1>
-          <p className="text-emerald-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-90 leading-relaxed">
+          <p className="text-slate-600 dark:text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Pelajari manfaat, sumber, kebutuhan harian, dan risiko kekurangan
             berbagai nutrisi penting untuk tubuh Anda.
           </p>

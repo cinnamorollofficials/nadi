@@ -333,7 +333,7 @@ const Register = () => {
                   <button
                     type="submit"
                     disabled={registerMutation.isPending}
-                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-xl shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
+                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
                   >
                     {registerMutation.isPending
                       ? "Creating Account…"

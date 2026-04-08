@@ -53,20 +53,7 @@ const TwoFAChallengePage = () => {
 
       <div className="w-full max-w-sm relative z-10">
         {/* Main Card */}
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
-          {/* Card Header */}
-          <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
-            <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-              2FA Verification
-            </p>
-            <div className="flex items-center gap-1.5 opacity-60">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                Shield Active
-              </span>
-            </div>
-          </div>
-
+        <div className="bg-surface-container rounded-2xl overflow-hidden">
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">

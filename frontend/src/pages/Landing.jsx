@@ -68,7 +68,7 @@ const Landing = () => {
 
               <div className="flex flex-wrap items-center gap-6">
                 <Link to="/register">
-                  <Button className="bg-primary text-white hover:bg-primary-600 px-10 py-4 text-sm font-bold rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/20">
+                  <Button className="bg-primary text-white hover:bg-primary-600 px-10 py-4 text-sm font-bold rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-primary/20">
                     Mulai Sekarang
                   </Button>
                 </Link>

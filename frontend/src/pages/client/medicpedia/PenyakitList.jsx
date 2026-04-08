@@ -63,16 +63,24 @@ const PenyakitList = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-secondary-900 text-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-400 rounded-full blur-3xl" />
+      <div 
+        className="relative overflow-hidden"
+        style={{ 
+          backgroundImage: "url('/assets/medicpedia-bg-penyakit.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
+          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-400 rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight">
-            Ensiklopedia Penyakit <span className="text-primary-200">A-Z</span>
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
+            Ensiklopedia Penyakit <span className="text-teal-600 dark:text-teal-400">A-Z</span>
           </h1>
-          <p className="text-primary-100 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-90 leading-relaxed">
+          <p className="text-slate-600 dark:text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Temukan informasi lengkap mengenai penyakit, gejala, penyebab, cara
             diagnosis dan pencegahannya.
           </p>

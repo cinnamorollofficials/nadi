@@ -109,17 +109,25 @@ const NutrisiDetail = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-900 to-emerald-900 text-white">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-300 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-300 rounded-full blur-3xl" />
+      <div 
+        className="relative overflow-hidden"
+        style={{ 
+          backgroundImage: "url('/assets/medicpedia-bg-nutrisi-detail.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-300 rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-300 rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-16">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-white/60 mb-6">
+          <nav className="flex items-center gap-2 text-sm text-slate-600 dark:text-teal-100/60 mb-6 font-medium">
             <Link
               to="/medicpedia/nutrisi"
-              className="hover:text-white transition"
+              className="hover:text-slate-900 dark:hover:text-white transition"
             >
               Nutrisi A-Z
             </Link>
@@ -136,22 +144,22 @@ const NutrisiDetail = () => {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span className="text-white/80">{data.name}</span>
+            <span className="text-slate-800 dark:text-teal-100/80">{data.name}</span>
           </nav>
           <div className="flex items-start gap-6">
             {data.image && (
               <img
                 src={data.image}
                 alt={data.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-white/20 shadow-xl flex-shrink-0"
+                className="w-20 h-20 rounded-2xl object-cover border-2 border-white/40 dark:border-white/20 shadow-xl flex-shrink-0"
                 onError={(e) => (e.target.style.display = "none")}
               />
             )}
             <div>
-              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-3">
+              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-3 text-slate-900 dark:text-white">
                 {data.name}
               </h1>
-              <p className="text-white/70 text-sm">
+              <p className="text-slate-600 dark:text-teal-100/80 text-sm font-medium">
                 Panduan lengkap dalam{" "}
                 {SECTIONS.filter((s) => data[s.key]).length} bagian informatif.
               </p>

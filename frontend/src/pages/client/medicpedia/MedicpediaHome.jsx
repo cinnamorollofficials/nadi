@@ -6,17 +6,28 @@ const MedicpediaHome = () => {
   return (
     <div className="min-h-screen bg-surface">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-teal-950 via-teal-900 to-slate-900 text-white min-h-[50vh] flex items-center">
-        <div className="absolute inset-0 opacity-20">
+      <div 
+        className="relative overflow-hidden min-h-[50vh] flex items-center"
+        style={{ 
+          backgroundImage: "url('/assets/medicpedia-bg-friendly.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
+        {/* Very subtle overlay so the image is fully visible */}
+        <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
+        
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay">
           <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full blur-3xl animate-blob" />
           <div className="absolute bottom-0 right-10 w-96 h-96 bg-primary rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
+        
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-16 text-center w-full">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none">
-            Solusi <span className="text-teal-300">Kesehatan</span> <br />
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-none text-slate-900 dark:text-white">
+            Solusi <span className="text-teal-600 dark:text-teal-400">Kesehatan</span> <br />
             Dalam Genggaman.
           </h1>
-          <p className="text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Temukan informasi lengkap mengenai kesehatan, penyakit, dan nutrisi
             untuk mendukung gaya hidup sehat Anda.
           </p>
@@ -39,7 +50,7 @@ const MedicpediaHome = () => {
                 </p>
                 <Button
                   variant="tonal"
-                  className="w-full flex py-6 justify-between items-center bg-red-50 hover:bg-red-100 text-red-700 font-bold border-none shadow-sm shadow-red-200"
+                  className="w-full flex py-6 justify-between items-center bg-red-50 hover:bg-red-100 text-red-700 font-bold border-none"
                 >
                   Lihat Semua Penyakit
                   <svg
@@ -73,7 +84,7 @@ const MedicpediaHome = () => {
                 </p>
                 <Button
                   variant="tonal"
-                  className="w-full flex py-6 justify-between items-center bg-green-50 hover:bg-green-100 text-green-700 font-bold border-none shadow-sm shadow-green-200"
+                  className="w-full flex py-6 justify-between items-center bg-green-50 hover:bg-green-100 text-green-700 font-bold border-none"
                 >
                   Lihat Semua Nutrisi
                   <svg
