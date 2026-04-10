@@ -45,6 +45,7 @@ import NutrisiDetail from "./pages/client/medicpedia/NutrisiDetail";
 import PublicFaqPage from "./pages/client/FaqPage";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import About from "./pages/About";
 import NotFoundPage from "./pages/NotFoundPage";
 
 /**
@@ -120,6 +121,7 @@ function App() {
             <Route path="/faq" element={<PublicFaqPage />} />
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/about" element={<About />} />
           </Route>
 
           {/* Public standalone pages (No shared layout) */}

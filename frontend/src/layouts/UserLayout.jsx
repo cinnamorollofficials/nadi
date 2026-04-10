@@ -181,7 +181,7 @@ const UserLayout = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-full hover:bg-surface-variant/30 text-surface-on-variant transition-all duration-200 active:scale-95"
+              className="hidden p-2 rounded-full hover:bg-surface-variant/30 text-surface-on-variant transition-all duration-200 active:scale-95"
             >
               {theme === "light" ? (
                 <svg
