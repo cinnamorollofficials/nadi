@@ -164,18 +164,6 @@ func (h *storageHandler) DownloadFile(c *gin.Context) {
 
 	c.DataFromReader(http.StatusOK, file.Size, file.MimeType, reader, nil)
 }
-		}
-		response.Error(c, http.StatusInternalServerError, err.Error())
-		return
-	}
-	defer reader.Close()
-
-	c.Header("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, file.OriginalName))
-	c.Header("Content-Type", file.MimeType)
-	c.Header("Content-Length", strconv.FormatInt(file.Size, 10))
-	c.Header("Cache-Control", "no-store")
-	c.DataFromReader(http.StatusOK, file.Size, file.MimeType, reader, nil)
-}
 
 // ─── Share link management ────────────────────────────────────────────────────
 

@@ -163,11 +163,6 @@ func (h *authHandler) Confirm2FA(c *gin.Context) {
 	}
 	response.Success(c, http.StatusOK, "2FA confirmed successfully", nil)
 }
-		response.Error(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	response.Success(c, http.StatusOK, "2FA enabled successfully", nil)
-}
 
 func (h *authHandler) Disable2FA(c *gin.Context) {
 	userID, err := utils.GetUserID(c)
@@ -183,10 +178,6 @@ func (h *authHandler) Disable2FA(c *gin.Context) {
 	}
 	if err := h.service.Disable2FA(c.Request.Context(), userID, req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
-		return
-	}
-	response.Success(c, http.StatusOK, "2FA disabled successfully", nil)
-}
 		return
 	}
 	response.Success(c, http.StatusOK, "2FA disabled successfully", nil)

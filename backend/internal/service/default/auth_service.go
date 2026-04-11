@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -13,9 +14,11 @@ import (
 	entity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	repository "github.com/hadi-projects/go-react-starter/internal/repository/default"
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
+	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 	"github.com/hadi-projects/go-react-starter/pkg/kafka"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/mailer"
+	tokenPkg "github.com/hadi-projects/go-react-starter/pkg/token"
 	"github.com/pquerna/otp/totp"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/api/idtoken"
@@ -110,7 +113,7 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 
 	// 4b. No 2FA: Generate JWT Tokens directly
 	var permissionsMask uint64
-	if user.Role != nil && user.Role.Permissions != nil {
+	if user.Role.ID != 0 && user.Role.Permissions != nil {
 		for _, p := range user.Role.Permissions {
 			if p.ID <= 64 {
 				permissionsMask |= (uint64(1) << (p.ID - 1))
@@ -162,16 +165,35 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 }
 
 func (s *authService) generateAccessToken(user *entity.User, permissionsMask uint64) (string, error) {
+	// Generate unique token ID (JTI) for revocation support
+	tokenID := uuid.New().String()
+	
+	expirationTime := time.Now().Add(time.Minute * 15) // 15 minutes
+	
 	claims := jwt.MapClaims{
+		"jti":              tokenID, // JWT ID for revocation
 		"sub":              user.ID,
 		"email":            user.Email,
 		"role":             user.Role.Name,
 		"permissions_mask": permissionsMask,
-		"exp":              time.Now().Add(time.Minute * 15).Unix(), // 15 minutes
+		"iat":              time.Now().Unix(),
+		"exp":              expirationTime.Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(s.config.JWT.Secret))
+	tokenString, err := token.SignedString([]byte(s.config.JWT.Secret))
+	if err != nil {
+		return "", err
+	}
+	
+	// Track token for potential revocation
+	// Note: This is async and non-blocking
+	go func() {
+		blacklist := tokenPkg.NewBlacklist(s.cache)
+		_ = blacklist.TrackUserToken(context.Background(), user.ID, tokenID, expirationTime)
+	}()
+	
+	return tokenString, nil
 }
 
 func (s *authService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (*dto.LoginResponse, error) {
@@ -196,7 +218,7 @@ func (s *authService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequ
 
 	// 3. Generate new Access Token
 	var permissionsMask uint64
-	if rt.User.Role != nil && rt.User.Role.Permissions != nil {
+	if rt.User.Role.ID != 0 && rt.User.Role.Permissions != nil {
 		for _, p := range rt.User.Role.Permissions {
 			if p.ID <= 64 {
 				permissionsMask |= (uint64(1) << (p.ID - 1))
@@ -365,6 +387,35 @@ func (s *authService) ResetPassword(ctx context.Context, req dto.ResetPasswordRe
 func (s *authService) Logout(ctx context.Context, req dto.LogoutRequest) error {
 	userID, _ := ctx.Value(logger.CtxKeyUserID).(uint)
 
+	// Parse token to get JTI for revocation
+	if req.Token != "" {
+		token, err := jwt.Parse(req.Token, func(token *jwt.Token) (interface{}, error) {
+			return []byte(s.config.JWT.Secret), nil
+		})
+		
+		if err == nil && token.Valid {
+			if claims, ok := token.Claims.(jwt.MapClaims); ok {
+				// Revoke the specific token
+				if jti, ok := claims["jti"].(string); ok {
+					if exp, ok := claims["exp"].(float64); ok {
+						expiresAt := time.Unix(int64(exp), 0)
+						blacklist := tokenPkg.NewBlacklist(s.cache)
+						if err := blacklist.RevokeToken(ctx, jti, expiresAt); err != nil {
+							logger.SystemLogger.Error().Err(err).Msg("Failed to revoke token")
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Delete refresh token if provided
+	if req.RefreshToken != "" {
+		if err := s.tokenRepo.DeleteRefreshToken(ctx, req.RefreshToken); err != nil {
+			logger.SystemLogger.Error().Err(err).Msg("Failed to delete refresh token")
+		}
+	}
+
 	// Audit logout
 	logger.LogAudit(ctx, "LOGOUT", "AUTH", fmt.Sprintf("%d", userID), fmt.Sprintf("reason: %s", req.Reason))
 
@@ -389,14 +440,25 @@ func (s *authService) Enroll2FA(ctx context.Context, userID uint) (*dto.TwoFAEnr
 		return nil, err
 	}
 
-	// Save the secret (not enabled yet, needs confirmation)
-	user.TwoFASecret = key.Secret()
+	// Encrypt the secret before storing
+	encryptor, err := s.getEncryptor()
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize encryptor: %w", err)
+	}
+	
+	encryptedSecret, err := encryptor.Encrypt(key.Secret())
+	if err != nil {
+		return nil, fmt.Errorf("failed to encrypt 2FA secret: %w", err)
+	}
+
+	// Save the encrypted secret (not enabled yet, needs confirmation)
+	user.TwoFASecret = encryptedSecret
 	if err := s.userRepo.Update(ctx, user); err != nil {
 		return nil, err
 	}
 
 	return &dto.TwoFAEnrollResponse{
-		Secret: key.Secret(),
+		Secret: key.Secret(), // Return plaintext for QR code generation
 		QRURL:  key.URL(),
 	}, nil
 }
@@ -414,14 +476,31 @@ func (s *authService) Confirm2FA(ctx context.Context, userID uint, req dto.TwoFA
 		return errors.New("no 2FA secret found, please enroll first")
 	}
 
+	// Decrypt the secret for validation
+	encryptor, err := s.getEncryptor()
+	if err != nil {
+		return fmt.Errorf("failed to initialize encryptor: %w", err)
+	}
+	
+	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
+	if err != nil {
+		return fmt.Errorf("failed to decrypt 2FA secret: %w", err)
+	}
+
 	// Validate TOTP code
-	valid := totp.Validate(req.Code, user.TwoFASecret)
+	valid := totp.Validate(req.Code, decryptedSecret)
 	if !valid {
 		return errors.New("invalid 2FA code")
 	}
 
+	// Enable 2FA
 	user.TwoFAEnabled = true
-	return s.userRepo.Update(ctx, user)
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return err
+	}
+
+	logger.LogAudit(ctx, "ENABLE_2FA", "AUTH", fmt.Sprintf("%d", user.ID), "")
+	return nil
 }
 
 // Disable2FA verifies the code then turns off 2FA
@@ -434,16 +513,34 @@ func (s *authService) Disable2FA(ctx context.Context, userID uint, req dto.TwoFA
 		return errors.New("2FA is not enabled")
 	}
 
+	// Decrypt the secret for validation
+	encryptor, err := s.getEncryptor()
+	if err != nil {
+		return fmt.Errorf("failed to initialize encryptor: %w", err)
+	}
+	
+	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
+	if err != nil {
+		return fmt.Errorf("failed to decrypt 2FA secret: %w", err)
+	}
+
 	// Validate TOTP code
-	valid := totp.Validate(req.Code, user.TwoFASecret)
+	valid := totp.Validate(req.Code, decryptedSecret)
 	if !valid {
 		return errors.New("invalid 2FA code")
 	}
 
+	// Disable 2FA and clear encrypted secret
 	user.TwoFAEnabled = false
 	user.TwoFASecret = ""
 	user.TwoFACounter = 0
-	return s.userRepo.Update(ctx, user)
+	
+	if err := s.userRepo.Update(ctx, user); err != nil {
+		return err
+	}
+
+	logger.LogAudit(ctx, "DISABLE_2FA", "AUTH", fmt.Sprintf("%d", user.ID), "")
+	return nil
 }
 
 // Verify2FA exchanges a temp_token + code for a real JWT
@@ -462,8 +559,19 @@ func (s *authService) Verify2FA(ctx context.Context, req dto.TwoFAVerifyRequest)
 		return nil, errors.New("user not found")
 	}
 
+	// Decrypt the secret for validation
+	encryptor, err := s.getEncryptor()
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize encryptor: %w", err)
+	}
+	
+	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decrypt 2FA secret: %w", err)
+	}
+
 	// Validate TOTP code
-	valid := totp.Validate(req.Code, user.TwoFASecret)
+	valid := totp.Validate(req.Code, decryptedSecret)
 	if !valid {
 		return nil, errors.New("invalid 2FA code")
 	}
@@ -478,7 +586,7 @@ func (s *authService) Verify2FA(ctx context.Context, req dto.TwoFAVerifyRequest)
 // Helper to generate standard login response with audit logging
 func (s *authService) generateLoginResponse(ctx context.Context, user *entity.User) (*dto.LoginResponse, error) {
 	var permissionsMask uint64
-	if user.Role != nil && user.Role.Permissions != nil {
+	if user.Role.ID != 0 && user.Role.Permissions != nil {
 		for _, p := range user.Role.Permissions {
 			if p.ID <= 64 {
 				permissionsMask |= (uint64(1) << (p.ID - 1))
@@ -701,4 +809,14 @@ func (s *authService) LoginWithGoogle(ctx context.Context, req dto.GoogleLoginRe
 
 	// 6. Generate standard login response
 	return s.generateLoginResponse(ctx, user)
+}
+
+// getEncryptor returns an encryptor instance for encrypting sensitive data
+func (s *authService) getEncryptor() (*crypto.Encryptor, error) {
+	keyBytes, err := base64.StdEncoding.DecodeString(s.config.Security.EncryptionKey)
+	if err != nil {
+		return nil, fmt.Errorf("invalid encryption key: %w", err)
+	}
+	
+	return crypto.NewEncryptor(keyBytes)
 }

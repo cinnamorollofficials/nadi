@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
@@ -184,6 +185,7 @@ func LoadConfig() (config Config) {
 		BCryptCost:     viper.GetInt("BCRYPT_COST"),
 		AdminEmail:     viper.GetString("ADMIN_EMAIL"),
 		AdminPassword:  viper.GetString("ADMIN_PASSWORD"),
+		EncryptionKey:  viper.GetString("ENCRYPTION_KEY"),
 	}
 
 	config.Log = LogConfig{
@@ -237,7 +239,7 @@ func validateConfig(config *Config) error {
 	if config.Database.Host == "" {
 		errors = append(errors, "DB_HOST is required")
 	}
-	if config.Database.Username == "" {
+	if config.Database.UserName == "" {
 		errors = append(errors, "DB_USERNAME is required")
 	}
 	if config.Database.Name == "" {
@@ -253,6 +255,19 @@ func validateConfig(config *Config) error {
 	// Validate Google OAuth if enabled
 	if config.Google.ClientID == "" {
 		errors = append(errors, "GOOGLE_CLIENT_ID is required for OAuth functionality")
+	}
+
+	// Validate encryption key
+	if config.Security.EncryptionKey == "" {
+		errors = append(errors, "ENCRYPTION_KEY is required for encrypting sensitive data")
+	} else {
+		// Validate key is base64 and 32 bytes when decoded
+		keyBytes, err := base64.StdEncoding.DecodeString(config.Security.EncryptionKey)
+		if err != nil {
+			errors = append(errors, "ENCRYPTION_KEY must be valid base64")
+		} else if len(keyBytes) != 32 {
+			errors = append(errors, "ENCRYPTION_KEY must be 32 bytes (256 bits) when decoded")
+		}
 	}
 
 	// Validate numeric ranges

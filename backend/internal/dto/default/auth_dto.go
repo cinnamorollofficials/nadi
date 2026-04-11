@@ -71,7 +71,9 @@ type ResetPasswordRequest struct {
 }
 
 type LogoutRequest struct {
-	Reason string `json:"reason"`
+	Token        string `json:"token"`
+	RefreshToken string `json:"refresh_token"`
+	Reason       string `json:"reason"`
 }
 
 type TwoFAResetRequest struct {

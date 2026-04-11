@@ -87,7 +87,7 @@ func RequestLogger(cfg *config.Config, logRepo repository.HttpLogRepository) gin
 
 		latency := time.Since(start)
 		statusCode := ctx.Writer.Status()
-		userID, userExists := ctx.Get("user_id")
+		_, userExists := ctx.Get("user_id")
 
 		// Log to zerolog (file)
 		logger.WithCtx(ctx.Request.Context(), logger.SystemLogger).Info().

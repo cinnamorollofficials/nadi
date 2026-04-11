@@ -8,11 +8,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/hadi-projects/go-react-starter/pkg/cache"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/response"
+	"github.com/hadi-projects/go-react-starter/pkg/token"
 )
 
-func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
+func AuthMiddleware(jwtSecret string, cacheService cache.CacheService) gin.HandlerFunc {
+	blacklist := token.NewBlacklist(cacheService)
+	
 	return func(c *gin.Context) {
 		AddToTrace(c, "AuthMiddleware")
 		authHeader := c.GetHeader("Authorization")
@@ -45,6 +49,19 @@ func AuthMiddleware(jwtSecret string) gin.HandlerFunc {
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			// Check if token is revoked
+			if jti, ok := claims["jti"].(string); ok {
+				revoked, err := blacklist.IsRevoked(c.Request.Context(), jti)
+				if err != nil {
+					logger.SystemLogger.Error().Err(err).Msg("Failed to check token revocation status")
+					// Continue anyway - don't block on cache failure
+				} else if revoked {
+					response.Error(c, http.StatusUnauthorized, "Token has been revoked")
+					c.Abort()
+					return
+				}
+			}
+			
 			var userID uint
 			var userEmail string
 

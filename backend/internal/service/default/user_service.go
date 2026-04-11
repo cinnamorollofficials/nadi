@@ -252,7 +252,7 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 	}
 
 	var permissionsMask uint64
-	if user.RoleID != 0 && user.Role != nil && user.Role.Permissions != nil {
+	if user.RoleID != 0 && user.Role.ID != 0 && user.Role.Permissions != nil {
 		for _, p := range user.Role.Permissions {
 			if p.ID <= 64 {
 				permissionsMask |= (1 << (p.ID - 1))
@@ -261,7 +261,7 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 	}
 
 	roleName := ""
-	if user.Role != nil {
+	if user.Role.ID != 0 {
 		roleName = user.Role.Name
 	}
 

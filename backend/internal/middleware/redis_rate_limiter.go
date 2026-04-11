@@ -13,7 +13,7 @@ import (
 )
 
 type RedisRateLimiterConfig struct {
-	Cache       cache.Cache
+	Cache       cache.CacheService
 	RPS         int           // Requests per second
 	Burst       int           // Burst capacity
 	WindowSize  time.Duration // Time window for rate limiting
@@ -68,22 +68,7 @@ func RedisRateLimiter(config RedisRateLimiterConfig) gin.HandlerFunc {
 }
 
 // isRequestAllowed checks if the request is allowed based on rate limits
-func isRequestAllowed(ctx context.Context, cache cache.Cache, key string, rps, burst int, window time.Duration) (bool, error) {
-	now := time.Now().Unix()
-	windowStart := now - int64(window.Seconds())
-	
-	// Use Redis pipeline for atomic operations
-	pipe := []string{
-		// Remove expired entries
-		fmt.Sprintf("ZREMRANGEBYSCORE %s -inf %d", key, windowStart),
-		// Count current requests in window
-		fmt.Sprintf("ZCARD %s", key),
-		// Add current request
-		fmt.Sprintf("ZADD %s %d %d", key, now, now),
-		// Set expiration
-		fmt.Sprintf("EXPIRE %s %d", key, int(window.Seconds())+1),
-	}
-	
+func isRequestAllowed(ctx context.Context, cache cache.CacheService, key string, rps, burst int, window time.Duration) (bool, error) {
 	// Execute pipeline (simplified - in real implementation, use Redis pipeline)
 	// For now, we'll use individual commands
 	
@@ -93,7 +78,8 @@ func isRequestAllowed(ctx context.Context, cache cache.Cache, key string, rps, b
 	}
 	
 	// Get current count
-	countStr, err := cache.Get(ctx, key+"_count")
+	var countStr string
+	err := cache.Get(ctx, key+"_count", &countStr)
 	if err != nil {
 		countStr = "0"
 	}
@@ -115,8 +101,9 @@ func isRequestAllowed(ctx context.Context, cache cache.Cache, key string, rps, b
 }
 
 // getRemainingRequests calculates remaining requests in the current window
-func getRemainingRequests(ctx context.Context, cache cache.Cache, key string, rps int, window time.Duration) (int, error) {
-	countStr, err := cache.Get(ctx, key+"_count")
+func getRemainingRequests(ctx context.Context, cache cache.CacheService, key string, rps int, window time.Duration) (int, error) {
+	var countStr string
+	err := cache.Get(ctx, key+"_count", &countStr)
 	if err != nil {
 		return rps, nil
 	}

@@ -1,20 +1,7 @@
 package middleware
 
 import (
-	"net/http"
-	"regexp"
-	"strings"
-
 	"github.com/gin-gonic/gin"
-)
-
-var (
-	sqlInjectionPatterns = []*regexp.Regexp{
-		regexp.MustCompile(`(?i)(union.*select)|(insert.*into)|(delete.*from)|(drop.*table)|(update.*set)`),
-		regexp.MustCompile(`(?i)(exec|execute)\s+`),
-		regexp.MustCompile(`--|\#|\/\*|\*\/`),
-		regexp.MustCompile(`(?i)(or|and)\s+[\d\w]+\s*=\s*[\d\w]+`),
-	}
 )
 
 func SecureHeaders() gin.HandlerFunc {
@@ -23,30 +10,21 @@ func SecureHeaders() gin.HandlerFunc {
 		c.Header("X-Frame-Options", "DENY")
 		c.Header("X-Content-Type-Options", "nosniff")
 		c.Header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
-		c.Header("Content-Security-Policy", "default-src 'self'")
+		// Improved CSP with more specific directives
+		c.Header("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'")
 		c.Header("Referrer-Policy", "strict-origin-when-cross-origin")
 		c.Header("Permissions-Policy", "geolocation=(), microphone=(), camera=()")
 
-		for _, values := range c.Request.URL.Query() {
-			for _, value := range values {
-				if containsSQLInjection(value) {
-					c.JSON(http.StatusBadRequest, gin.H{"error": "Potentially malicious input detected"})
-					c.Abort()
-					return
-				}
-			}
-		}
+		// Removed SQL injection regex detection as it provides false security
+		// GORM's parameterized queries already protect against SQL injection
+		// Regex patterns can be bypassed and create false positives
+		// 
+		// Security Note: Real SQL injection protection comes from:
+		// 1. Parameterized queries (GORM handles this)
+		// 2. Input validation at the application layer
+		// 3. Principle of least privilege for database users
+		// 4. Regular security audits
 
 		c.Next()
 	}
-}
-
-func containsSQLInjection(input string) bool {
-	input = strings.ToLower(input)
-	for _, pattern := range sqlInjectionPatterns {
-		if pattern.MatchString(input) {
-			return true
-		}
-	}
-	return false
 }

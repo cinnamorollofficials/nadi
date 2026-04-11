@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -53,18 +54,18 @@ func NewMySQLConnection(cfg *config.Config) (*gorm.DB, error) {
 }
 
 // monitorConnectionPool logs connection pool stats periodically
-func monitorConnectionPool(sqlDB interface{ Stats() interface{ OpenConnections() int; InUse() int; Idle() int; WaitCount() int64; WaitDuration() time.Duration } }) {
+func monitorConnectionPool(sqlDB interface{ Stats() sql.DBStats }) {
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
 
 	for range ticker.C {
 		stats := sqlDB.Stats()
 		logger.SystemLogger.Info().
-			Int("open_connections", stats.OpenConnections()).
-			Int("in_use", stats.InUse()).
-			Int("idle", stats.Idle()).
-			Int64("wait_count", stats.WaitCount()).
-			Dur("wait_duration", stats.WaitDuration()).
+			Int("open_connections", stats.OpenConnections).
+			Int("in_use", stats.InUse).
+			Int("idle", stats.Idle).
+			Int64("wait_count", stats.WaitCount).
+			Dur("wait_duration", stats.WaitDuration).
 			Msg("Database connection pool stats")
 	}
 }

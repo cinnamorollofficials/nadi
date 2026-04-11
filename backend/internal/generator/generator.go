@@ -178,7 +178,7 @@ func (g *Generator) registerRouter() error {
 
 	handlerParamPrivate := fmt.Sprintf("\t%sHandler customHandler.%sHandler,\n\t// [GENERATOR_INSERT_HANDLER_PARAM]", strings.ToLower(g.Config.ModuleName), ToCamelCase(g.Config.ModuleName))
 	groupInit := fmt.Sprintf(`	%s := v1.Group("/%s")
-	%s.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	%s.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		%s.POST("", %sHandler.Create)
 		%s.GET("", %sHandler.GetAll)

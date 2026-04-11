@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ const (
 )
 
 type CSRFConfig struct {
-	Cache cache.Cache
+	Cache cache.CacheService
 }
 
 // CSRFProtection provides CSRF protection middleware
@@ -53,8 +52,9 @@ func CSRFProtection(config CSRFConfig) gin.HandlerFunc {
 
 		// Validate token
 		cacheKey := CSRFCachePrefix + tokenFromHeader
-		exists, err := config.Cache.Exists(c.Request.Context(), cacheKey)
-		if err != nil || !exists {
+		var value string
+		err := config.Cache.Get(c.Request.Context(), cacheKey, &value)
+		if err != nil {
 			response.Error(c, http.StatusForbidden, "Invalid or expired CSRF token")
 			c.Abort()
 			return
@@ -65,7 +65,7 @@ func CSRFProtection(config CSRFConfig) gin.HandlerFunc {
 }
 
 // GenerateCSRFToken generates a new CSRF token and stores it in cache
-func GenerateCSRFToken(c *gin.Context, cache cache.Cache) (string, error) {
+func GenerateCSRFToken(c *gin.Context, cache cache.CacheService) (string, error) {
 	// Generate random token
 	bytes := make([]byte, CSRFTokenLength)
 	if _, err := rand.Read(bytes); err != nil {
@@ -83,7 +83,7 @@ func GenerateCSRFToken(c *gin.Context, cache cache.Cache) (string, error) {
 }
 
 // CSRFTokenEndpoint provides an endpoint to get CSRF tokens
-func CSRFTokenEndpoint(cache cache.Cache) gin.HandlerFunc {
+func CSRFTokenEndpoint(cache cache.CacheService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, err := GenerateCSRFToken(c, cache)
 		if err != nil {

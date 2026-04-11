@@ -39,13 +39,13 @@ func (r *Router) setupPrivateRoutes(
 
 	// Module Generator
 	generator := v1.Group("/generator")
-	generator.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	generator.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		generator.POST("", permGuard.Check("create-module"), generatorHandler.Generate)
 	}
 	// Storage routes (authenticated)
 	storageGroup := v1.Group("/storage")
-	storageGroup.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	storageGroup.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		storageGroup.POST("/upload", permGuard.Check("upload-file"), storageHandler.Upload)
 		storageGroup.GET("", permGuard.Check("get-file"), storageHandler.GetFiles)
@@ -78,7 +78,7 @@ func (r *Router) setupPrivateRoutes(
 	}
 
 	blogpost := v1.Group("/blogposts")
-	blogpost.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	blogpost.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		blogpost.POST("", blogpostHandler.Create)
 		blogpost.GET("", blogpostHandler.GetAll)
@@ -88,7 +88,7 @@ func (r *Router) setupPrivateRoutes(
 		blogpost.DELETE("/:id", blogpostHandler.Delete)
 	}
 	medicpediapenyakit := v1.Group("/medicpedia_penyakit")
-	medicpediapenyakit.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	medicpediapenyakit.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		medicpediapenyakit.POST("", medicpediapenyakitHandler.Create)
 		medicpediapenyakit.GET("", medicpediapenyakitHandler.GetAll)
@@ -98,7 +98,7 @@ func (r *Router) setupPrivateRoutes(
 		medicpediapenyakit.DELETE("/:id", medicpediapenyakitHandler.Delete)
 	}
 	medicpedianutrisi := v1.Group("/medicpedia_nutrisi")
-	medicpedianutrisi.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	medicpedianutrisi.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		medicpedianutrisi.POST("", medicpedianutrisiHandler.Create)
 		medicpedianutrisi.GET("", medicpedianutrisiHandler.GetAll)
@@ -108,7 +108,7 @@ func (r *Router) setupPrivateRoutes(
 		medicpedianutrisi.DELETE("/:id", medicpedianutrisiHandler.Delete)
 	}
 		faq := v1.Group("/faqs")
-	faq.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	faq.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		faq.POST("", faqHandler.Create)
 		faq.GET("", faqHandler.GetAll)
@@ -121,7 +121,7 @@ func (r *Router) setupPrivateRoutes(
 	auth := v1.Group("/auth")
 	{
 		auth.POST("/login", authHandler.Login)
-		auth.POST("/logout", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Logout)
+		auth.POST("/logout", middleware.AuthMiddleware(r.config.JWT.Secret, r.cache), authHandler.Logout)
 		auth.POST("/register", userHandler.Register)
 		auth.POST("/forgot-password", authHandler.ForgotPassword)
 		auth.POST("/reset-password", authHandler.ResetPassword)
@@ -130,15 +130,15 @@ func (r *Router) setupPrivateRoutes(
 		auth.POST("/google", authHandler.LoginWithGoogle)
 		// 2FA routes
 		auth.POST("/2fa/verify", authHandler.Verify2FA) // Public: no JWT needed
-		auth.POST("/2fa/enroll", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Enroll2FA)
-		auth.POST("/2fa/confirm", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Confirm2FA)
-		auth.DELETE("/2fa/disable", middleware.AuthMiddleware(r.config.JWT.Secret), authHandler.Disable2FA)
+		auth.POST("/2fa/enroll", middleware.AuthMiddleware(r.config.JWT.Secret, r.cache), authHandler.Enroll2FA)
+		auth.POST("/2fa/confirm", middleware.AuthMiddleware(r.config.JWT.Secret, r.cache), authHandler.Confirm2FA)
+		auth.DELETE("/2fa/disable", middleware.AuthMiddleware(r.config.JWT.Secret, r.cache), authHandler.Disable2FA)
 		auth.POST("/2fa/reset-request", authHandler.Request2FAReset) // Public: needs temp token
 		auth.POST("/2fa/reset-confirm", authHandler.Confirm2FAReset) // Public: needs email format token
 	}
 
 	logs := v1.Group("/logs")
-	logs.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	logs.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		// Internal permission check is handled inside GetLogs
 		logs.GET("", logHandler.GetLogs)
@@ -152,7 +152,7 @@ func (r *Router) setupPrivateRoutes(
 	}
 
 	users := v1.Group("/users")
-	users.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	users.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		// User can access their own profile
 		users.GET("/me", userHandler.Me)
@@ -166,7 +166,7 @@ func (r *Router) setupPrivateRoutes(
 	}
 
 	permissions := v1.Group("/permissions")
-	permissions.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	permissions.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	permissions.Use(permGuard.Check("get-permission")) // Assuming admin role has this
 	{
 		permissions.POST("", permGuard.Check("create-permission"), permissionHandler.Create)
@@ -177,7 +177,7 @@ func (r *Router) setupPrivateRoutes(
 	}
 
 	roles := v1.Group("/roles")
-	roles.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	roles.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	roles.Use(permGuard.Check("get-role"))
 	{
 		roles.POST("", permGuard.Check("create-role"), roleHandler.Create)
@@ -190,14 +190,14 @@ func (r *Router) setupPrivateRoutes(
 
 	// Statistics
 	statistics := v1.Group("/statistics")
-	statistics.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	statistics.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		statistics.GET("/dashboard", statisticsHandler.GetDashboardStats)
 	}
 
 	// Cache management
 	cache := v1.Group("/cache")
-	cache.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	cache.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		cache.DELETE("/clear", permGuard.Check("manage-cache"), cacheHandler.ClearAll)
 		cache.GET("/status", permGuard.Check("manage-cache"), cacheHandler.GetStatus)
@@ -205,7 +205,7 @@ func (r *Router) setupPrivateRoutes(
 
 	// Settings management
 	settings := v1.Group("/settings")
-	settings.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	settings.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		settings.GET("/:category", permGuard.Check("get-setting"), settingHandler.GetByCategory)
 		settings.PUT("", permGuard.Check("edit-setting"), settingHandler.BulkUpdate)
@@ -213,7 +213,7 @@ func (r *Router) setupPrivateRoutes(
 
 	// API Keys management
 	apiKeys := v1.Group("/apikeys")
-	apiKeys.Use(middleware.AuthMiddleware(r.config.JWT.Secret))
+	apiKeys.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		apiKeys.POST("", permGuard.Check("create-api-key"), apiKeyHandler.Create)
 		apiKeys.GET("", permGuard.Check("get-api-key"), apiKeyHandler.GetAll)
