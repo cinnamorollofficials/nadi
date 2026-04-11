@@ -49,7 +49,7 @@ func (r *userRepository) FindAll(ctx context.Context, pagination *dto.Pagination
 
 	offset := (pagination.GetPage() - 1) * pagination.GetLimit()
 	err := query.Order("id DESC").
-		Preload("Role").
+		Preload("Role.Permissions"). // Fix N+1: Preload both Role and Permissions
 		Limit(pagination.GetLimit()).
 		Offset(offset).
 		Find(&users).Error

@@ -110,9 +110,11 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 
 	// 4b. No 2FA: Generate JWT Tokens directly
 	var permissionsMask uint64
-	for _, p := range user.Role.Permissions {
-		if p.ID <= 64 {
-			permissionsMask |= (uint64(1) << (p.ID - 1))
+	if user.Role != nil && user.Role.Permissions != nil {
+		for _, p := range user.Role.Permissions {
+			if p.ID <= 64 {
+				permissionsMask |= (uint64(1) << (p.ID - 1))
+			}
 		}
 	}
 
@@ -194,9 +196,11 @@ func (s *authService) RefreshToken(ctx context.Context, req dto.RefreshTokenRequ
 
 	// 3. Generate new Access Token
 	var permissionsMask uint64
-	for _, p := range rt.User.Role.Permissions {
-		if p.ID <= 64 {
-			permissionsMask |= (uint64(1) << (p.ID - 1))
+	if rt.User.Role != nil && rt.User.Role.Permissions != nil {
+		for _, p := range rt.User.Role.Permissions {
+			if p.ID <= 64 {
+				permissionsMask |= (uint64(1) << (p.ID - 1))
+			}
 		}
 	}
 
@@ -234,9 +238,9 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 	// Audit forgot password
 	logger.LogAudit(ctx, "FORGOT_PASSWORD", "AUTH", fmt.Sprintf("%d", user.ID), fmt.Sprintf("email: %s", req.Email))
 
-	// 2. Generate token
+	// 2. Generate token with 1 hour expiration (extended from 15 minutes)
 	token := uuid.New().String()
-	expiresAt := time.Now().Add(15 * time.Minute)
+	expiresAt := time.Now().Add(60 * time.Minute)
 
 	// 3. Save token
 	resetToken := &entity.PasswordResetToken{
@@ -280,8 +284,12 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 	if publishErr != nil {
 		logger.SystemLogger.Error().Err(publishErr).Msg("Failed to publish password reset message to Kafka. Falling back to direct email.")
 
-		// Fallback: Send email via goroutine
+		// Fallback: Send email via goroutine with timeout
 		go func() {
+			// Create context with timeout to prevent goroutine leaks
+			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			
 			frontendURL := s.config.Frontend.URL
 			if frontendURL == "" {
 				frontendURL = "http://localhost:5173"
@@ -289,7 +297,7 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 			resetLink := frontendURL + "/reset-password?token=" + token
 			
 			// Get logo URL
-			logoID := s.settingService.GetConfigValue(context.Background(), "app_logo")
+			logoID := s.settingService.GetConfigValue(emailCtx, "app_logo")
 			logoURL := ""
 			if logoID != "" {
 				logoURL = s.config.App.URL + "/api/v1/public/storage/" + logoID
@@ -303,7 +311,7 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 				Msg("Generated Reset Password Link")
 			
 			body := mailer.GetResetPasswordEmailNative(resetLink, appName, logoURL)
-			if err := s.mailer.SendEmail(context.Background(), user.Email, "Reset Password Request (Fallback)", body); err != nil {
+			if err := s.mailer.SendEmail(emailCtx, user.Email, "Reset Password Request (Fallback)", body); err != nil {
 				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send fallback email")
 			} else {
 				logger.SystemLogger.Info().Str("email", user.Email).Msg("Fallback email sent successfully")
@@ -470,9 +478,11 @@ func (s *authService) Verify2FA(ctx context.Context, req dto.TwoFAVerifyRequest)
 // Helper to generate standard login response with audit logging
 func (s *authService) generateLoginResponse(ctx context.Context, user *entity.User) (*dto.LoginResponse, error) {
 	var permissionsMask uint64
-	for _, p := range user.Role.Permissions {
-		if p.ID <= 64 {
-			permissionsMask |= (uint64(1) << (p.ID - 1))
+	if user.Role != nil && user.Role.Permissions != nil {
+		for _, p := range user.Role.Permissions {
+			if p.ID <= 64 {
+				permissionsMask |= (uint64(1) << (p.ID - 1))
+			}
 		}
 	}
 
@@ -518,7 +528,7 @@ func (s *authService) Request2FAReset(ctx context.Context, req dto.TwoFAResetReq
 	s.tokenRepo.DeleteTwoFAResetTokenByUserID(ctx, user.ID)
 
 	token := uuid.New().String()
-	expiresAt := time.Now().Add(15 * time.Minute)
+	expiresAt := time.Now().Add(60 * time.Minute) // Extended from 15 minutes to 1 hour
 
 	resetToken := &entity.TwoFAResetToken{
 		UserID:    user.ID,
@@ -563,8 +573,12 @@ func (s *authService) Request2FAReset(ctx context.Context, req dto.TwoFAResetReq
 	if publishErr != nil {
 		logger.SystemLogger.Error().Err(publishErr).Msg("Failed to publish 2FA reset message to Kafka. Falling back to direct email.")
 		go func() {
+			// Create context with timeout to prevent goroutine leaks
+			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			
 			body := mailer.GetTwoFAResetEmailNative(resetLink, appName, logoURL)
-			if err := s.mailer.SendEmail(context.Background(), user.Email, "Reset Two-Factor Authentication", body); err != nil {
+			if err := s.mailer.SendEmail(emailCtx, user.Email, "Reset Two-Factor Authentication", body); err != nil {
 				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send 2FA reset email (fallback)")
 			} else {
 				logger.SystemLogger.Info().Str("email", user.Email).Msg("2FA reset email (fallback) sent successfully")
@@ -634,8 +648,8 @@ func (s *authService) VerifyEmail(ctx context.Context, token string) error {
 }
 
 func (s *authService) LoginWithGoogle(ctx context.Context, req dto.GoogleLoginRequest) (*dto.LoginResponse, error) {
-	// 1. Verify Google ID Token
-	payload, err := idtoken.Validate(ctx, req.Credential, "") // In production, provide ClientID
+	// 1. Verify Google ID Token with proper ClientID validation
+	payload, err := idtoken.Validate(ctx, req.Credential, s.config.Google.ClientID)
 	if err != nil {
 		return nil, errors.New("invalid google token")
 	}

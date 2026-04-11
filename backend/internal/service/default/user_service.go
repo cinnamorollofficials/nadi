@@ -144,8 +144,12 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterRequest) (*d
 	if publishErr != nil {
 		logger.SystemLogger.Error().Err(publishErr).Msg("Failed to publish registration message to Kafka. Falling back to direct email.")
 		go func() {
+			// Create context with timeout to prevent goroutine leaks
+			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			
 			body := mailer.GetVerificationEmailNative(verifyLink, appName, logoURL)
-			if err := s.mailer.SendEmail(context.Background(), user.Email, "Verify Your Email Address", body); err != nil {
+			if err := s.mailer.SendEmail(emailCtx, user.Email, "Verify Your Email Address", body); err != nil {
 				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send verification email (fallback)")
 			} else {
 				logger.SystemLogger.Info().Str("email", user.Email).Msg("Verification email (fallback) sent successfully")
@@ -248,7 +252,7 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 	}
 
 	var permissionsMask uint64
-	if user.RoleID != 0 {
+	if user.RoleID != 0 && user.Role != nil && user.Role.Permissions != nil {
 		for _, p := range user.Role.Permissions {
 			if p.ID <= 64 {
 				permissionsMask |= (1 << (p.ID - 1))
@@ -256,12 +260,17 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 		}
 	}
 
+	roleName := ""
+	if user.Role != nil {
+		roleName = user.Role.Name
+	}
+
 	response := &dto.AuthUserResponse{
 		ID:              user.ID,
 		Name:            user.Name,
 		Email:           user.Email,
 		RoleID:          user.RoleID,
-		Role:            user.Role.Name,
+		Role:            roleName,
 		PermissionsMask: permissionsMask,
 		Status:          user.Status,
 		TwoFAEnabled:    user.TwoFAEnabled,

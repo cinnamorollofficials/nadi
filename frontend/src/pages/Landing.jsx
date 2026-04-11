@@ -56,11 +56,7 @@ const Landing = () => {
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-3/5 text-left pt-10">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-8">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[11px] font-bold text-primary uppercase tracking-widest">AI-Powered Symptom Checker</span>
-              </div>
-
+             
               <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-[1.05] tracking-tight mb-8">
                 Cerdas Menjaga <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-teal-500 to-blue-500">

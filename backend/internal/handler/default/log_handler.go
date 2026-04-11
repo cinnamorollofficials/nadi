@@ -10,6 +10,7 @@ import (
 	dto "github.com/hadi-projects/go-react-starter/internal/dto/default"
 	repository "github.com/hadi-projects/go-react-starter/internal/repository/default"
 	service "github.com/hadi-projects/go-react-starter/internal/service/default"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/response"
@@ -99,12 +100,12 @@ func (h *logHandler) GetLogs(ctx *gin.Context) {
 
 	// Non-admins may only see their own log entries
 	if !isAdmin {
-		userID, exists := ctx.Get("user_id")
-		if !exists {
+		userID, err := utils.GetUserID(ctx)
+		if err != nil {
 			response.Error(ctx, http.StatusForbidden, "user id not found in context")
 			return
 		}
-		query.UserID = userID.(uint)
+		query.UserID = userID
 	}
 
 	logs, err := h.logService.GetLogs(query)

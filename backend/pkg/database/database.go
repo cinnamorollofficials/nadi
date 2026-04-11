@@ -34,9 +34,37 @@ func NewMySQLConnection(cfg *config.Config) (*gorm.DB, error) {
 		return nil, fmt.Errorf("failed to get sql.DB instance: %w", err)
 	}
 
+	// Configure connection pool
 	sqlDB.SetMaxIdleConns(cfg.Database.MaxIdleConns)
 	sqlDB.SetMaxOpenConns(cfg.Database.MaxOpenConns)
 	sqlDB.SetConnMaxLifetime(time.Duration(cfg.Database.MaxLifetime) * time.Minute)
 
+	// Log connection pool configuration
+	logger.SystemLogger.Info().
+		Int("max_idle_conns", cfg.Database.MaxIdleConns).
+		Int("max_open_conns", cfg.Database.MaxOpenConns).
+		Int("max_lifetime_minutes", cfg.Database.MaxLifetime).
+		Msg("Database connection pool configured")
+
+	// Start connection pool monitoring goroutine
+	go monitorConnectionPool(sqlDB)
+
 	return db, nil
+}
+
+// monitorConnectionPool logs connection pool stats periodically
+func monitorConnectionPool(sqlDB interface{ Stats() interface{ OpenConnections() int; InUse() int; Idle() int; WaitCount() int64; WaitDuration() time.Duration } }) {
+	ticker := time.NewTicker(5 * time.Minute)
+	defer ticker.Stop()
+
+	for range ticker.C {
+		stats := sqlDB.Stats()
+		logger.SystemLogger.Info().
+			Int("open_connections", stats.OpenConnections()).
+			Int("in_use", stats.InUse()).
+			Int("idle", stats.Idle()).
+			Int64("wait_count", stats.WaitCount()).
+			Dur("wait_duration", stats.WaitDuration()).
+			Msg("Database connection pool stats")
+	}
 }

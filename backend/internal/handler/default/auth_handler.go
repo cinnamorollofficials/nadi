@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	dto "github.com/hadi-projects/go-react-starter/internal/dto/default"
 	service "github.com/hadi-projects/go-react-starter/internal/service/default"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/response"
 )
@@ -130,8 +131,13 @@ func (h *authHandler) Verify2FA(c *gin.Context) {
 }
 
 func (h *authHandler) Enroll2FA(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	res, err := h.service.Enroll2FA(c.Request.Context(), userID.(uint))
+	userID, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	res, err := h.service.Enroll2FA(c.Request.Context(), userID)
 	if err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
@@ -140,13 +146,23 @@ func (h *authHandler) Enroll2FA(c *gin.Context) {
 }
 
 func (h *authHandler) Confirm2FA(c *gin.Context) {
-	userID, _ := c.Get("user_id")
+	userID, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
 	var req dto.TwoFAConfirmRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	if err := h.service.Confirm2FA(c.Request.Context(), userID.(uint), req); err != nil {
+	if err := h.service.Confirm2FA(c.Request.Context(), userID, req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	response.Success(c, http.StatusOK, "2FA confirmed successfully", nil)
+}
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -154,14 +170,23 @@ func (h *authHandler) Confirm2FA(c *gin.Context) {
 }
 
 func (h *authHandler) Disable2FA(c *gin.Context) {
-	userID, _ := c.Get("user_id")
+	userID, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
 	var req dto.TwoFADisableRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}
-	if err := h.service.Disable2FA(c.Request.Context(), userID.(uint), req); err != nil {
+	if err := h.service.Disable2FA(c.Request.Context(), userID, req); err != nil {
 		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+	response.Success(c, http.StatusOK, "2FA disabled successfully", nil)
+}
 		return
 	}
 	response.Success(c, http.StatusOK, "2FA disabled successfully", nil)

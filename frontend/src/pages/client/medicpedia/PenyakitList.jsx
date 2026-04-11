@@ -220,50 +220,10 @@ const PenyakitList = () => {
                 to={`/medicpedia/penyakit/${item.slug}`}
                 className="group relative bg-surface-variant/10 border border-outline-variant/20 rounded-2xl p-6 hover:border-primary/30 hover:bg-primary/5 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 overflow-hidden"
               >
-                {/* Letter badge */}
-                <div className="absolute top-4 right-4 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <span className="text-primary font-black text-lg">
-                    {item.name?.[0]?.toUpperCase()}
-                  </span>
-                </div>
                 {/* Icon */}
-                <div className="w-10 h-10 mb-4 bg-red-500/10 rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-red-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </div>
                 <h3 className="font-bold text-surface-on group-hover:text-primary transition-colors text-base mb-2 pr-10">
                   {item.name}
                 </h3>
-                <p className="text-surface-on-variant text-sm leading-relaxed line-clamp-3">
-                  {stripHtml(item.description)}
-                </p>
-                <div className="mt-4 flex items-center gap-1 text-primary text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Baca selengkapnya
-                  <svg
-                    className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
               </Link>
             ))}
           </div>

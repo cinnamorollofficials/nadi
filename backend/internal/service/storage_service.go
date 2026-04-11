@@ -126,6 +126,54 @@ func detectMIME(f multipart.File) (string, error) {
 	return mime, nil
 }
 
+// allowedMIMETypes defines the whitelist of allowed MIME types
+var allowedMIMETypes = map[string]bool{
+	// Images
+	"image/jpeg":    true,
+	"image/png":     true,
+	"image/gif":     true,
+	"image/webp":    true,
+	"image/svg+xml": true,
+	
+	// Documents
+	"application/pdf":                                                       true,
+	"application/msword":                                                    true,
+	"application/vnd.openxmlformats-officedocument.wordprocessingml.document": true,
+	"application/vnd.ms-excel":                                              true,
+	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":     true,
+	"application/vnd.ms-powerpoint":                                         true,
+	"application/vnd.openxmlformats-officedocument.presentationml.presentation": true,
+	
+	// Text files
+	"text/plain":       true,
+	"text/csv":         true,
+	"application/json": true,
+	"application/xml":  true,
+	"text/xml":         true,
+	
+	// Archives
+	"application/zip":             true,
+	"application/x-rar-compressed": true,
+	"application/x-7z-compressed": true,
+	
+	// Audio/Video (be careful with these)
+	"audio/mpeg":  true,
+	"audio/wav":   true,
+	"video/mp4":   true,
+	"video/webm":  true,
+}
+
+// isAllowedMIMEType checks if the MIME type is in the whitelist
+func isAllowedMIMEType(mimeType string) bool {
+	// Normalize MIME type (remove charset, etc.)
+	if idx := strings.Index(mimeType, ";"); idx > 0 {
+		mimeType = mimeType[:idx]
+	}
+	mimeType = strings.TrimSpace(strings.ToLower(mimeType))
+	
+	return allowedMIMETypes[mimeType]
+}
+
 func (s *storageService) shareURL(token string) string {
 	return strings.TrimRight(s.frontendURL, "/") + "/share/" + token
 }
@@ -226,6 +274,11 @@ func (s *storageService) Upload(ctx context.Context, userID uint, fileHeader *mu
 	mimeType, err := detectMIME(src)
 	if err != nil {
 		return nil, fmt.Errorf("failed to detect file type: %w", err)
+	}
+
+	// Validate MIME type against whitelist
+	if !isAllowedMIMEType(mimeType) {
+		return nil, fmt.Errorf("file type %s is not allowed", mimeType)
 	}
 
 	// Build stored name and path

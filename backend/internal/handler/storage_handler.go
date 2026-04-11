@@ -10,6 +10,7 @@ import (
 	defaultDto "github.com/hadi-projects/go-react-starter/internal/dto/default"
 	"github.com/hadi-projects/go-react-starter/internal/dto"
 	"github.com/hadi-projects/go-react-starter/internal/service"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/response"
 )
 
@@ -45,8 +46,11 @@ func NewStorageHandler(svc service.StorageService) StorageHandler {
 // ─── Authenticated ────────────────────────────────────────────────────────────
 
 func (h *storageHandler) Upload(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
 
 	fileHeader, err := c.FormFile("file")
 	if err != nil {
@@ -65,8 +69,11 @@ func (h *storageHandler) Upload(c *gin.Context) {
 }
 
 func (h *storageHandler) GetFiles(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
 
 	var pagination defaultDto.PaginationRequest
 	if err := c.ShouldBindQuery(&pagination); err != nil {
@@ -83,9 +90,17 @@ func (h *storageHandler) GetFiles(c *gin.Context) {
 }
 
 func (h *storageHandler) GetFileByID(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	id, _ := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid file ID")
+		return
+	}
 
 	res, err := h.service.GetFileByID(c.Request.Context(), uint(id), uid)
 	if err != nil {
@@ -96,9 +111,17 @@ func (h *storageHandler) GetFileByID(c *gin.Context) {
 }
 
 func (h *storageHandler) DeleteFile(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	id, _ := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid file ID")
+		return
+	}
 
 	if err := h.service.DeleteFile(c.Request.Context(), uint(id), uid); err != nil {
 		if errors.Is(err, service.ErrNotFound) {
@@ -112,15 +135,35 @@ func (h *storageHandler) DeleteFile(c *gin.Context) {
 }
 
 func (h *storageHandler) DownloadFile(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	id, _ := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid file ID")
+		return
+	}
 
 	reader, file, err := h.service.GetFileForDownload(c.Request.Context(), uint(id), uid)
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
 			response.Error(c, http.StatusNotFound, "file not found")
 			return
+		}
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+	defer reader.Close()
+
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", file.OriginalName))
+	c.Header("Content-Type", file.MimeType)
+	c.Header("Content-Length", fmt.Sprintf("%d", file.Size))
+
+	c.DataFromReader(http.StatusOK, file.Size, file.MimeType, reader, nil)
+}
 		}
 		response.Error(c, http.StatusInternalServerError, err.Error())
 		return
@@ -137,9 +180,17 @@ func (h *storageHandler) DownloadFile(c *gin.Context) {
 // ─── Share link management ────────────────────────────────────────────────────
 
 func (h *storageHandler) CreateShareLink(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	fileID, _ := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	fileID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid file ID")
+		return
+	}
 
 	var req dto.CreateShareLinkRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -160,9 +211,17 @@ func (h *storageHandler) CreateShareLink(c *gin.Context) {
 }
 
 func (h *storageHandler) GetShareLinks(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	fileID, _ := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	fileID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid file ID")
+		return
+	}
 
 	res, err := h.service.GetShareLinks(c.Request.Context(), uint(fileID), uid)
 	if err != nil {
@@ -177,9 +236,17 @@ func (h *storageHandler) GetShareLinks(c *gin.Context) {
 }
 
 func (h *storageHandler) UpdateShareLink(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	shareID, _ := strconv.Atoi(c.Param("shareId"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	shareID, err := strconv.Atoi(c.Param("shareId"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid share ID")
+		return
+	}
 
 	var req dto.UpdateShareLinkRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -200,9 +267,17 @@ func (h *storageHandler) UpdateShareLink(c *gin.Context) {
 }
 
 func (h *storageHandler) RevokeShareLink(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	shareID, _ := strconv.Atoi(c.Param("shareId"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	shareID, err := strconv.Atoi(c.Param("shareId"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid share ID")
+		return
+	}
 
 	if err := h.service.RevokeShareLink(c.Request.Context(), uint(shareID), uid); err != nil {
 		if errors.Is(err, service.ErrNotFound) {
@@ -216,9 +291,17 @@ func (h *storageHandler) RevokeShareLink(c *gin.Context) {
 }
 
 func (h *storageHandler) GetShareLinkLogs(c *gin.Context) {
-	userID, _ := c.Get("user_id")
-	uid := userID.(uint)
-	shareID, _ := strconv.Atoi(c.Param("shareId"))
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "User not authenticated")
+		return
+	}
+	
+	shareID, err := strconv.Atoi(c.Param("shareId"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid share ID")
+		return
+	}
 
 	res, err := h.service.GetShareLinkLogs(c.Request.Context(), uint(shareID), uid)
 	if err != nil {

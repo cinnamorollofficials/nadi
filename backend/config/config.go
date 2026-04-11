@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -217,5 +218,57 @@ func LoadConfig() (config Config) {
 		ClientID: viper.GetString("GOOGLE_CLIENT_ID"),
 	}
 
+	// Validate required configuration
+	if err := validateConfig(&config); err != nil {
+		panic(fmt.Sprintf("Configuration validation failed: %v", err))
+	}
+
 	return config
+}
+
+// validateConfig validates required configuration fields
+func validateConfig(config *Config) error {
+	var errors []string
+
+	// Required fields
+	if config.App.Port == "" {
+		errors = append(errors, "APP_PORT is required")
+	}
+	if config.Database.Host == "" {
+		errors = append(errors, "DB_HOST is required")
+	}
+	if config.Database.Username == "" {
+		errors = append(errors, "DB_USERNAME is required")
+	}
+	if config.Database.Name == "" {
+		errors = append(errors, "DB_NAME is required")
+	}
+	if config.JWT.Secret == "" {
+		errors = append(errors, "JWT_SECRET is required")
+	}
+	if config.Redis.Host == "" {
+		errors = append(errors, "REDIS_HOST is required")
+	}
+
+	// Validate Google OAuth if enabled
+	if config.Google.ClientID == "" {
+		errors = append(errors, "GOOGLE_CLIENT_ID is required for OAuth functionality")
+	}
+
+	// Validate numeric ranges
+	if config.Security.BCryptCost < 4 || config.Security.BCryptCost > 31 {
+		errors = append(errors, "BCRYPT_COST must be between 4 and 31")
+	}
+	if config.RateLimit.Rps <= 0 {
+		errors = append(errors, "RATE_LIMIT_RPS must be greater than 0")
+	}
+	if config.RateLimit.Burst <= 0 {
+		errors = append(errors, "RATE_LIMIT_BURST must be greater than 0")
+	}
+
+	if len(errors) > 0 {
+		return fmt.Errorf("validation errors: %s", strings.Join(errors, ", "))
+	}
+
+	return nil
 }

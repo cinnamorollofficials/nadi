@@ -13,6 +13,7 @@ import (
 	"github.com/hadi-projects/go-react-starter/config"
 	entity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	repository "github.com/hadi-projects/go-react-starter/internal/repository/default"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 )
 
@@ -106,14 +107,15 @@ func RequestLogger(cfg *config.Config, logRepo repository.HttpLogRepository) gin
 			
 			var uID *uint
 			if userExists {
-				id := userID.(uint)
-				uID = &id
+				if id, err := utils.GetUserID(ctx); err == nil {
+					uID = &id
+				}
 			}
 
 			// Get user email if available (set by AuthMiddleware)
 			userEmailStr := ""
-			if email, eExists := ctx.Get("user_email"); eExists {
-				userEmailStr = maskEmail(email.(string))
+			if email, err := utils.GetUserEmail(ctx); err == nil {
+				userEmailStr = maskEmail(email)
 			}
 
 			var reqBodyStr string
@@ -122,10 +124,22 @@ func RequestLogger(cfg *config.Config, logRepo repository.HttpLogRepository) gin
 			}
 			
 			var resBodyStr string
-			if blw.body.Len() > 0 && !strings.Contains(path, "/logs") && blw.body.Len() < 512*1024 { // 512KB limit for DB
+			// Skip logging response body for sensitive endpoints
+			skipResponseBodyPaths := []string{"/logs", "/auth/login", "/auth/register", "/auth/refresh", "/auth/2fa"}
+			shouldSkipResponseBody := false
+			for _, skipPath := range skipResponseBodyPaths {
+				if strings.Contains(path, skipPath) {
+					shouldSkipResponseBody = true
+					break
+				}
+			}
+			
+			if shouldSkipResponseBody {
+				resBodyStr = "[sensitive endpoint - response body not logged]"
+			} else if blw.body.Len() > 0 && blw.body.Len() < 512*1024 { // 512KB limit for DB
 				resBodyStr = string(censorBody(blw.body.Bytes()))
 			} else if blw.body.Len() > 0 {
-				resBodyStr = "[skipped or too large]"
+				resBodyStr = "[response too large - truncated]"
 			}
 
 			httpLog := &entity.HttpLog{
