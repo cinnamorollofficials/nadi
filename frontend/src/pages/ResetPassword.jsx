@@ -27,12 +27,65 @@ const ResetPassword = () => {
     retry: false,
   });
 
+  const resetPasswordMutation = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: (data) => {
+      toast.success(data.message || "Password reset successfully!");
+      navigate("/login");
+    },
+    onError: (error) => {
+      toast.error(
+        error.response?.data?.meta?.message || "Failed to reset password.",
+      );
+    },
+  });
+
   useEffect(() => {
     if (!token) {
       toast.error("Invalid or missing token");
       navigate("/login");
     }
   }, [token, navigate]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password.length < 8) {
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    resetPasswordMutation.mutate({ token, password });
+  };
+
+  // Don't render anything if no token
+  if (!token) return null;
+
+  // Show loading while validating token
+  if (isValidatingToken) {
+    return (
+      <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+
+        <div className="w-full max-w-sm relative z-10">
+          <div className="bg-surface-container rounded-2xl overflow-hidden">
+            <div className="p-6">
+              <div className="text-center py-8">
+                <div className="w-8 h-8 mx-auto border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-sm text-surface-on-variant">
+                  Validating reset link...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Show error if token is invalid
   if (tokenError) {
@@ -103,58 +156,7 @@ const ResetPassword = () => {
     );
   }
 
-  // Show loading while validating token
-  if (isValidatingToken) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
-
-        <div className="w-full max-w-sm relative z-10">
-          <div className="bg-surface-container rounded-2xl overflow-hidden">
-            <div className="p-6">
-              <div className="text-center py-8">
-                <div className="w-8 h-8 mx-auto border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-sm text-surface-on-variant">
-                  Validating reset link...
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const resetPasswordMutation = useMutation({
-    mutationFn: resetPassword,
-    onSuccess: (data) => {
-      toast.success(data.message || "Password reset successfully!");
-      navigate("/login");
-    },
-    onError: (error) => {
-      toast.error(
-        error.response?.data?.meta?.message || "Failed to reset password.",
-      );
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (password.length < 8) {
-      toast.error("Password must be at least 8 characters");
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-    resetPasswordMutation.mutate({ token, password });
-  };
-
-  if (!token) return null;
-
+  // Token is valid, show the reset password form
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decorative elements */}

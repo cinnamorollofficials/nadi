@@ -16,6 +16,7 @@ type AuthHandler interface {
 	ForgotPassword(c *gin.Context)
 	ResetPassword(c *gin.Context)
 	ValidateResetToken(c *gin.Context)
+	ValidateEmailToken(c *gin.Context)
 	Logout(c *gin.Context)
 	RefreshToken(c *gin.Context)
 	Verify2FA(c *gin.Context)
@@ -96,6 +97,22 @@ func (h *authHandler) ValidateResetToken(c *gin.Context) {
 
 	if err := h.service.ValidateResetToken(c.Request.Context(), token); err != nil {
 		logger.WithCtx(c, logger.SystemLogger).Error().Err(err).Msg("ValidateResetToken failed")
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Token is valid", nil)
+}
+
+func (h *authHandler) ValidateEmailToken(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		response.Error(c, http.StatusBadRequest, "Token is required")
+		return
+	}
+
+	if err := h.service.ValidateEmailToken(c.Request.Context(), token); err != nil {
+		logger.WithCtx(c, logger.SystemLogger).Error().Err(err).Msg("ValidateEmailToken failed")
 		response.Error(c, http.StatusBadRequest, err.Error())
 		return
 	}

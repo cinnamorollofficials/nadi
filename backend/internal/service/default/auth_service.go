@@ -29,6 +29,7 @@ type AuthService interface {
 	ForgotPassword(ctx context.Context, req dto.ForgotPasswordRequest) error
 	ResetPassword(ctx context.Context, req dto.ResetPasswordRequest) error
 	ValidateResetToken(ctx context.Context, token string) error
+	ValidateEmailToken(ctx context.Context, token string) error
 	Logout(ctx context.Context, req dto.LogoutRequest) error
 	RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (*dto.LoginResponse, error)
 	Enroll2FA(ctx context.Context, userID uint) (*dto.TwoFAEnrollResponse, error)
@@ -395,6 +396,21 @@ func (s *authService) ValidateResetToken(ctx context.Context, token string) erro
 	// 2. Check expiration
 	if time.Now().After(resetToken.ExpiresAt) {
 		return errors.New("invalid or expired token")
+	}
+
+	return nil
+}
+
+func (s *authService) ValidateEmailToken(ctx context.Context, token string) error {
+	// 1. Find token
+	verifyToken, err := s.tokenRepo.FindByEmailVerificationToken(ctx, token)
+	if err != nil {
+		return errors.New("invalid or expired verification token")
+	}
+
+	// 2. Check expiration
+	if time.Now().After(verifyToken.ExpiresAt) {
+		return errors.New("verification token has expired")
 	}
 
 	return nil

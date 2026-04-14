@@ -126,6 +126,7 @@ func (r *Router) setupPrivateRoutes(
 		auth.POST("/forgot-password", authHandler.ForgotPassword)
 		auth.POST("/reset-password", authHandler.ResetPassword)
 		auth.GET("/validate-reset-token", authHandler.ValidateResetToken)
+		auth.GET("/validate-email-token", authHandler.ValidateEmailToken)
 		auth.POST("/refresh", authHandler.RefreshToken)
 		auth.POST("/verify-email", authHandler.VerifyEmail)
 		auth.POST("/google", authHandler.LoginWithGoogle)

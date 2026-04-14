@@ -25,6 +25,11 @@ export const validateResetToken = async (token) => {
     return response.data;
 };
 
+export const validateEmailToken = async (token) => {
+    const response = await apiClient.get(`/auth/validate-email-token?token=${token}`);
+    return response.data;
+};
+
 export const logoutApi = async (reason) => {
     try {
         await apiClient.post('/auth/logout', { reason });
