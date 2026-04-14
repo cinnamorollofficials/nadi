@@ -18,7 +18,7 @@ func SecureHeaders() gin.HandlerFunc {
 		// Removed SQL injection regex detection as it provides false security
 		// GORM's parameterized queries already protect against SQL injection
 		// Regex patterns can be bypassed and create false positives
-		// 
+		//
 		// Security Note: Real SQL injection protection comes from:
 		// 1. Parameterized queries (GORM handles this)
 		// 2. Input validation at the application layer
