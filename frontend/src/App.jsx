@@ -1,6 +1,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import SymptomChecker from "./pages/client/SymptomChecker";
+import History from "./pages/client/History";
+import Consultations from "./pages/client/Consultations";
+import HealthStats from "./pages/client/HealthStats";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -143,6 +147,10 @@ function App() {
           {/* Dynamic Layout based on Role (Logged-in only) */}
           <Route path="/" element={<RoleBasedLayout />}>
             <Route path="dashboard" element={<RoleBasedDashboard />} />
+            <Route path="new-check" element={<SymptomChecker />} />
+            <Route path="history" element={<History />} />
+            <Route path="consultations" element={<Consultations />} />
+            <Route path="health-stats" element={<HealthStats />} />
             <Route path="profile" element={<ProfilePage />} />
 
             {/* Protected Storage Route */}

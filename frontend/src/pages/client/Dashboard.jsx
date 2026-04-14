@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../../components/Card";
-import Button from "../../components/Button";
 
 const ClientDashboard = () => {
   const [user, setUser] = useState(null);
@@ -13,263 +12,285 @@ const ClientDashboard = () => {
     }
   }, []);
 
-  const stats = [
+  // Mock data for the health dashboard
+  const weeklyActivity = [
+    { day: "Mon", value: 20 },
+    { day: "Tue", value: 35 },
+    { day: "Wed", value: 25 },
+    { day: "Thu", value: 80 },
+    { day: "Fri", value: 45 },
+    { day: "Sat", value: 30 },
+    { day: "Sun", value: 25 },
+  ];
+
+  const recentActivity = [
     {
-      label: "Profile Status",
-      value: "Verified",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-          />
-        </svg>
-      ),
-      color: "text-green-500",
-      bg: "bg-green-500/10",
+      id: 1,
+      title: "Persistent Cough",
+      date: "Oct 24, 2024",
+      type: "AI Analysis Completed",
+      status: "Stable",
+      icon: "🔍",
     },
     {
-      label: "Account Type",
-      value: user?.role?.name || "Regular User",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-          />
-        </svg>
-      ),
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      id: 2,
+      title: "Dietary Advice",
+      date: "Oct 22, 2024",
+      type: "Consultation Log",
+      status: "Follow-up",
+      icon: "🥗",
     },
     {
-      label: "Member Since",
-      value: user?.created_at
-        ? new Date(user.created_at).toLocaleDateString()
-        : "N/A",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-      ),
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
+      id: 3,
+      title: "Activity Log",
+      date: "Oct 20, 2024",
+      type: "System Sync",
+      status: "Optimal",
+      icon: "📊",
     },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Hero Card */}
-      <div className="relative overflow-hidden rounded-3xl bg-primary-900 text-white p-8 md:p-12 shadow-2xl">
-        <div className="relative z-10 max-w-2xl">
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight">
-            Hello, {user?.name || user?.email?.split("@")[0]}!
-          </h1>
-          <p className="text-primary-100 text-lg mb-8 opacity-90 leading-relaxed">
-            Welcome to your personal dashboard. Here you can manage your
-            profile, access your files, and explore all the features we built
-            for you.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link to="/profile">
-              <Button
-                variant="primary"
-                className="bg-white text-primary-900 hover:bg-primary-50 border-none px-6 py-3 rounded-2xl font-bold shadow-lg transition-all active:scale-95"
-              >
-                Manage Profile
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-primary-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-secondary-400/10 rounded-full blur-2xl" />
-        <div className="absolute top-1/2 right-12 -translate-y-1/2 opacity-20 hidden lg:block">
-          <svg className="w-48 h-48" fill="currentColor" viewBox="0 0 100 100">
-            <path d="M50 0 L100 50 L50 100 L0 50 Z" />
-          </svg>
-        </div>
+    <div className="space-y-6">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-surface-on mb-2">
+          Hello, {user?.name?.split(' ')[0] || user?.email?.split("@")[0] || "Julian"}
+        </h1>
+        <p className="text-surface-on-variant">
+          Your health indicators are looking stable today. How can we assist you?
+        </p>
       </div>
 
-      {/* Grid of cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {stats.map((stat, i) => (
-          <Card
-            key={i}
-            className="p-6 border border-outline-variant/30 dark:border-transparent hover:border-primary/20 transition-all duration-300 group hover:shadow-xl hover:shadow-primary/5"
-          >
-            <div className="flex items-center gap-4 mb-3">
-              <div
-                className={`${stat.bg} ${stat.color} p-2.5 rounded-xl transition-transform group-hover:scale-110`}
-              >
-                {stat.icon}
-              </div>
-              <span className="text-xs font-bold text-surface-on-variant uppercase tracking-widest">
-                {stat.label}
-              </span>
-            </div>
-            <div className="text-2xl font-bold text-surface-on tracking-tight">
-              {stat.value}
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      {/* Recent Activity or Next Steps */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="p-8 border border-outline-variant/30 dark:border-transparent">
-          <h3 className="text-xl font-bold mb-6 text-surface-on flex items-center gap-2">
-            <span className="w-1.5 h-6 bg-primary rounded-full"></span>
-            Quick Actions
-          </h3>
-          <div className="space-y-4">
-            <Link
-              to="/profile"
-              className="flex items-center justify-between p-4 rounded-2xl bg-surface-variant/20 hover:bg-surface-variant/40 transition-all border border-transparent hover:border-outline-variant/20 group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-primary/10 text-primary rounded-lg group-hover:bg-primary/20 transition-colors">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm">Update Profile</h4>
-                  <p className="text-xs text-surface-on-variant">
-                    Keep your information up to date
-                  </p>
-                </div>
-              </div>
-              <svg
-                className="w-5 h-5 text-surface-on-variant group-hover:translate-x-1 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+      {/* Main Action Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {/* New Symptom Check Card */}
+        <Card className="relative overflow-hidden bg-primary text-on-primary p-8 border-0 shadow-lg">
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-on-primary/20 rounded-xl flex items-center justify-center mb-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-            </Link>
+            </div>
+            <h3 className="text-xl font-bold mb-2">New Symptom Check</h3>
+            <p className="text-on-primary/80 text-sm mb-4">
+              Start a precise, AI-guided clinical evaluation of your current symptoms.
+            </p>
             <Link
-              to="/storage"
-              className="flex items-center justify-between p-4 rounded-2xl bg-surface-variant/20 hover:bg-surface-variant/40 transition-all border border-transparent hover:border-outline-variant/20 group"
+              to="/new-check"
+              className="inline-flex items-center gap-2 text-sm font-bold hover:gap-3 transition-all"
             >
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-secondary/10 text-secondary rounded-lg group-hover:bg-secondary/20 transition-colors">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                    />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-bold text-sm">Cloud Storage</h4>
-                  <p className="text-xs text-surface-on-variant">
-                    Manage your uploaded files
-                  </p>
-                </div>
-              </div>
-              <svg
-                className="w-5 h-5 text-surface-on-variant group-hover:translate-x-1 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
+              Start Check
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
           </div>
-        </Card>
-
-        <Card className="p-8 border border-outline-variant/30 dark:border-transparent flex flex-col items-center justify-center text-center space-y-4">
-          <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
-            <svg
-              className="w-10 h-10 text-primary opacity-40 shadow-sm"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
+          <div className="absolute top-4 right-4 opacity-20">
+            <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
             </svg>
           </div>
-          <h3 className="text-lg font-bold">New features coming soon</h3>
-          <p className="text-sm text-surface-on-variant max-w-xs mx-auto">
-            We're working hard to bring you more features. Stay tuned for
-            updates in your portal!
-          </p>
-          <div className="pt-4 flex gap-2">
-            <div
-              className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce"
-              style={{ animationDelay: "0ms" }}
-            ></div>
-            <div
-              className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce"
-              style={{ animationDelay: "150ms" }}
-            ></div>
-            <div
-              className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce"
-              style={{ animationDelay: "300ms" }}
-            ></div>
+        </Card>
+
+        {/* Health Consultation Card */}
+        <Card className="relative overflow-hidden bg-surface-container-high p-8 border border-outline-variant/30">
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold mb-2 text-surface-on">Start Health Consultation</h3>
+            <p className="text-surface-on-variant text-sm mb-4">
+              Connect instantly with our AI medical specialists for detailed guidance.
+            </p>
+            <Link
+              to="/medicpedia/nutrisi"
+              className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all"
+            >
+              Start Chat
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+          <div className="absolute top-4 right-4 opacity-10">
+            <svg className="w-16 h-16 text-primary" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+            </svg>
           </div>
         </Card>
       </div>
+
+      {/* Analytics Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Weekly Activity Chart */}
+        <div className="lg:col-span-2">
+          <Card className="p-6 border border-outline-variant/30">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-bold text-surface-on">Weekly Activity</h3>
+                <p className="text-xs text-surface-on-variant">Past 7 Days</p>
+              </div>
+            </div>
+            
+            {/* Simple Bar Chart */}
+            <div className="flex items-end justify-between h-32 gap-2">
+              {weeklyActivity.map((item, index) => (
+                <div key={index} className="flex flex-col items-center flex-1">
+                  <div className="w-full bg-surface-variant/20 rounded-t-lg relative overflow-hidden" style={{ height: '100px' }}>
+                    <div 
+                      className={`absolute bottom-0 w-full rounded-t-lg transition-all duration-1000 ${
+                        index === 3 ? 'bg-primary' : 'bg-surface-variant/60'
+                      }`}
+                      style={{ height: `${item.value}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-surface-on-variant mt-2 font-medium">
+                    {item.day}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Symptom Trends */}
+          <Card className="p-6 border border-outline-variant/30 mt-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-bold text-surface-on">Symptom Trends</h3>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <span className="text-surface-on-variant">Recovery</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-surface-variant"></div>
+                  <span className="text-surface-on-variant">Incidence</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Simple Wave Chart Representation */}
+            <div className="h-24 relative overflow-hidden rounded-lg bg-surface-variant/10">
+              <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                <path
+                  d="M0,60 Q100,20 200,40 T400,30"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  className="text-primary"
+                />
+                <path
+                  d="M0,80 Q100,70 200,60 T400,65"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  className="text-surface-variant opacity-60"
+                />
+              </svg>
+            </div>
+          </Card>
+        </div>
+
+        {/* Water Intake & Recent Activity */}
+        <div className="space-y-6">
+          {/* Water Intake */}
+          <Card className="p-6 border border-outline-variant/30">
+            <h3 className="text-lg font-bold text-surface-on mb-4">Water Intake</h3>
+            <div className="flex items-center justify-center mb-4">
+              <div className="relative w-24 h-24">
+                <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    className="text-surface-variant/20"
+                  />
+                  <circle
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    fill="none"
+                    strokeDasharray={`${72 * 2.51} ${251.2}`}
+                    className="text-primary"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-surface-on">1.8</div>
+                    <div className="text-xs text-surface-on-variant">Liters</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p className="text-xs text-surface-on-variant text-center">
+              72% of daily goal reached
+            </p>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card className="p-6 border border-outline-variant/30">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-surface-on">Recent Activity</h3>
+              <Link to="/profile" className="text-xs text-primary font-bold hover:underline">
+                View all history
+              </Link>
+            </div>
+            
+            <div className="space-y-3">
+              {recentActivity.map((activity) => (
+                <div key={activity.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-variant/20 transition-colors">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-sm">
+                    {activity.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-bold text-surface-on truncate">
+                      {activity.title}
+                    </h4>
+                    <p className="text-xs text-surface-on-variant">
+                      {activity.date} • {activity.type}
+                    </p>
+                  </div>
+                  <div className={`px-2 py-1 rounded-full text-xs font-bold ${
+                    activity.status === 'Stable' ? 'bg-primary/10 text-primary' :
+                    activity.status === 'Follow-up' ? 'bg-surface-variant/20 text-surface-on-variant' :
+                    'bg-primary/10 text-primary'
+                  }`}>
+                    {activity.status}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* Daily Tip */}
+      <Card className="p-6 border border-outline-variant/30 bg-surface-container-high">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-surface-on mb-2">Daily Personalized Tip</h3>
+            <p className="text-surface-on-variant text-sm mb-4">
+              Increasing your hydration by just 500ml today could improve your focus levels by up to 15%. 
+              Your current trend shows a slight dip in the afternoon — try a glass of water at 2:00 PM.
+            </p>
+            <button className="text-sm font-bold text-primary hover:underline">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 };

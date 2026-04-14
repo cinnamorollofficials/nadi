@@ -100,16 +100,23 @@ const Sidebar = ({
         {sections.map((section, idx) => (
           <div key={idx} className="mb-4">
             {section.label && !collapsed && (
-              <h3 className="px-4 py-1.5 text-[10px] font-semibold text-surface-on-variant uppercase tracking-wider whitespace-nowrap">
-                {section.label}
-              </h3>
+              <div className="px-4 py-2">
+                <h3 className="text-xs font-bold text-surface-on tracking-tight">
+                  {section.label}
+                </h3>
+                {section.subtitle && (
+                  <p className="text-[10px] text-surface-on-variant opacity-70 mt-0.5">
+                    {section.subtitle}
+                  </p>
+                )}
+              </div>
             )}
             {section.label && collapsed && (
               <div className="px-2 py-2">
                 <div className="border-t border-outline-variant/30" />
               </div>
             )}
-            <ul className={`space-y-0.5 ${collapsed ? "px-1.5" : "px-2"}`}>
+            <ul className={`space-y-1 ${collapsed ? "px-1.5" : "px-2"}`}>
               {section.items.map((item) => {
                 const active = isChildActive(item);
                 const hasSubItems = !!item.subItems;
@@ -124,9 +131,13 @@ const Sidebar = ({
                     <li key={item.label}>
                       <Link
                         to={href || "#"}
-                        className={`group relative flex items-center justify-center w-full p-2 rounded-full transition-all duration-200 ${
+                        className={`group relative flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
                           active
-                            ? "bg-primary/15 text-primary"
+                            ? "bg-primary text-on-primary shadow-md"
+                            : item.highlight
+                            ? "bg-primary/10 text-primary border border-primary/20"
+                            : item.emergency
+                            ? "bg-error/10 text-error border border-error/20"
                             : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                         }`}
                       >
@@ -147,22 +158,26 @@ const Sidebar = ({
                       <div>
                         <button
                           onClick={() => toggleSection(item.label)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-full transition-all duration-300 group ${
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-300 group ${
                             active
-                              ? "bg-primary/10 text-primary"
+                              ? "bg-primary text-on-primary shadow-md"
+                              : item.highlight
+                              ? "bg-primary/10 text-primary border border-primary/20"
+                              : item.emergency
+                              ? "bg-error/10 text-error border border-error/20"
                               : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                           }`}
                         >
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
                               {item.icon}
                             </div>
-                            <span className="font-medium text-xs whitespace-nowrap">
+                            <span className="font-medium text-sm whitespace-nowrap">
                               {item.label}
                             </span>
                           </div>
                           <svg
-                            className={`w-3.5 h-3.5 flex-shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                            className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -177,25 +192,25 @@ const Sidebar = ({
                         </button>
 
                         <div
-                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "max-h-64 mt-0.5" : "max-h-0"}`}
+                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "max-h-64 mt-1" : "max-h-0"}`}
                         >
-                          <ul className="space-y-0.5 ml-3 pl-3 border-l border-outline-variant/30">
+                          <ul className="space-y-1 ml-3 pl-3 border-l border-outline-variant/30">
                             {item.subItems.map((sub) => {
                               const subActive = isActive(sub.path);
                               return (
                                 <li key={sub.path}>
                                   <Link
                                     to={sub.path}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300 group ${
+                                    className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 group ${
                                       subActive
-                                        ? "bg-primary/15 text-primary shadow-sm"
+                                        ? "bg-primary text-on-primary shadow-md"
                                         : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                                     }`}
                                   >
                                     <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
                                       {sub.icon}
                                     </div>
-                                    <span className="font-medium text-xs whitespace-nowrap">
+                                    <span className="font-medium text-sm whitespace-nowrap">
                                       {sub.label}
                                     </span>
                                   </Link>
@@ -208,16 +223,20 @@ const Sidebar = ({
                     ) : (
                       <Link
                         to={item.path}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-full transition-all duration-300 group ${
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
                           active
-                            ? "bg-primary/15 text-primary"
+                            ? "bg-primary text-on-primary shadow-md"
+                            : item.highlight
+                            ? "bg-primary/10 text-primary border border-primary/20"
+                            : item.emergency
+                            ? "bg-error/10 text-error border border-error/20 hover:bg-error/20"
                             : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                         }`}
                       >
                         <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
                           {item.icon}
                         </div>
-                        <span className="font-medium text-xs whitespace-nowrap">
+                        <span className="font-medium text-sm whitespace-nowrap">
                           {item.label}
                         </span>
                       </Link>
