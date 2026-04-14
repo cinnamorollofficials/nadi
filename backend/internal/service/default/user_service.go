@@ -9,6 +9,7 @@ import (
 	"math"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/hadi-projects/go-react-starter/config"
 	dto "github.com/hadi-projects/go-react-starter/internal/dto/default"
 	entity "github.com/hadi-projects/go-react-starter/internal/entity/default"
@@ -16,7 +17,6 @@ import (
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
 	"github.com/hadi-projects/go-react-starter/pkg/kafka"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
-	"github.com/google/uuid"
 	"github.com/hadi-projects/go-react-starter/pkg/mailer"
 	"github.com/xuri/excelize/v2"
 	"golang.org/x/crypto/bcrypt"
@@ -147,12 +147,12 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterRequest) (*d
 			// Create context with timeout to prevent goroutine leaks
 			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			
+
 			body := mailer.GetVerificationEmailNative(verifyLink, appName, logoURL)
 			if err := s.mailer.SendEmail(emailCtx, user.Email, "Verify Your Email Address", body); err != nil {
-				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send verification email (fallback)")
+				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send verification email")
 			} else {
-				logger.SystemLogger.Info().Str("email", user.Email).Msg("Verification email (fallback) sent successfully")
+				logger.SystemLogger.Info().Str("email", user.Email).Msg("Verification email sent successfully")
 			}
 		}()
 	}
@@ -168,8 +168,8 @@ func (s *userService) Register(ctx context.Context, req dto.RegisterRequest) (*d
 	logger.LogAudit(ctx, "REGISTER", "USER", fmt.Sprintf("%d", user.ID), fmt.Sprintf("email: %s", user.Email))
 
 	return &dto.UserResponse{
-		ID:        user.ID,
-		Name:      user.Name,
+		ID:           user.ID,
+		Name:         user.Name,
 		Email:        user.Email,
 		RoleID:       user.RoleID,
 		TwoFAEnabled: user.TwoFAEnabled,

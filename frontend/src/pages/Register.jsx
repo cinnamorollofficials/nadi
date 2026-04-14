@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { logo, app_name, registration_open } = useSettings();
+  const { logo, registration_open } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,7 +20,7 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [isRegistered, setIsRegistered] = useState(false);
 
-  const isRegistrationClosed = registration_open === "false";
+  const isRegistrationClosed = registration_open === "false" || registration_open === false;
 
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
@@ -101,7 +101,7 @@ const Register = () => {
     setErrors({});
     const validationErrors = validateForm();
     const strength = getPasswordStrength(formData.password);
-    if (strength.strength < 4) {
+    if (strength.strength < 2) {
       toast.error("Please use a stronger password.");
       return;
     }
@@ -288,6 +288,16 @@ const Register = () => {
                     </div>
                   )}
                   <TextField
+                    label="Full Name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your full name"
+                    error={errors.name}
+                    required
+                  />
+                  <TextField
                     label="Email address"
                     type="email"
                     name="email"
@@ -332,11 +342,13 @@ const Register = () => {
 
                   <button
                     type="submit"
-                    disabled={registerMutation.isPending}
-                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
+                    disabled={registerMutation.isPending || isRegistrationClosed}
+                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {registerMutation.isPending
                       ? "Creating Account…"
+                      : isRegistrationClosed
+                      ? "Registration Closed"
                       : "Create Account"}
                   </button>
 

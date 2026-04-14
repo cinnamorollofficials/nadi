@@ -20,6 +20,11 @@ export const resetPassword = async (data) => {
     return response.data;
 };
 
+export const validateResetToken = async (token) => {
+    const response = await apiClient.get(`/auth/validate-reset-token?token=${token}`);
+    return response.data;
+};
+
 export const logoutApi = async (reason) => {
     try {
         await apiClient.post('/auth/logout', { reason });

@@ -28,6 +28,7 @@ type AuthService interface {
 	Login(ctx context.Context, req dto.LoginRequest) (*dto.LoginResponse, error)
 	ForgotPassword(ctx context.Context, req dto.ForgotPasswordRequest) error
 	ResetPassword(ctx context.Context, req dto.ResetPasswordRequest) error
+	ValidateResetToken(ctx context.Context, token string) error
 	Logout(ctx context.Context, req dto.LogoutRequest) error
 	RefreshToken(ctx context.Context, req dto.RefreshTokenRequest) (*dto.LoginResponse, error)
 	Enroll2FA(ctx context.Context, userID uint) (*dto.TwoFAEnrollResponse, error)
@@ -41,9 +42,9 @@ type AuthService interface {
 }
 
 type authService struct {
-	userRepo  repository.UserRepository
-	tokenRepo repository.TokenRepository
-	producer  kafka.Producer
+	userRepo       repository.UserRepository
+	tokenRepo      repository.TokenRepository
+	producer       kafka.Producer
 	mailer         mailer.Mailer
 	config         *config.Config
 	cache          cache.CacheService
@@ -60,9 +61,9 @@ func NewAuthService(
 	settingService SettingService,
 ) AuthService {
 	return &authService{
-		userRepo:  userRepo,
-		tokenRepo: tokenRepo,
-		producer:  producer,
+		userRepo:       userRepo,
+		tokenRepo:      tokenRepo,
+		producer:       producer,
 		mailer:         mailer,
 		config:         config,
 		cache:          cache,
@@ -167,9 +168,9 @@ func (s *authService) Login(ctx context.Context, req dto.LoginRequest) (*dto.Log
 func (s *authService) generateAccessToken(user *entity.User, permissionsMask uint64) (string, error) {
 	// Generate unique token ID (JTI) for revocation support
 	tokenID := uuid.New().String()
-	
+
 	expirationTime := time.Now().Add(time.Minute * 15) // 15 minutes
-	
+
 	claims := jwt.MapClaims{
 		"jti":              tokenID, // JWT ID for revocation
 		"sub":              user.ID,
@@ -185,14 +186,14 @@ func (s *authService) generateAccessToken(user *entity.User, permissionsMask uin
 	if err != nil {
 		return "", err
 	}
-	
+
 	// Track token for potential revocation
 	// Note: This is async and non-blocking
 	go func() {
 		blacklist := tokenPkg.NewBlacklist(s.cache)
 		_ = blacklist.TrackUserToken(context.Background(), user.ID, tokenID, expirationTime)
 	}()
-	
+
 	return tokenString, nil
 }
 
@@ -311,13 +312,13 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 			// Create context with timeout to prevent goroutine leaks
 			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			
+
 			frontendURL := s.config.Frontend.URL
 			if frontendURL == "" {
 				frontendURL = "http://localhost:5173"
 			}
 			resetLink := frontendURL + "/reset-password?token=" + token
-			
+
 			// Get logo URL
 			logoID := s.settingService.GetConfigValue(emailCtx, "app_logo")
 			logoURL := ""
@@ -331,12 +332,12 @@ func (s *authService) ForgotPassword(ctx context.Context, req dto.ForgotPassword
 				Str("app_name", appName).
 				Str("logo_url", logoURL).
 				Msg("Generated Reset Password Link")
-			
+
 			body := mailer.GetResetPasswordEmailNative(resetLink, appName, logoURL)
-			if err := s.mailer.SendEmail(emailCtx, user.Email, "Reset Password Request (Fallback)", body); err != nil {
-				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send fallback email")
+			if err := s.mailer.SendEmail(emailCtx, user.Email, "Reset Password Request", body); err != nil {
+				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send email")
 			} else {
-				logger.SystemLogger.Info().Str("email", user.Email).Msg("Fallback email sent successfully")
+				logger.SystemLogger.Info().Str("email", user.Email).Msg("Email sent successfully")
 			}
 		}()
 
@@ -384,6 +385,21 @@ func (s *authService) ResetPassword(ctx context.Context, req dto.ResetPasswordRe
 	return nil
 }
 
+func (s *authService) ValidateResetToken(ctx context.Context, token string) error {
+	// 1. Find token
+	resetToken, err := s.tokenRepo.FindByToken(ctx, token)
+	if err != nil {
+		return errors.New("invalid or expired token")
+	}
+
+	// 2. Check expiration
+	if time.Now().After(resetToken.ExpiresAt) {
+		return errors.New("invalid or expired token")
+	}
+
+	return nil
+}
+
 func (s *authService) Logout(ctx context.Context, req dto.LogoutRequest) error {
 	userID, _ := ctx.Value(logger.CtxKeyUserID).(uint)
 
@@ -392,7 +408,7 @@ func (s *authService) Logout(ctx context.Context, req dto.LogoutRequest) error {
 		token, err := jwt.Parse(req.Token, func(token *jwt.Token) (interface{}, error) {
 			return []byte(s.config.JWT.Secret), nil
 		})
-		
+
 		if err == nil && token.Valid {
 			if claims, ok := token.Claims.(jwt.MapClaims); ok {
 				// Revoke the specific token
@@ -445,7 +461,7 @@ func (s *authService) Enroll2FA(ctx context.Context, userID uint) (*dto.TwoFAEnr
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize encryptor: %w", err)
 	}
-	
+
 	encryptedSecret, err := encryptor.Encrypt(key.Secret())
 	if err != nil {
 		return nil, fmt.Errorf("failed to encrypt 2FA secret: %w", err)
@@ -481,7 +497,7 @@ func (s *authService) Confirm2FA(ctx context.Context, userID uint, req dto.TwoFA
 	if err != nil {
 		return fmt.Errorf("failed to initialize encryptor: %w", err)
 	}
-	
+
 	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
 	if err != nil {
 		return fmt.Errorf("failed to decrypt 2FA secret: %w", err)
@@ -518,7 +534,7 @@ func (s *authService) Disable2FA(ctx context.Context, userID uint, req dto.TwoFA
 	if err != nil {
 		return fmt.Errorf("failed to initialize encryptor: %w", err)
 	}
-	
+
 	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
 	if err != nil {
 		return fmt.Errorf("failed to decrypt 2FA secret: %w", err)
@@ -534,7 +550,7 @@ func (s *authService) Disable2FA(ctx context.Context, userID uint, req dto.TwoFA
 	user.TwoFAEnabled = false
 	user.TwoFASecret = ""
 	user.TwoFACounter = 0
-	
+
 	if err := s.userRepo.Update(ctx, user); err != nil {
 		return err
 	}
@@ -564,7 +580,7 @@ func (s *authService) Verify2FA(ctx context.Context, req dto.TwoFAVerifyRequest)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize encryptor: %w", err)
 	}
-	
+
 	decryptedSecret, err := encryptor.Decrypt(user.TwoFASecret)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decrypt 2FA secret: %w", err)
@@ -663,12 +679,12 @@ func (s *authService) Request2FAReset(ctx context.Context, req dto.TwoFAResetReq
 
 	// 2FA Reset Email with Kafka Fallback
 	msg := map[string]string{
-		"type":        "twofa-reset",
-		"email":       user.Email,
-		"token":       token,
-		"app_name":    appName,
-		"logo_url":    logoURL,
-		"reset_link":  resetLink,
+		"type":       "twofa-reset",
+		"email":      user.Email,
+		"token":      token,
+		"app_name":   appName,
+		"logo_url":   logoURL,
+		"reset_link": resetLink,
 	}
 
 	var publishErr error
@@ -684,12 +700,12 @@ func (s *authService) Request2FAReset(ctx context.Context, req dto.TwoFAResetReq
 			// Create context with timeout to prevent goroutine leaks
 			emailCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 			defer cancel()
-			
+
 			body := mailer.GetTwoFAResetEmailNative(resetLink, appName, logoURL)
 			if err := s.mailer.SendEmail(emailCtx, user.Email, "Reset Two-Factor Authentication", body); err != nil {
-				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send 2FA reset email (fallback)")
+				logger.SystemLogger.Error().Err(err).Str("email", user.Email).Msg("Failed to send 2FA reset email")
 			} else {
-				logger.SystemLogger.Info().Str("email", user.Email).Msg("2FA reset email (fallback) sent successfully")
+				logger.SystemLogger.Info().Str("email", user.Email).Msg("2FA reset email sent successfully")
 			}
 		}()
 	}
@@ -817,6 +833,6 @@ func (s *authService) getEncryptor() (*crypto.Encryptor, error) {
 	if err != nil {
 		return nil, fmt.Errorf("invalid encryption key: %w", err)
 	}
-	
+
 	return crypto.NewEncryptor(keyBytes)
 }

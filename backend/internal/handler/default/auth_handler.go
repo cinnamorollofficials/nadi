@@ -15,6 +15,7 @@ type AuthHandler interface {
 	Login(c *gin.Context)
 	ForgotPassword(c *gin.Context)
 	ResetPassword(c *gin.Context)
+	ValidateResetToken(c *gin.Context)
 	Logout(c *gin.Context)
 	RefreshToken(c *gin.Context)
 	Verify2FA(c *gin.Context)
@@ -84,6 +85,22 @@ func (h *authHandler) ResetPassword(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Password reset successfully", nil)
+}
+
+func (h *authHandler) ValidateResetToken(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		response.Error(c, http.StatusBadRequest, "Token is required")
+		return
+	}
+
+	if err := h.service.ValidateResetToken(c.Request.Context(), token); err != nil {
+		logger.WithCtx(c, logger.SystemLogger).Error().Err(err).Msg("ValidateResetToken failed")
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Token is valid", nil)
 }
 
 func (h *authHandler) Logout(c *gin.Context) {

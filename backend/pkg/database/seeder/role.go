@@ -12,40 +12,72 @@ type RolePermission struct {
 }
 
 var defaultRoles = []RolePermission{
-	{Role: "admin", Permission: "create-user"},
-	{Role: "admin", Permission: "delete-user"},
-	{Role: "admin", Permission: "edit-user"},
-	{Role: "admin", Permission: "get-user"},
-	{Role: "admin", Permission: "create-role"},
-	{Role: "admin", Permission: "delete-role"},
-	{Role: "admin", Permission: "edit-role"},
-	{Role: "admin", Permission: "get-role"},
-	{Role: "admin", Permission: "create-permission"},
-	{Role: "admin", Permission: "delete-permission"},
-	{Role: "admin", Permission: "edit-permission"},
-	{Role: "admin", Permission: "get-permission"},
-	{Role: "admin", Permission: "manage-cache"},
-	{Role: "admin", Permission: "get-all-logs"},
-	{Role: "admin", Permission: "get-http-log"},
-	{Role: "admin", Permission: "create-module"},
-	{Role: "admin", Permission: "upload-file"},
-	{Role: "admin", Permission: "get-file"},
-	{Role: "admin", Permission: "delete-file"},
-	{Role: "admin", Permission: "share-file"},
-	{Role: "admin", Permission: "manage-storage"},
-	{Role: "admin", Permission: "get-setting"},
-	{Role: "admin", Permission: "edit-setting"},
-	{Role: "admin", Permission: "get-api-key"},
-	{Role: "admin", Permission: "create-api-key"},
-	{Role: "admin", Permission: "delete-api-key"},
-	{Role: "auditor", Permission: "get-audit-log"},
-	{Role: "auditor", Permission: "get-auth-log"},
-	{Role: "auditor", Permission: "get-own-logs"},
-	{Role: "user", Permission: "get-profile"}, // Basic user role
-	{Role: "user", Permission: "upload-file"},
-	{Role: "user", Permission: "get-file"},
-	{Role: "user", Permission: "delete-file"},
-	{Role: "user", Permission: "share-file"},
+	// user module permission
+	{Role: "superadmin", Permission: "get-user"},
+	{Role: "superadmin", Permission: "create-user"},
+	{Role: "superadmin", Permission: "edit-user"},
+	{Role: "superadmin", Permission: "delete-user"},
+// role module permission
+	{Role: "superadmin", Permission: "get-role"},
+	{Role: "superadmin", Permission: "create-role"},
+	{Role: "superadmin", Permission: "edit-role"},
+	{Role: "superadmin", Permission: "delete-role"},
+	// permission module permission
+	{Role: "superadmin", Permission: "get-permission"},
+	{Role: "superadmin", Permission: "create-permission"},
+	{Role: "superadmin", Permission: "edit-permission"},
+	{Role: "superadmin", Permission: "delete-permission"},
+	// cache module permission
+	{Role: "superadmin", Permission: "manage-cache"},
+	{Role: "superadmin", Permission: "get-cache"},
+// logs module permission
+	{Role: "superadmin", Permission: "get-all-logs"},
+	{Role: "superadmin", Permission: "get-http-log"},
+	{Role: "superadmin", Permission: "create-module"},
+	//  storage module permission
+	{Role: "superadmin", Permission: "upload-file"},
+	{Role: "superadmin", Permission: "get-file"},
+	{Role: "superadmin", Permission: "delete-file"},
+	{Role: "superadmin", Permission: "share-file"},
+	{Role: "superadmin", Permission: "manage-storage"},
+	// setting module permission
+	{Role: "superadmin", Permission: "get-setting"},
+	{Role: "superadmin", Permission: "edit-setting"},
+	{Role: "superadmin", Permission: "get-api-key"},
+	// api key module permission
+	{Role: "superadmin", Permission: "create-api-key"},
+	{Role: "superadmin", Permission: "delete-api-key"},
+	
+// faq module permission
+{Role: "copywriting", Permission: "get-faq"},
+{Role: "copywriting", Permission: "create-faq"},
+{Role: "copywriting", Permission: "edit-faq"},
+{Role: "copywriting", Permission: "delete-faq"},
+
+// faq module blogpost
+{Role: "copywriting", Permission: "get-blogpost"},
+{Role: "copywriting", Permission: "create-blogpost"},
+{Role: "copywriting", Permission: "edit-blogpost"},
+{Role: "copywriting", Permission: "delete-blogpost"},
+
+// medicpediapenyakit module blogpost
+{Role: "copywriting", Permission: "get-medicpediapenyakit"},
+{Role: "copywriting", Permission: "create-medicpediapenyakit"},
+{Role: "copywriting", Permission: "edit-medicpediapenyakit"},
+{Role: "copywriting", Permission: "delete-medicpediapenyakit"},
+
+// medicpedianutrisi module blogpost
+{Role: "copywriting", Permission: "get-medicpedianutrisi"},
+{Role: "copywriting", Permission: "create-medicpedianutrisi"},
+{Role: "copywriting", Permission: "edit-medicpedianutrisi"},
+{Role: "copywriting", Permission: "delete-medicpedianutrisi"},
+
+// basic permission
+	{Role: "superadmin", Permission: "get-profile"},
+	{Role: "admin", Permission: "get-profile"},
+	{Role: "auditor", Permission: "get-profile"},
+	{Role: "copywriting", Permission: "get-profile"},
+	{Role: "user", Permission: "get-profile"},
 }
 
 func SeedRole(db *gorm.DB) {

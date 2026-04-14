@@ -95,7 +95,7 @@ func GetResetPasswordEmailNative(resetLink string, appName string, logoURL strin
                 <td style="padding-top: 24px;">
                     <p style="margin: 0; color: #94a3b8; font-size: 11px; text-align: center; line-height: 1.6;">
                         You received this because a password reset was requested for your account.<br>
-                        If you believe this was an error, please contact security@yourdomain.com
+                        If you believe this was an error, please contact jtgunawan007@gmail.com
                     </p>
                 </td>
             </tr>
