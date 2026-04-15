@@ -12,67 +12,108 @@ type RolePermission struct {
 }
 
 var defaultRoles = []RolePermission{
-	// user module permission
+	// ==== superadmin ====
+	// 1. user module permission
 	{Role: "superadmin", Permission: "get-user"},
 	{Role: "superadmin", Permission: "create-user"},
 	{Role: "superadmin", Permission: "edit-user"},
 	{Role: "superadmin", Permission: "delete-user"},
-// role module permission
+	// 2. role module permission
 	{Role: "superadmin", Permission: "get-role"},
 	{Role: "superadmin", Permission: "create-role"},
 	{Role: "superadmin", Permission: "edit-role"},
 	{Role: "superadmin", Permission: "delete-role"},
-	// permission module permission
+	// 3. permission module permission
 	{Role: "superadmin", Permission: "get-permission"},
 	{Role: "superadmin", Permission: "create-permission"},
 	{Role: "superadmin", Permission: "edit-permission"},
 	{Role: "superadmin", Permission: "delete-permission"},
-	// cache module permission
-	{Role: "superadmin", Permission: "manage-cache"},
-	{Role: "superadmin", Permission: "get-cache"},
-// logs module permission
-	{Role: "superadmin", Permission: "get-all-logs"},
-	{Role: "superadmin", Permission: "get-http-log"},
-	{Role: "superadmin", Permission: "create-module"},
-	//  storage module permission
+	// 4. api key module permission
+	{Role: "superadmin", Permission: "create-api-key"},
+	{Role: "superadmin", Permission: "delete-api-key"},
+	// 5. medicpediapenyakit module
+	{Role: "superadmin", Permission: "get-medicpediapenyakit"},
+	{Role: "superadmin", Permission: "create-medicpediapenyakit"},
+	{Role: "superadmin", Permission: "edit-medicpediapenyakit"},
+	{Role: "superadmin", Permission: "delete-medicpediapenyakit"},
+	// 6. medicpedianutrisi module 
+	{Role: "superadmin", Permission: "get-medicpedianutrisi"},
+	{Role: "superadmin", Permission: "create-medicpedianutrisi"},
+	{Role: "superadmin", Permission: "edit-medicpedianutrisi"},
+	{Role: "superadmin", Permission: "delete-medicpedianutrisi"},
+	// 7. blogpost module
+	{Role: "superadmin", Permission: "get-blogpost"},
+	{Role: "superadmin", Permission: "create-blogpost"},
+	{Role: "superadmin", Permission: "edit-blogpost"},
+	{Role: "superadmin", Permission: "delete-blogpost"},
+	// 8. blogpost module
+	{Role: "copywriting", Permission: "get-faq"},
+	{Role: "copywriting", Permission: "create-faq"},
+	{Role: "copywriting", Permission: "edit-faq"},
+	{Role: "copywriting", Permission: "delete-faq"},
+	//  9. storage module permission
 	{Role: "superadmin", Permission: "upload-file"},
 	{Role: "superadmin", Permission: "get-file"},
 	{Role: "superadmin", Permission: "delete-file"},
 	{Role: "superadmin", Permission: "share-file"},
 	{Role: "superadmin", Permission: "manage-storage"},
-	// setting module permission
-	{Role: "superadmin", Permission: "get-setting"},
-	{Role: "superadmin", Permission: "edit-setting"},
-	{Role: "superadmin", Permission: "get-api-key"},
-	// api key module permission
-	{Role: "superadmin", Permission: "create-api-key"},
-	{Role: "superadmin", Permission: "delete-api-key"},
+	// 10. setting module permission
+	{Role: "superadmin", Permission: "get-website-setting"},
+	{Role: "superadmin", Permission: "edit-website-setting"},
+	{Role: "superadmin", Permission: "get-email-setting"},
+	{Role: "superadmin", Permission: "edit-email-setting"},
+	{Role: "superadmin", Permission: "get-storage-setting"},
+	{Role: "superadmin", Permission: "edit-storage-setting"},
+	{Role: "superadmin", Permission: "get-security-setting"},
+	{Role: "superadmin", Permission: "edit-security-setting"},
+	{Role: "superadmin", Permission: "get-infrastructure-setting"},
+	{Role: "superadmin", Permission: "edit-infrastructure-setting"},
+	{Role: "superadmin", Permission: "get-advanced-setting"},
+	{Role: "superadmin", Permission: "edit-advanced-setting"},
+	// 11. logs module permission
+	{Role: "superadmin", Permission: "get-audit-log"},
+	{Role: "superadmin", Permission: "get-system-log"},
+	{Role: "superadmin", Permission: "get-http-log"},
+	// 12. mmodule generator
+	{Role: "superadmin", Permission: "create-module"},
+	// 13. cache module permission
+	{Role: "superadmin", Permission: "manage-cache"},
+	{Role: "superadmin", Permission: "get-cache"},
 	
-// faq module permission
-{Role: "copywriting", Permission: "get-faq"},
-{Role: "copywriting", Permission: "create-faq"},
-{Role: "copywriting", Permission: "edit-faq"},
-{Role: "copywriting", Permission: "delete-faq"},
+	// ==== copywriting ====
+	// 1. medicpediapenyakit module
+	{Role: "copywriting", Permission: "get-medicpediapenyakit"},
+	{Role: "copywriting", Permission: "create-medicpediapenyakit"},
+	{Role: "copywriting", Permission: "edit-medicpediapenyakit"},
+	{Role: "copywriting", Permission: "delete-medicpediapenyakit"},
+	// 2. medicpedianutrisi module 
+	{Role: "copywriting", Permission: "get-medicpedianutrisi"},
+	{Role: "copywriting", Permission: "create-medicpedianutrisi"},
+	{Role: "copywriting", Permission: "edit-medicpedianutrisi"},
+	{Role: "copywriting", Permission: "delete-medicpedianutrisi"},
+	// 3. blogpost module
+	{Role: "copywriting", Permission: "get-blogpost"},
+	{Role: "copywriting", Permission: "create-blogpost"},
+	{Role: "copywriting", Permission: "edit-blogpost"},
+	{Role: "copywriting", Permission: "delete-blogpost"},
+	// 4. blogpost module
+	{Role: "copywriting", Permission: "get-faq"},
+	{Role: "copywriting", Permission: "create-faq"},
+	{Role: "copywriting", Permission: "edit-faq"},
+	{Role: "copywriting", Permission: "delete-faq"},
 
-// faq module blogpost
-{Role: "copywriting", Permission: "get-blogpost"},
-{Role: "copywriting", Permission: "create-blogpost"},
-{Role: "copywriting", Permission: "edit-blogpost"},
-{Role: "copywriting", Permission: "delete-blogpost"},
 
-// medicpediapenyakit module blogpost
-{Role: "copywriting", Permission: "get-medicpediapenyakit"},
-{Role: "copywriting", Permission: "create-medicpediapenyakit"},
-{Role: "copywriting", Permission: "edit-medicpediapenyakit"},
-{Role: "copywriting", Permission: "delete-medicpediapenyakit"},
+	// ==== guest ====
+	// 1. medicpediapenyakit module
+	{Role: "copywriting", Permission: "get-medicpediapenyakit"},
+	// 2. medicpedianutrisi module 
+	{Role: "copywriting", Permission: "get-medicpedianutrisi"},
+	// 3. blogpost module
+	{Role: "copywriting", Permission: "get-blogpost"},
+	// 4. blogpost module
+	{Role: "copywriting", Permission: "get-faq"},
 
-// medicpedianutrisi module blogpost
-{Role: "copywriting", Permission: "get-medicpedianutrisi"},
-{Role: "copywriting", Permission: "create-medicpedianutrisi"},
-{Role: "copywriting", Permission: "edit-medicpedianutrisi"},
-{Role: "copywriting", Permission: "delete-medicpedianutrisi"},
-
-// basic permission
+	// === basic permissional for all ===
 	{Role: "superadmin", Permission: "get-profile"},
 	{Role: "admin", Permission: "get-profile"},
 	{Role: "auditor", Permission: "get-profile"},
