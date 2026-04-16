@@ -1,231 +1,266 @@
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const PrivacyPolicy = () => {
-    return (
-        <div className="bg-navy-950 min-h-screen pt-24 pb-32">
-            <div className="container mx-auto px-6 max-w-4xl">
-                <div className="mb-16">
-                    <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] mb-6 text-white/50">
-                         Kebijakan Privasi Nadi
-                    </div>
-                    <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter uppercase mb-4">
-                        Privacy <span className="text-accent-red">Policy</span>.
-                    </h1>
-                    <div className="flex flex-col gap-4">
-                        <p className="text-white/40 font-bold uppercase tracking-widest text-xs">
-                            Terakhir Diperbarui: 6 April 2026
-                        </p>
-                        <p className="text-white/60 text-sm font-medium leading-relaxed border-l-2 border-accent-red pl-4">
-                            Harap baca kebijakan ini dengan saksama sebelum menggunakan layanan Nadi. Anda harus berusia minimal 16 tahun untuk menggunakan layanan kami (atau 13-18 tahun dengan izin wali sesuai Syarat & Ketentuan kami).
-                        </p>
-                    </div>
-                </div>
+  return (
+    <div className="bg-white dark:bg-slate-950 min-h-screen pt-24 pb-32">
+      <div className="container mx-auto px-6 max-w-3xl">
 
-                <div className="space-y-24">
-                    {/* SECTION 1 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">01</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Tentang Kebijakan Ini</h2>
-                        </div>
-                        <div className="pl-12 space-y-6 text-white/60 leading-relaxed font-medium text-sm md:text-base">
-                            <p>
-                                Kebijakan Privasi ini menjelaskan bagaimana Nadi ("kami", "kita") mengumpulkan, memproses, menyimpan, dan membagikan data pribadi Anda saat Anda menggunakan aplikasi Nadi, fitur Nadi Assess (Symptom Checker), atau situs web kami.
-                            </p>
-                            <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                                <p className="">
-                                    Nadi menyediakan penilaian gejala berbasis teknologi penalaran probabilistik AI. Anda tidak wajib memberikan informasi pribadi, namun sebagian besar fungsi kami memerlukan data kesehatan untuk memberikan hasil yang akurat.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* SECTION 2 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">02</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Siapa Kami (Pengendali Data)</h2>
-                        </div>
-                        <div className="pl-12 space-y-6 text-white/60 leading-relaxed font-medium">
-                            <p>Pengendali data untuk informasi Anda adalah:</p>
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                                    <strong className="text-white block uppercase tracking-widest text-[10px] mb-2">Entitas</strong>
-                                    <p className="text-white font-bold">[Nama Perusahaan Anda]</p>
-                                    <p className="text-xs mt-1">[Alamat Kantor, Jakarta, Indonesia]</p>
-                                </div>
-                                <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                                    <strong className="text-white block uppercase tracking-widest text-[10px] mb-2">Kontak Resmi</strong>
-                                    <p className="text-white font-bold">support@nadi.id</p>
-                                    <p className="text-xs mt-1"><span className="opacity-50">DPO:</span> dpo@nadi.id</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* SECTION 3 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">03</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Data yang Kami Kumpulkan dan Mengapa</h2>
-                        </div>
-                        <div className="pl-12 space-y-12 text-white/60 leading-relaxed font-medium">
-                            {/* 3.1 */}
-                            <div className="space-y-4">
-                                <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-3">
-                                    <span className="w-6 h-px bg-accent-red"></span> 3.1. Saat Mengakses Layanan (Data Teknis)
-                                </h4>
-                                <p><strong className="text-white">Jenis Data:</strong> Alamat IP, tanggal/waktu akses, informasi perangkat (model, OS), dan URL file yang diminta.</p>
-                                <p><strong className="text-white">Tujuan:</strong> Menjamin koneksi internet yang lancar, keamanan sistem, dan stabilitas aplikasi (mencegah serangan DDoS).</p>
-                                <p className="text-accent-red/80 text-xs font-bold uppercase tracking-widest">Penyimpanan: Data teknis dihapus setelah 15 hari, kecuali terjadi insiden keamanan.</p>
-                            </div>
-
-                            {/* 3.2 */}
-                            <div className="space-y-4">
-                                <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-3">
-                                    <span className="w-6 h-px bg-accent-red"></span> 3.2. Pendaftaran Akun dan Profil Kesehatan
-                                </h4>
-                                <p><strong className="text-white">Jenis Data:</strong> Email, kata sandi, nama profil, jenis kelamin biologis, tanggal lahir, dan faktor risiko umum (merokok, tekanan darah tinggi, diabetes, kehamilan).</p>
-                                <p><strong className="text-white">Tujuan:</strong> Membuat akun dan menyediakan analisis dasar. Tanpa data non-opsional ini, aplikasi tidak dapat berfungsi.</p>
-                                <p className="text-xs bg-white/5 inline-block px-3 py-1 rounded-md">Dasar Hukum: Pelaksanaan kontrak dan persetujuan eksplisit untuk data kesehatan.</p>
-                            </div>
-
-                            {/* 3.3 */}
-                            <div className="space-y-4">
-                                <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-3">
-                                    <span className="w-6 h-px bg-accent-red"></span> 3.3. Penilaian Gejala (Nadi Assess)
-                                </h4>
-                                <p><strong className="text-white">Jenis Data:</strong> Gejala penyakit, durasi, lokasi geografis, dan riwayat medis relevan.</p>
-                                <p><strong className="text-white">Tujuan:</strong> AI kami memproses data ini untuk mengidentifikasi kemungkinan penyebab gejala dan menyarankan langkah selanjutnya (misal: "temui dokter").</p>
-                                <div className="p-4 border border-white/10 rounded-xl bg-accent-red/5">
-                                    <strong className="text-white text-[10px] block mb-1 uppercase tracking-widest">Keputusan Otomatis:</strong>
-                                    <p className="text-sm">Laporan Anda adalah hasil pemrosesan otomatis (AI), namun hanya bersifat informatif. Keputusan medis tetap berada di tangan tenaga medis profesional.</p>
-                                </div>
-                            </div>
-                            
-                            {/* 3.4 */}
-                            <div className="space-y-4">
-                                <h4 className="text-white font-black uppercase tracking-widest text-xs flex items-center gap-3">
-                                    <span className="w-6 h-px bg-accent-red"></span> 3.4. Nadi-Pedia (Kamus Medis)
-                                </h4>
-                                <p><strong className="text-white">Jenis Data:</strong> Riwayat pencarian kondisi medis.</p>
-                                <p><strong className="text-white">Tujuan:</strong> Memberikan konten edukasi yang relevan dan meningkatkan pengalaman pengguna dalam mempelajari kondisi kesehatan.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* SECTION 4 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">04</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Keamanan dan Penyimpanan Data</h2>
-                        </div>
-                        <div className="pl-12 space-y-8 text-white/60 leading-relaxed font-medium">
-                            <div className="grid sm:grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <h4 className="text-white font-bold uppercase tracking-widest text-[10px]">Lokasi Server</h4>
-                                    <p>Data Anda disimpan di server terenkripsi (misal: AWS/Google Cloud wilayah Jakarta/Singapura). Data kesehatan sensitif akan selalu diprioritaskan untuk tetap berada di wilayah yurisdiksi perlindungan data yang kuat.</p>
-                                </div>
-                                <div className="space-y-4">
-                                    <h4 className="text-white font-bold uppercase tracking-widest text-[10px]">Standar Enkripsi</h4>
-                                    <p>Kami menggunakan Transport Layer Security (TLS) untuk mengenkripsi data saat transit antara perangkat Anda dan server kami.</p>
-                                </div>
-                            </div>
-                            <div className="bg-accent-red/10 border-l-4 border-accent-red p-6 rounded-r-2xl">
-                                <p className="text-white font-black underline uppercase tracking-widest text-[10px] mb-2 shadow-glow-red">Keamanan Email Warning:</p>
-                                <p className="text-sm">Jika Anda memilih untuk menerima laporan hasil analisis melalui email, harap disadari bahwa email biasa tidak memiliki enkripsi end-to-end. Kami akan meminta persetujuan eksplisit Anda sebelum mengirimkan data sensitif via email.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* SECTION 5 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">05</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Berbagi Data dengan Pihak Ketiga</h2>
-                        </div>
-                        <div className="pl-12 space-y-6 text-white/60 leading-relaxed font-medium">
-                            <p className="text-white font-bold border-b border-white/5 pb-4">Nadi tidak akan menjual data kesehatan pribadi Anda kepada pihak ketiga untuk kepentingan komersial mereka.</p>
-                            <p>Kami hanya membagikan data jika:</p>
-                            <ul className="space-y-4">
-                                <li className="flex gap-4 items-start">
-                                    <div className="text-accent-red font-black text-xs pt-1.5">◆</div>
-                                    <div><strong className="text-white">Penyedia Layanan:</strong> Kami menggunakan penyedia teknis (misal: analitik anonim, infrastruktur cloud) yang terikat kontrak perlindungan data (DPA).</div>
-                                </li>
-                                <li className="flex gap-4 items-start">
-                                    <div className="text-accent-red font-black text-xs pt-1.5">◆</div>
-                                    <div><strong className="text-white">Kepatuhan Hukum:</strong> Jika diwajibkan oleh perintah pengadilan atau otoritas penegak hukum untuk mencegah bahaya serius.</div>
-                                </li>
-                                <li className="flex gap-4 items-start">
-                                    <div className="text-accent-red font-black text-xs pt-1.5">◆</div>
-                                    <div><strong className="text-white">Data Anonim:</strong> Kami dapat membagikan statistik agregat yang telah di-anonimkan secara permanen (sehingga individu tidak dapat diidentifikasi) kepada mitra riset untuk kemajuan ilmu kesehatan publik.</div>
-                                </li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    {/* SECTION 6 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">06</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Hak-Hak Anda (UU PDP & GDPR)</h2>
-                        </div>
-                        <div className="pl-12 space-y-8 text-white/60 leading-relaxed font-medium">
-                            <p>Anda memiliki hak penuh atas data Anda, termasuk:</p>
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:border-accent-red/30 transition-all">
-                                    <strong className="text-white block mb-2 uppercase tracking-widest text-[10px]">Hak Akses & Koreksi</strong>
-                                    <p className="text-xs">Mendapatkan salinan data pribadi Anda dan memperbaiki data yang tidak akurat.</p>
-                                </div>
-                                <div className="p-5 bg-white/5 rounded-2xl border border-white/5 hover:border-accent-red/30 transition-all">
-                                    <strong className="text-white block mb-2 uppercase tracking-widest text-[10px]">Right to be Forgotten</strong>
-                                    <p className="text-xs">Menghapus akun dan data terkait dalam waktu 30 hari permintaan.</p>
-                                </div>
-                            </div>
-                            <p className="text-xs opacity-60">
-                                Catatan: Penarikan persetujuan dapat dilakukan kapan saja melalui pengaturan aplikasi. Data yang telah di-anonimkan sebelumnya mungkin tidak dapat dihapus jika telah digunakan untuk pengembangan model AI kolektif.
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* SECTION 7 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">07</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Retensi Data</h2>
-                        </div>
-                        <div className="pl-12 space-y-6 text-white/60 leading-relaxed font-medium">
-                            <p>
-                                Kami menyimpan data pribadi Anda selama akun Anda aktif. Jika akun dihapus, kami tetap menyimpan data tertentu (dalam bentuk terenkripsi dan terbatas aksesnya) selama hingga <strong className="text-white">7 tahun</strong> untuk tujuan pembelaan klaim hukum atau kewajiban keselamatan perangkat medis (Post-Market Surveillance).
-                            </p>
-                        </div>
-                    </section>
-
-                    {/* SECTION 8 */}
-                    <section>
-                        <div className="flex gap-6 mb-8">
-                            <div className="text-2xl font-black text-accent-red/20 leading-none">08</div>
-                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Perubahan Kebijakan</h2>
-                        </div>
-                        <div className="pl-12 space-y-6 text-white/60 leading-relaxed font-medium">
-                            <p>
-                                Kami dapat memperbarui kebijakan ini dari waktu ke waktu. Perubahan signifikan akan diberitahukan melalui email atau notifikasi aplikasi setidaknya 30 hari sebelum berlaku.
-                            </p>
-                        </div>
-                    </section>
-                </div>
-
-                <div className="mt-24 pt-12 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <p className="text-white/20 text-xs font-black uppercase tracking-widest">Nadi Data Protection Compliance</p>
-                    <Link to="/#contact">
-                        <button className="bg-white text-black hover:bg-white/90 px-8 py-3 text-[10px] font-black uppercase tracking-widest rounded-none transform -skew-x-12 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-white/5">
-                            Hubungi Kami
-                        </button>
-                    </Link>
-                </div>
-            </div>
+        {/* Header */}
+        <div className="mb-12 pb-8 border-b border-zinc-200 dark:border-slate-800 text-center">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-4">
+            Dokumen Hukum Resmi — Nadi
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-3">
+            Kebijakan Privasi
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Versi 2.0 &nbsp;|&nbsp; Berlaku sejak: 6 April 2026 &nbsp;|&nbsp; Terakhir diperbarui: 6 April 2026
+          </p>
         </div>
-    );
+
+        {/* Preamble */}
+        <div className="mb-10 text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-3">
+          <p>
+            Kebijakan Privasi ini menjelaskan bagaimana Nadi mengumpulkan, memproses, menyimpan, melindungi, dan mengungkapkan data pribadi Anda sesuai dengan Undang-Undang Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi, Peraturan Menteri Komunikasi dan Informatika Nomor 20 Tahun 2016, dan Peraturan Pemerintah Nomor 71 Tahun 2019 tentang Penyelenggaraan Sistem dan Transaksi Elektronik.
+          </p>
+          <p>
+            Dengan menggunakan layanan Nadi, Anda menyatakan telah membaca, memahami, dan menyetujui Kebijakan Privasi ini. Harap baca dokumen ini dengan saksama. Anda harus berusia paling sedikit 18 (delapan belas) tahun, atau 13 (tiga belas) hingga 17 (tujuh belas) tahun dengan persetujuan orang tua atau wali yang sah, untuk menggunakan layanan kami.
+          </p>
+        </div>
+
+        {/* Body */}
+        <div className="space-y-10 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 1 — Identitas Pengendali Data Pribadi
+            </h2>
+            <div className="space-y-3">
+              <p>
+                Sesuai dengan Pasal 1 angka 4 Undang-Undang Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi, Nadi bertindak sebagai <span className="font-semibold text-slate-900 dark:text-white">Pengendali Data Pribadi</span> atas data yang dikumpulkan melalui Platform. Identitas Pengendali adalah sebagai berikut:
+              </p>
+              <table className="w-full text-xs border-collapse mt-2">
+                <tbody>
+                  {[
+                    ["Nama Entitas", "[Nama PT/CV Pengelola Nadi]"],
+                    ["Domisili Hukum", "Jakarta, Indonesia"],
+                    ["Nomor Registrasi PSE", "[Nomor Registrasi Kominfo]"],
+                    ["Nomor Induk Berusaha", "[NIB]"],
+                    ["Alamat Surat Elektronik Resmi", "legal@nadi.id"],
+                    ["Petugas Perlindungan Data (DPO)", "dpo@nadi.id"],
+                  ].map(([label, val]) => (
+                    <tr key={label} className="border-b border-zinc-100 dark:border-slate-800">
+                      <td className="py-2 pr-4 font-semibold text-slate-600 dark:text-slate-400 w-1/2 align-top">{label}</td>
+                      <td className="py-2 text-slate-800 dark:text-slate-200">{val}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 2 — Dasar Hukum Pemrosesan Data
+            </h2>
+            <div className="space-y-3">
+              <p>
+                Berdasarkan Pasal 20 Undang-Undang Nomor 27 Tahun 2022, Nadi memproses data pribadi Anda berdasarkan satu atau lebih dasar hukum berikut:
+              </p>
+              <ol className="list-decimal list-outside ml-5 space-y-2">
+                <li><span className="font-semibold text-slate-900 dark:text-white">Persetujuan (Consent).</span> Anda memberikan persetujuan eksplisit sebelum kami memproses data pribadi, khususnya data kesehatan yang bersifat sensitif, sebagaimana dimaksud dalam Pasal 21 Undang-Undang Nomor 27 Tahun 2022.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Pelaksanaan Perjanjian.</span> Pemrosesan data diperlukan untuk menyediakan layanan yang Anda minta dan memenuhi kewajiban kontraktual kami kepada Anda.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Kewajiban Hukum.</span> Pemrosesan data untuk memenuhi kewajiban yang diatur oleh peraturan perundang-undangan, termasuk kewajiban pelaporan kepada otoritas yang berwenang.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Kepentingan yang Sah (Legitimate Interest).</span> Pemrosesan data untuk kepentingan keamanan sistem, pencegahan penipuan, dan peningkatan kualitas layanan, sepanjang tidak merugikan hak-hak Pengguna secara tidak proporsional.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 3 — Kategori Data Pribadi yang Dikumpulkan
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-white mb-2">3.1. Data Identitas dan Akun</p>
+                <ol className="list-decimal list-outside ml-5 space-y-1">
+                  {["Nama lengkap dan nama profil.", "Alamat surat elektronik aktif.", "Kata sandi yang disimpan dalam bentuk enkripsi hash.", "Nomor telepon (bersifat opsional).", "Tanggal lahir dan jenis kelamin biologis."].map((i, idx) => <li key={idx}>{i}</li>)}
+                </ol>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-white mb-2">3.2. Data Kesehatan</p>
+                <p className="mb-2">Data kesehatan merupakan Data Pribadi yang Bersifat Spesifik sebagaimana diatur dalam Pasal 4 ayat (2) Undang-Undang Nomor 27 Tahun 2022 dan mendapat tingkat perlindungan lebih tinggi. Data ini hanya diproses berdasarkan persetujuan eksplisit Anda, meliputi:</p>
+                <ol className="list-decimal list-outside ml-5 space-y-1">
+                  {["Gejala dan keluhan yang diinputkan pada fitur Nadi Assess.", "Riwayat penyakit dan kondisi medis yang Anda deklarasikan secara mandiri.", "Faktor risiko kesehatan (kebiasaan merokok, hipertensi, diabetes, kehamilan, dan lain-lain).", "Riwayat sesi konsultasi dan hasil analisis yang dihasilkan oleh sistem.", "Riwayat pencarian pada basis data Medicpedia."].map((i, idx) => <li key={idx}>{i}</li>)}
+                </ol>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-white mb-2">3.3. Data Teknis dan Data Penggunaan</p>
+                <ol className="list-decimal list-outside ml-5 space-y-1">
+                  {["Alamat protokol internet (IP), tipe peramban, dan sistem operasi perangkat.", "Data catatan akses: halaman yang dikunjungi, tanggal dan waktu akses, durasi sesi.", "Data lokasi kota atau wilayah berdasarkan alamat IP (bukan data geo-lokasi presisi).", "Preferensi dan pengaturan yang disimpan di dalam aplikasi.", "Token sesi dan kuki (cookie) yang diperlukan untuk fungsionalitas Platform."].map((i, idx) => <li key={idx}>{i}</li>)}
+                </ol>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 4 — Tujuan Pemrosesan Data
+            </h2>
+            <div className="space-y-3">
+              <p>Data pribadi Anda digunakan untuk tujuan-tujuan berikut:</p>
+              <ol className="list-decimal list-outside ml-5 space-y-2">
+                <li>Pembuatan, verifikasi, dan pengelolaan akun Pengguna;</li>
+                <li>Penyediaan fitur Nadi Assess berdasarkan profil dan gejala yang Anda berikan;</li>
+                <li>Personalisasi konten Medicpedia berdasarkan riwayat penggunaan;</li>
+                <li>Pengiriman notifikasi layanan, pembaruan sistem, dan informasi yang relevan;</li>
+                <li>Pemeliharaan keamanan sistem dan pencegahan akses tidak sah atau penipuan;</li>
+                <li>Peningkatan kualitas layanan melalui analisis data penggunaan yang telah dianonimkan;</li>
+                <li>Pemenuhan kewajiban hukum dan kepatuhan terhadap regulasi yang berlaku; dan</li>
+                <li>Penanganan pertanyaan, pengaduan, dan permintaan dukungan Pengguna.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 5 — Keamanan dan Perlindungan Data
+            </h2>
+            <div className="space-y-3">
+              <p>5.1. Kami menerapkan langkah-langkah teknis dan organisasi yang sesuai dengan standar industri untuk melindungi data Anda dari akses tidak sah, pengungkapan, perubahan, atau penghapusan yang tidak sah, meliputi: (i) enkripsi data dalam transit menggunakan Transport Layer Security (TLS) versi 1.2 atau lebih tinggi; (ii) enkripsi penyimpanan data sensitif menggunakan algoritma AES-256; (iii) penyimpanan kata sandi menggunakan algoritma hashing bcrypt; (iv) kontrol akses berbasis prinsip hak istimewa minimal; dan (v) pencatatan seluruh akses internal dalam log audit.</p>
+              <p>5.2. Platform menjalani pengujian keamanan berkala dalam bentuk uji penetrasi dan penilaian kerentanan oleh pihak independen.</p>
+              <p>5.3. Dalam hal terjadi pelanggaran keamanan data yang berdampak signifikan terhadap data pribadi Anda, kami akan memberitahu Anda dan Komisi Perlindungan Data Pribadi dalam waktu paling lama <span className="font-semibold text-slate-900 dark:text-white">14 (empat belas) hari kerja</span> sejak pelanggaran diketahui, sesuai dengan ketentuan Pasal 46 Undang-Undang Nomor 27 Tahun 2022.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 6 — Pengungkapan Data kepada Pihak Ketiga
+            </h2>
+            <div className="space-y-3">
+              <p>
+                Nadi tidak menjual, menyewakan, atau memperdagangkan data pribadi Anda kepada pihak ketiga untuk kepentingan komersial mereka. Pengungkapan data hanya dapat dilakukan dalam kondisi berikut:
+              </p>
+              <ol className="list-decimal list-outside ml-5 space-y-2">
+                <li><span className="font-semibold text-slate-900 dark:text-white">Penyedia Layanan Teknis.</span> Kami bekerja sama dengan penyedia infrastruktur cloud, analitik, dan layanan keamanan yang terikat oleh Perjanjian Pemrosesan Data (Data Processing Agreement) dan hanya memproses data atas instruksi kami.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Kewajiban Hukum.</span> Apabila diharuskan oleh perintah pengadilan, lembaga penegak hukum, atau otoritas regulasi yang berwenang di Indonesia berdasarkan ketentuan hukum yang berlaku.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Perlindungan Kepentingan Vital.</span> Apabila pengungkapan diperlukan untuk mencegah ancaman nyata terhadap keselamatan jiwa seseorang.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Transaksi Korporasi.</span> Dalam hal terjadi merger, akuisisi, atau restrukturisasi usaha, data Pengguna dapat dialihkan kepada entitas pengambil alih dengan kewajiban privasi yang setara. Pengguna akan diberitahu sebelum pengalihan dilakukan.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Data Agregat dan Anonim.</span> Statistik penggunaan yang telah dianonimkan secara permanen dapat dibagikan kepada mitra riset kesehatan publik, dengan syarat individu tidak dapat diidentifikasi dari data tersebut.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 7 — Penyimpanan dan Retensi Data
+            </h2>
+            <div className="space-y-3">
+              <p>7.1. Data Anda disimpan di server yang berlokasi di wilayah Indonesia atau yurisdiksi dengan standar perlindungan data yang setara dengan ketentuan hukum Indonesia.</p>
+              <p>7.2. Kami menerapkan periode retensi sebagaimana tercantum dalam tabel berikut:</p>
+              <table className="w-full text-xs border-collapse mt-2">
+                <thead>
+                  <tr className="border-b-2 border-zinc-300 dark:border-slate-700">
+                    <th className="text-left py-2 pr-4 font-semibold text-slate-700 dark:text-slate-300">Kategori Data</th>
+                    <th className="text-left py-2 pr-4 font-semibold text-slate-700 dark:text-slate-300">Periode Retensi</th>
+                    <th className="text-left py-2 font-semibold text-slate-700 dark:text-slate-300">Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["Data akun aktif", "Selama akun aktif", "Dihapus 30 hari setelah penutupan akun"],
+                    ["Riwayat konsultasi", "Selama akun aktif", "Dapat dihapus Pengguna kapan saja"],
+                    ["Data catatan teknis (log)", "15 hari", "Kecuali diperlukan untuk investigasi keamanan"],
+                    ["Data transaksi dan tagihan", "5 tahun", "Sesuai kewajiban perpajakan (UU No. 28 Tahun 2007)"],
+                    ["Data cadangan (backup)", "Maks. 90 hari", "Kemudian dihapus secara permanen"],
+                    ["Data pasca penutupan akun", "Maks. 7 tahun", "Bentuk terenkripsi untuk keperluan kewajiban hukum"],
+                  ].map(([kategori, periode, ket], i) => (
+                    <tr key={i} className="border-b border-zinc-100 dark:border-slate-800">
+                      <td className="py-2 pr-4 align-top">{kategori}</td>
+                      <td className="py-2 pr-4 font-semibold text-slate-900 dark:text-white align-top">{periode}</td>
+                      <td className="py-2 text-slate-500 dark:text-slate-400 align-top">{ket}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 8 — Hak-Hak Subjek Data Pribadi
+            </h2>
+            <div className="space-y-3">
+              <p>Sesuai dengan Pasal 5 hingga Pasal 18 Undang-Undang Nomor 27 Tahun 2022 tentang Perlindungan Data Pribadi, Anda memiliki hak-hak berikut:</p>
+              <ol className="list-decimal list-outside ml-5 space-y-2">
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Mendapatkan Informasi (Pasal 8).</span> Mendapatkan informasi yang jelas dan transparan mengenai identitas Pengendali, tujuan pemrosesan, dan pihak yang menerima data.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Akses (Pasal 9).</span> Memperoleh salinan data pribadi Anda yang kami simpan dan kelola.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Koreksi (Pasal 10).</span> Memperbarui atau memperbaiki data pribadi yang tidak akurat, tidak lengkap, atau menyesatkan.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Penghapusan (Pasal 11).</span> Meminta penghapusan data pribadi Anda dalam kondisi yang diatur oleh Undang-Undang Perlindungan Data Pribadi.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Penarikan Persetujuan (Pasal 12).</span> Menarik kembali persetujuan atas pemrosesan data kapan saja, tanpa memengaruhi keabsahan pemrosesan yang telah dilakukan sebelumnya.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Portabilitas Data (Pasal 13).</span> Mendapatkan data Anda dalam format yang dapat dibaca oleh mesin untuk keperluan transfer kepada Pengendali Data lain.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Keberatan (Pasal 14).</span> Mengajukan keberatan atas pemrosesan data yang didasarkan pada kepentingan yang sah apabila terdapat alasan yang kuat.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak atas Pengambilan Keputusan Otomatis (Pasal 15).</span> Meminta peninjauan oleh tenaga manusia atas setiap keputusan yang dihasilkan semata-mata oleh sistem otomatis atau kecerdasan buatan yang berdampak signifikan.</li>
+                <li><span className="font-semibold text-slate-900 dark:text-white">Hak Penundaan Pemrosesan (Pasal 16).</span> Meminta penundaan pemrosesan data pribadi Anda dalam kondisi tertentu selama permohonan koreksi atau keberatan sedang diproses.</li>
+              </ol>
+              <p>Untuk mengajukan permohonan terkait hak-hak Anda, silakan menghubungi Petugas Perlindungan Data kami melalui surat elektronik di <a href="mailto:dpo@nadi.id" className="underline hover:text-slate-900 dark:hover:text-white transition-colors">dpo@nadi.id</a>. Kami akan memberikan tanggapan dalam waktu paling lama <span className="font-semibold text-slate-900 dark:text-white">14 (empat belas) hari kerja</span>. Apabila Anda merasa hak-hak Anda tidak dipenuhi, Anda berhak mengajukan pengaduan kepada <span className="font-semibold text-slate-900 dark:text-white">Komisi Perlindungan Data Pribadi (KPDP)</span> sesuai ketentuan yang berlaku.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 9 — Cookie dan Teknologi Pelacakan
+            </h2>
+            <div className="space-y-3">
+              <p>9.1. Kami menggunakan cookie dan teknologi serupa untuk memastikan fungsionalitas Platform, menganalisis penggunaan, dan meningkatkan pengalaman pengguna. Kategori cookie yang digunakan meliputi: (i) <span className="font-semibold text-slate-900 dark:text-white">Cookie Esensial</span>, yang diperlukan untuk fungsi dasar Platform seperti autentikasi sesi dan keamanan, serta tidak dapat dinonaktifkan; (ii) <span className="font-semibold text-slate-900 dark:text-white">Cookie Analitik</span>, yang digunakan untuk memahami pola penggunaan Platform secara anonim; dan (iii) <span className="font-semibold text-slate-900 dark:text-white">Cookie Preferensi</span>, yang menyimpan pengaturan tampilan dan bahasa Pengguna.</p>
+              <p>9.2. Anda dapat mengelola preferensi cookie melalui pengaturan peramban. Perlu diperhatikan bahwa menonaktifkan cookie esensial dapat mengganggu fungsionalitas Platform secara keseluruhan.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 10 — Perlindungan Data Anak di Bawah Umur
+            </h2>
+            <div className="space-y-3">
+              <p>10.1. Nadi tidak secara sengaja mengumpulkan data pribadi dari anak di bawah usia 13 (tiga belas) tahun.</p>
+              <p>10.2. Apabila Anda adalah orang tua atau wali dan mengetahui bahwa anak Anda telah memberikan data pribadi tanpa persetujuan Anda, harap segera menghubungi kami melalui <a href="mailto:dpo@nadi.id" className="underline hover:text-slate-900 dark:hover:text-white transition-colors">dpo@nadi.id</a> agar kami dapat mengambil tindakan penghapusan data yang diperlukan.</p>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-base font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-wide">
+              Pasal 11 — Perubahan Kebijakan Privasi
+            </h2>
+            <div className="space-y-3">
+              <p>11.1. Kami dapat mengubah Kebijakan Privasi ini dari waktu ke waktu seiring dengan perkembangan regulasi, teknologi, atau cakupan layanan kami. Perubahan yang bersifat material akan diberitahukan kepada Pengguna melalui surat elektronik ke alamat terdaftar atau pemberitahuan yang ditampilkan secara jelas di dalam Platform, minimal 14 (empat belas) hari kalender sebelum perubahan berlaku.</p>
+              <p>11.2. Versi terdahulu dari Kebijakan Privasi ini dapat diminta melalui <a href="mailto:dpo@nadi.id" className="underline hover:text-slate-900 dark:hover:text-white transition-colors">dpo@nadi.id</a>.</p>
+            </div>
+          </section>
+
+        </div>
+
+        {/* Footer */}
+        <div className="mt-16 pt-8 border-t border-zinc-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="text-xs text-slate-400 dark:text-slate-500 space-y-1">
+              <p>Nadi &copy; 2026. Seluruh hak dilindungi undang-undang.</p>
+              <p>Petugas Perlindungan Data: <a href="mailto:dpo@nadi.id" className="underline hover:text-slate-600 dark:hover:text-slate-300">dpo@nadi.id</a></p>
+            </div>
+            <div className="flex gap-3 text-xs">
+              <Link to="/terms" className="text-slate-500 dark:text-slate-400 underline hover:text-slate-900 dark:hover:text-white transition-colors">
+                Syarat &amp; Ketentuan
+              </Link>
+              <span className="text-slate-300 dark:text-slate-700">|</span>
+              <Link to="/#contact" className="text-slate-500 dark:text-slate-400 underline hover:text-slate-900 dark:hover:text-white transition-colors">
+                Hubungi Kami
+              </Link>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default PrivacyPolicy;

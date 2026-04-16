@@ -234,7 +234,7 @@ const PenyakitDetail = () => {
       {/* ── Content Layout ── */}
       <div className="container mx-auto px-6 py-6 md:py-10 flex flex-col md:flex-row gap-8 items-start">
         {/* ── Mobile Sticky Shortcuts ── */}
-        <div className="md:hidden sticky top-4 z-40 bg-zinc-50/90 dark:bg-[#0f1117]/90 backdrop-blur-xl p-2 rounded-2xl flex items-center gap-4 border border-zinc-200/50 dark:border-white/10 shadow-sm shadow-black/5 w-full">
+        <div className="md:hidden sticky top-20 z-20 bg-zinc-50/95 dark:bg-[#0f1117]/95 backdrop-blur-xl p-2 rounded-2xl flex items-center gap-4 border border-zinc-200/50 dark:border-white/10 shadow-sm shadow-black/5 w-full">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar">
             {availableSections.map(({ key, label }) => (
               <button
@@ -262,7 +262,7 @@ const PenyakitDetail = () => {
                   key={key}
                   ref={(el) => (sectionRefs.current[key] = el)}
                   id={`section-${key}`}
-                  className="scroll-mt-24"
+                  className="scroll-mt-36"
                 >
                   {/* Section Header */}
                   <div className="flex items-center gap-3 pb-4">
@@ -378,7 +378,7 @@ const PenyakitDetail = () => {
         </div>
 
         {/* ── Desktop Right Sidebar (Sticky) ── */}
-        <div className="hidden md:block w-72 flex-shrink-0 sticky top-10">
+        <div className="hidden md:block w-72 flex-shrink-0 sticky top-24">
           <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl p-6 rounded-3xl border border-zinc-200/50 dark:border-white/10 shadow-sm">
             <h3 className="font-bold text-lg mb-4 text-slate-900 dark:text-white">
               Daftar Isi
@@ -412,9 +412,6 @@ const PenyakitDetail = () => {
             </div>
 
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
-              <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 font-medium leading-relaxed">
-                Konsultasi cepat dengan AI untuk memahami lebih lanjut.
-              </p>
               <Link
                 to={`/new-check?topic=${encodeURIComponent(data.name)}`}
                 className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 transition-transform hover:scale-105 w-full group"
