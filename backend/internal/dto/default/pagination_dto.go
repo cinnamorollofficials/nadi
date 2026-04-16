@@ -5,6 +5,7 @@ type PaginationRequest struct {
 	Limit    int    `form:"limit"`
 	Search   string `form:"search"`
 	Category string `form:"category"`
+	Letter   string `form:"letter"`
 }
 
 func (p *PaginationRequest) GetOffset() int {

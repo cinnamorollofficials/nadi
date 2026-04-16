@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+
 	defaultDto "github.com/hadi-projects/go-react-starter/internal/dto/default"
 	"github.com/hadi-projects/go-react-starter/internal/entity"
 	"gorm.io/gorm"
@@ -35,20 +36,18 @@ func (r *medicpediapenyakitRepository) FindAll(ctx context.Context, pagination *
 
 	query := r.db.WithContext(ctx).Model(&entity.MedicpediaPenyakit{})
 
-	
 	if pagination.Search != "" {
 		query = query.Where("name LIKE ?", "%"+pagination.Search+"%")
 		query = query.Or("slug LIKE ?", "%"+pagination.Search+"%")
 		query = query.Or("description LIKE ?", "%"+pagination.Search+"%")
 	}
-	
 
 	if err := query.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	offset := (pagination.GetPage() - 1) * pagination.GetLimit()
-	err := query.Order("id DESC").
+	err := query.Order("id ASC").
 		Limit(pagination.GetLimit()).
 		Offset(offset).
 		Find(&entities).Error
@@ -63,7 +62,11 @@ func (r *medicpediapenyakitRepository) FindPublicAll(ctx context.Context, pagina
 	query := r.db.WithContext(ctx).Model(&entity.MedicpediaPenyakit{}).Where("status = ?", "Published")
 
 	if pagination.Search != "" {
-		query = query.Where("(name LIKE ? OR slug LIKE ? OR description LIKE ?)", "%"+pagination.Search+"%", "%"+pagination.Search+"%", "%"+pagination.Search+"%")
+		query = query.Where("(name LIKE ? OR slug LIKE ?)", "%"+pagination.Search+"%", "%"+pagination.Search+"%")
+	}
+
+	if pagination.Letter != "" {
+		query = query.Where("name LIKE ?", pagination.Letter+"%")
 	}
 
 	if err := query.Count(&total).Error; err != nil {
@@ -71,7 +74,7 @@ func (r *medicpediapenyakitRepository) FindPublicAll(ctx context.Context, pagina
 	}
 
 	offset := (pagination.GetPage() - 1) * pagination.GetLimit()
-	err := query.Order("id DESC").
+	err := query.Order("name ASC").
 		Limit(pagination.GetLimit()).
 		Offset(offset).
 		Find(&entities).Error
@@ -104,4 +107,3 @@ func (r *medicpediapenyakitRepository) Update(ctx context.Context, entity *entit
 func (r *medicpediapenyakitRepository) Delete(ctx context.Context, id uint) error {
 	return r.db.WithContext(ctx).Delete(&entity.MedicpediaPenyakit{}, id).Error
 }
-

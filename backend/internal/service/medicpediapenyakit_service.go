@@ -58,7 +58,7 @@ func (s *medicpediapenyakitService) Create(ctx context.Context, req dto.CreateMe
 		return nil, err
 	}
 
-	s.cache.DeletePattern(ctx, "medicpedia_penyakit:*")
+	s.cache.DeletePattern(ctx, "medicpedia_penyakit*")
 
 	
 	logger.AuditLogger.Info().
@@ -136,7 +136,7 @@ func (s *medicpediapenyakitService) GetBySlug(ctx context.Context, slug string) 
 }
 
 func (s *medicpediapenyakitService) GetPublicAll(ctx context.Context, pagination *defaultDto.PaginationRequest) (*defaultDto.PaginationResponse, error) {
-	cacheKey := fmt.Sprintf("medicpedia_penyakit_public:page:%d:limit:%d:search:%s", pagination.GetPage(), pagination.GetLimit(), pagination.Search)
+	cacheKey := fmt.Sprintf("medicpedia_penyakit_public:page:%d:limit:%d:search:%s:letter:%s", pagination.GetPage(), pagination.GetLimit(), pagination.Search, pagination.Letter)
 	var cached defaultDto.PaginationResponse
 	if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
 		return &cached, nil
@@ -193,7 +193,7 @@ func (s *medicpediapenyakitService) Update(ctx context.Context, id uint, req dto
 	}
 
 	s.cache.Delete(ctx, fmt.Sprintf("medicpedia_penyakit:%d", id))
-	s.cache.DeletePattern(ctx, "medicpedia_penyakit:*")
+	s.cache.DeletePattern(ctx, "medicpedia_penyakit*")
 
 	
 	logger.AuditLogger.Info().
@@ -207,7 +207,7 @@ func (s *medicpediapenyakitService) Update(ctx context.Context, id uint, req dto
 
 func (s *medicpediapenyakitService) Delete(ctx context.Context, id uint) error {
 	s.cache.Delete(ctx, fmt.Sprintf("medicpedia_penyakit:%d", id))
-	s.cache.DeletePattern(ctx, "medicpedia_penyakit:*")
+	s.cache.DeletePattern(ctx, "medicpedia_penyakit*")
 
 	
 	logger.AuditLogger.Info().
