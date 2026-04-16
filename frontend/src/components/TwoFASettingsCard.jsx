@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import PropTypes from 'prop-types';
 import Button from './Button';
 import apiClient from '../api/client';
+import { safeStringify } from '../utils/json';
 
 const TwoFASettingsCard = ({ user }) => {
     const queryClient = useQueryClient();
@@ -33,7 +34,7 @@ const TwoFASettingsCard = ({ user }) => {
             queryClient.invalidateQueries({ queryKey: ['me'] });
             // Update localStorage user
             const stored = JSON.parse(localStorage.getItem('user') || '{}');
-            localStorage.setItem('user', JSON.stringify({ ...stored, two_fa_enabled: true }));
+            localStorage.setItem('user', safeStringify({ ...stored, two_fa_enabled: true }));
         },
         onError: (err) => setError(err.response?.data?.meta?.message || 'Invalid code'),
     });
@@ -46,7 +47,7 @@ const TwoFASettingsCard = ({ user }) => {
             setCode('');
             queryClient.invalidateQueries({ queryKey: ['me'] });
             const stored = JSON.parse(localStorage.getItem('user') || '{}');
-            localStorage.setItem('user', JSON.stringify({ ...stored, two_fa_enabled: false }));
+            localStorage.setItem('user', safeStringify({ ...stored, two_fa_enabled: false }));
         },
         onError: (err) => setError(err.response?.data?.meta?.message || 'Invalid code'),
     });

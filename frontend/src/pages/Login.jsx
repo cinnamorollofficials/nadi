@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import TextField from "../components/TextField";
 import { useSettings } from "../context/SettingsContext";
 import apiClient from "../api/client";
+import { safeStringify } from "../utils/json";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Login = () => {
       if (data.data.refresh_token) {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("user", safeStringify(data.data.user));
       navigate("/dashboard");
     },
     onError: (error) => {
@@ -53,7 +54,7 @@ const Login = () => {
       if (data.data.refresh_token) {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("user", safeStringify(data.data.user));
       navigate("/dashboard");
     },
     onError: (error) => {

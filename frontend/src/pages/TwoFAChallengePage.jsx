@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import apiClient from "../api/client";
 import { useSettings } from "../context/SettingsContext";
+import { safeStringify } from "../utils/json";
 
 const TwoFAChallengePage = () => {
   const { logo, app_name } = useSettings();
@@ -25,7 +26,7 @@ const TwoFAChallengePage = () => {
       if (data.data.refresh_token) {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("user", safeStringify(data.data.user));
       navigate("/dashboard");
     },
     onError: (err) => {

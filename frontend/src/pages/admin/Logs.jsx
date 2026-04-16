@@ -6,6 +6,7 @@ import Pagination from '../../components/Pagination';
 import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import logApi from '../../api/log';
+import { safeStringify } from '../../utils/json';
 
 const Logs = () => {
     const { type: logType } = useParams();
@@ -126,7 +127,7 @@ const Logs = () => {
         const inMessage = log.message?.toLowerCase().includes(query);
         const inAction = log.action?.toLowerCase().includes(query);
         const inRequestId = log.request_id?.toLowerCase().includes(query);
-        const inDetails = log.details && JSON.stringify(log.details).toLowerCase().includes(query);
+        const inDetails = log.details && safeStringify(log.details).toLowerCase().includes(query);
         return inMessage || inAction || inRequestId || inDetails;
     });
 
@@ -138,19 +139,22 @@ const Logs = () => {
 
     const renderJsonBlock = (data) => {
         if (!data) return <div className="text-surface-on-variant italic">Empty</div>;
+        
+        const jsonString = safeStringify(data, null, 2);
+        
         return (
             <pre className="p-4 bg-gray-900 dark:bg-black text-green-400 rounded-lg overflow-auto text-xs font-mono border border-outline-variant/30 relative group">
                 <button
                     className="absolute top-2 right-2 p-1.5 bg-white/10 hover:bg-white/20 rounded text-white transition-opacity opacity-0 group-hover:opacity-100"
                     onClick={(e) => {
                         e.stopPropagation();
-                        navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+                        navigator.clipboard.writeText(jsonString);
                     }}
                     title="Copy to clipboard"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                 </button>
-                {JSON.stringify(data, null, 2)}
+                {jsonString}
             </pre>
         );
     };

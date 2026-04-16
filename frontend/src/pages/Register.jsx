@@ -6,6 +6,7 @@ import TextField from "../components/TextField";
 import { useSettings } from "../context/SettingsContext";
 import apiClient from "../api/client";
 import toast from "react-hot-toast";
+import { safeStringify } from "../utils/json";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const Register = () => {
       if (data.data.refresh_token) {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      localStorage.setItem("user", safeStringify(data.data.user));
       navigate("/dashboard");
     },
     onError: (error) => {

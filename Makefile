@@ -4,6 +4,14 @@ run-backend:
 run-frontend:
 	cd frontend && npm run dev
 
+run-compile-backend-prod:
+	sudo systemctl stop nadi
+	cd backend && go build -o main ./cmd/api/main.go
+	sudo systemctl start nadi
+
+run-build-frontend-prod:
+	cd frontend && npm run build
+
 run-migration:
 	cd backend && go run ./cmd/migrate/migrate.go
 

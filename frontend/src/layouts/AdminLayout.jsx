@@ -5,6 +5,7 @@ import { getHealthStatus, getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
+import { safeStringify } from "../utils/json";
 
 const AdminLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -23,7 +24,7 @@ const AdminLayout = () => {
       if (response.success && response.data) {
         const updatedUser = response.data;
         setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        localStorage.setItem("user", safeStringify(updatedUser));
       }
     } catch (error) {
       console.error("Failed to refresh user data:", error);
