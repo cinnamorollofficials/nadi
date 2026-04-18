@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 
@@ -6,43 +7,56 @@ const team = [
     name: "Dr. Aditya Pratama",
     role: "Chief Medical Officer",
     desc: "Spesialis penyakit dalam dengan 12 tahun pengalaman klinis. Memimpin kurasi basis pengetahuan medis Nadi.",
-    initials: "AP",
-    color: "bg-primary/10 text-primary",
+    image: "/assets/team-aditya.png",
   },
   {
     name: "Rizky Firmansyah",
     role: "Lead AI Engineer",
     desc: "Arsitek sistem AI probabilistik Nadi. Berpengalaman dalam NLP medis dan machine learning klinis.",
-    initials: "RF",
-    color: "bg-blue-500/10 text-blue-500",
+    image: "/assets/team-rizky.png",
   },
   {
     name: "Sari Dewi Kusuma",
     role: "Head of Product",
     desc: "Memastikan setiap fitur Nadi memberikan pengalaman yang intuitif, aman, dan berdampak nyata bagi pengguna.",
-    initials: "SD",
-    color: "bg-violet-500/10 text-violet-500",
+    image: "/assets/team-sari.png",
   },
 ];
 
 const values = [
   {
-    icon: "🧬",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    ),
     title: "Berbasis Sains",
     desc: "Setiap rekomendasi didasarkan pada literatur medis terverifikasi dan dikurasi oleh tenaga medis profesional.",
   },
   {
-    icon: "🔒",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      </svg>
+    ),
     title: "Privasi Pertama",
     desc: "Data kesehatan Anda dienkripsi end-to-end. Kami tidak pernah menjual atau membagikan data pribadi Anda.",
   },
   {
-    icon: "⚡",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+      </svg>
+    ),
     title: "Akses Instan",
     desc: "Analisis gejala dalam hitungan detik, kapan saja dan di mana saja, tanpa perlu antri atau membuat janji.",
   },
   {
-    icon: "🤝",
+    icon: (
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    ),
     title: "Transparan",
     desc: "Kami selalu jelas tentang keterbatasan AI kami. Nadi adalah alat bantu, bukan pengganti dokter.",
   },
@@ -56,6 +70,11 @@ const stats = [
 ];
 
 const About = () => {
+  useEffect(() => {
+    document.title = "Tentang Nadi — Platform Kesehatan Digital Indonesia";
+    return () => { document.title = "Nadi"; };
+  }, []);
+
   return (
     <div className="bg-slate-100 dark:bg-navy-950 min-h-screen font-sans transition-colors duration-300">
 
@@ -128,28 +147,31 @@ const About = () => {
             {/* Visual */}
             <div className="lg:w-1/2">
               <div className="relative">
-                <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 dark:from-primary/5 dark:to-blue-500/5 rounded-[3rem] p-12 border border-primary/10 dark:border-outline-variant/20">
-                  <div className="space-y-6">
+                <div className="bg-gradient-to-br from-primary/10 to-blue-500/10 dark:from-primary/5 dark:to-blue-500/5 rounded-[3rem] p-10 border border-primary/10 dark:border-outline-variant/20">
+                  <div className="space-y-5">
                     {[
-                      { label: "Analisis Gejala", pct: "w-[92%]", color: "bg-primary" },
-                      { label: "Akurasi Diagnosis", pct: "w-[98%]", color: "bg-blue-500" },
-                      { label: "Kepuasan Pengguna", pct: "w-[95%]", color: "bg-violet-500" },
-                    ].map((item) => (
-                      <div key={item.label}>
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-bold text-slate-700 dark:text-slate-300">{item.label}</span>
-                          <span className="text-sm font-bold text-slate-400">{item.pct.replace("w-[", "").replace("]", "")}</span>
+                      { icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z", text: "1.500+ kondisi medis terindeks dan terverifikasi" },
+                      { icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", text: "Konten dikurasi bersama dokter spesialis Indonesia" },
+                      { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", text: "Data dienkripsi end-to-end, tidak pernah dijual" },
+                      { icon: "M13 10V3L4 14h7v7l9-11h-7z", text: "Respons analisis AI di bawah 3 detik" },
+                      { icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", text: "Artikel diperbarui setiap bulan oleh tim medis" },
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-start gap-4">
+                        <div className="w-8 h-8 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                          </svg>
                         </div>
-                        <div className="h-2.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
-                          <div className={`h-full ${item.pct} ${item.color} rounded-full`} />
-                        </div>
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">{item.text}</span>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-10 pt-8 border-t border-slate-200 dark:border-outline-variant/20 flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-2xl">
-                      🧠
+                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-outline-variant/20 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
                     </div>
                     <div>
                       <div className="text-sm font-bold text-slate-900 dark:text-white">AI Engine Nadi</div>
@@ -206,19 +228,19 @@ const About = () => {
             {[
               {
                 step: "01",
-                icon: "💬",
+                icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
                 title: "Ceritakan Gejalamu",
                 desc: "Ketik atau pilih gejala yang kamu rasakan. AI kami memahami bahasa natural — tidak perlu istilah medis.",
               },
               {
                 step: "02",
-                icon: "🔬",
+                icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
                 title: "Analisis Probabilistik",
                 desc: "Engine AI Nadi mencocokkan gejalamu dengan 1.500+ kondisi medis menggunakan model probabilistik berlapis.",
               },
               {
                 step: "03",
-                icon: "📋",
+                icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4",
                 title: "Rekomendasi Terverifikasi",
                 desc: "Dapatkan daftar kemungkinan kondisi, tingkat urgensi, dan langkah tindak lanjut yang disarankan dokter.",
               },
@@ -228,7 +250,11 @@ const About = () => {
                 className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 group hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-6">
-                  <div className="text-4xl">{item.icon}</div>
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                    </svg>
+                  </div>
                   <span className="text-5xl font-bold text-slate-100 dark:text-white/5 leading-none">{item.step}</span>
                 </div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">
@@ -269,7 +295,7 @@ const About = () => {
                 key={v.title}
                 className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 group hover:border-primary/20 hover:bg-primary/[0.02] transition-all duration-300"
               >
-                <div className="text-4xl mb-6 group-hover:scale-110 transition-transform inline-block">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 text-primary group-hover:bg-primary/20 transition-colors">
                   {v.icon}
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-3">
@@ -303,8 +329,15 @@ const About = () => {
                 key={member.name}
                 className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 text-center group hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
               >
-                <div className={`w-16 h-16 rounded-2xl ${member.color} flex items-center justify-center text-xl font-bold mx-auto mb-6 group-hover:scale-110 transition-transform`}>
-                  {member.initials}
+                <div className="relative w-24 h-24 mx-auto mb-6 group">
+                  <div className="absolute inset-0 bg-primary/20 rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform duration-500" />
+                  <div className="relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-white dark:border-slate-800 shadow-xl">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
                 </div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-1">
                   {member.name}

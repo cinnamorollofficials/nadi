@@ -27,7 +27,8 @@ const TwoFAChallengePage = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      navigate("/dashboard");
+      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      navigate(destination);
     },
     onError: (err) => {
       setError(

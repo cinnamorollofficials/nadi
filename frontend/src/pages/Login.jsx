@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
@@ -15,7 +15,22 @@ const Login = () => {
     password: "",
     remember_me: false,
   });
+
   const [errors, setErrors] = useState({});
+
+  // SEO & Auto Redirect
+  useEffect(() => {
+    document.title = "Masuk — Nadi";
+    if (localStorage.getItem("token")) {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        const user = JSON.parse(userData);
+        navigate(user.role_id === 3 ? "/dashboard" : "/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [navigate]);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials) => {
@@ -34,7 +49,8 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      navigate("/dashboard");
+      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      navigate(destination);
     },
     onError: (error) => {
       setErrors({
@@ -55,7 +71,8 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      navigate("/dashboard");
+      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      navigate(destination);
     },
     onError: (error) => {
       setErrors({
@@ -191,7 +208,7 @@ const Login = () => {
                   <Link
                     to="/forgot-password"
                     title="forgot-password"
-                    className="text-[11px] font-bold text-primary hover:text-primary-600 transition-colors"
+                    className="text-xs font-bold text-primary hover:underline transition-colors"
                   >
                     Forgot password?
                   </Link>

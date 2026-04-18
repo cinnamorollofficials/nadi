@@ -13,8 +13,6 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
-  const [cacheStatus, setCacheStatus] = useState("unknown"); // unknown, connected, disconnected
-  const [kafkaStatus, setKafkaStatus] = useState("unknown"); // unknown, connected, disconnected
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Function to refresh user profile and permissions from server
@@ -58,38 +56,6 @@ const AdminLayout = () => {
 
     if (userData) {
       setUser(JSON.parse(userData));
-    }
-
-    const fetchHealthStatus = async () => {
-      if (!userData) return;
-      const parsedUser = JSON.parse(userData);
-      const mask = parsedUser.permissions_mask
-        ? BigInt(parsedUser.permissions_mask)
-        : 0n;
-      if ((mask & PERMS.MANAGE_CACHE) === 0n) return;
-      try {
-        const response = await getHealthStatus();
-        setCacheStatus(response.data.redis);
-        setKafkaStatus(response.data.kafka);
-      } catch (error) {
-        console.error("Failed to fetch health status:", error);
-        setCacheStatus("disconnected");
-        setKafkaStatus("disconnected");
-      }
-    };
-
-    fetchHealthStatus();
-
-    // Poll every 30 seconds (only if user has permission)
-    if (userData) {
-      const parsedUser = JSON.parse(userData);
-      const mask = parsedUser.permissions_mask
-        ? BigInt(parsedUser.permissions_mask)
-        : 0n;
-      if ((mask & PERMS.MANAGE_CACHE) !== 0n) {
-        const interval = setInterval(fetchHealthStatus, 30000);
-        return () => clearInterval(interval);
-      }
     }
   }, [navigate]);
 
@@ -135,7 +101,7 @@ const AdminLayout = () => {
       label: "Main",
       items: [
         {
-          path: "/dashboard",
+          path: "/admin",
           label: "Dashboard",
           icon: (
             <svg
@@ -563,6 +529,67 @@ const AdminLayout = () => {
             
           ],
         },
+        {
+          label: "Services",
+          permission: PERMS.MANAGE_CACHE,
+          icon: (
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
+              />
+            </svg>
+          ),
+          subItems: [
+            {
+              path: "/admin/services/redis",
+              label: "Redis",
+              permission: PERMS.MANAGE_CACHE,
+              icon: (
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
+                  />
+                </svg>
+              ),
+            },
+            {
+              path: "/admin/services/kafka",
+              label: "Kafka",
+              permission: PERMS.MANAGE_CACHE,
+              icon: (
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              ),
+            },
+          ],
+        },
          {
           label: "Logs",
           icon: (
@@ -804,30 +831,7 @@ const AdminLayout = () => {
               )}
             </button>
 
-            {/* System Status Indicators - Only visible with manage-cache permission */}
-            {(BigInt(user?.permissions_mask || 0) & PERMS.MANAGE_CACHE) !==
-              0n && (
-              <div className="hidden sm:flex items-center gap-3">
-                <div
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-variant/20 border border-outline-variant/10 text-[10px] font-bold uppercase tracking-wider text-surface-on-variant"
-                  title={`Redis: ${cacheStatus}`}
-                >
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full ${cacheStatus === "connected" ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" : "bg-red-500"}`}
-                  ></div>
-                  <span>Redis</span>
-                </div>
-                <div
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-variant/20 border border-outline-variant/10 text-[10px] font-bold uppercase tracking-wider text-surface-on-variant"
-                  title={`Kafka: ${kafkaStatus}`}
-                >
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full ${kafkaStatus === "connected" ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]" : "bg-red-500"}`}
-                  ></div>
-                  <span>Kafka</span>
-                </div>
-              </div>
-            )}
+
 
             <div className="flex items-center gap-3 pl-2 border-l border-outline-variant/30">
               <div className="hidden md:flex flex-col items-end">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getPublicFaqs } from "../../api/faq";
 import { Link } from "react-router-dom";
+import Skeleton from "../../components/Skeleton";
 
 const FaqPage = () => {
   const [faqs, setFaqs] = useState([]);
@@ -9,6 +10,7 @@ const FaqPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
+    document.title = "Pusat Bantuan — Nadi";
     getPublicFaqs({ limit: 100 })
       .then((res) => {
         if (res.data && res.data.data) {
@@ -17,6 +19,7 @@ const FaqPage = () => {
       })
       .catch((err) => console.error("Failed to load FAQs:", err))
       .finally(() => setLoading(false));
+    return () => { document.title = "Nadi"; };
   }, []);
 
   const filteredFaqs = faqs.filter((faq) =>
@@ -73,8 +76,15 @@ const FaqPage = () => {
         <div className="max-w-4xl mx-auto">
 
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="w-12 h-12 border-4 border-accent-red/20 border-t-accent-red rounded-full animate-spin" />
+            <div className="space-y-12">
+              {[1, 2].map((i) => (
+                <div key={i} className="space-y-4">
+                  <Skeleton className="h-8 w-48 mb-6" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              ))}
             </div>
           ) : Object.keys(groupedFaqs).length > 0 ? (
             <div className="space-y-16">
@@ -97,7 +107,7 @@ const FaqPage = () => {
                           </span>
                           <div
                             className={`w-8 h-8 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center transition-all text-slate-400 dark:text-white/20 transform ${
-                              openFaqId === faq.id ? "rotate-180 bg-accent-red text-white" : "group-hover:bg-accent-red group-hover:text-white"
+                              openFaqId === faq.id ? "rotate-180 bg-primary text-white" : "group-hover:bg-primary group-hover:text-white"
                             }`}
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,11 +133,11 @@ const FaqPage = () => {
             </div>
           )}
 
-          <div className="mt-20 p-12 bg-rose-500 rounded-[3rem] text-center shadow-2xl shadow-rose-500/20">
+          <div className="mt-20 p-12 bg-primary rounded-[3rem] text-center shadow-2xl shadow-primary/20">
              <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-4">Masih ada pertanyaan?</h3>
              <p className="text-white/80 font-bold mb-8 max-w-md mx-auto">Tim kami siap membantu Anda 24/7 untuk setiap kendala medis atau teknis.</p>
              <Link to="/contact">
-                <button className="bg-white text-rose-500 font-black px-10 py-4 rounded-2xl uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all shadow-xl">
+                <button className="bg-white text-primary font-black px-10 py-4 rounded-2xl uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all shadow-xl">
                     Hubungi Kami
                 </button>
              </Link>

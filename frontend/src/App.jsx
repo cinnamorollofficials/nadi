@@ -39,6 +39,8 @@ import BlogPostPage from "./pages/admin/BlogPostPage";
 import MedicpediaPenyakitPage from "./pages/admin/MedicpediaPenyakitPage";
 import MedicpediaNutrisiPage from "./pages/admin/MedicpediaNutrisiPage";
 import FaqPage from './pages/admin/FaqPage';
+import RedisServicePage from "./pages/admin/RedisServicePage";
+import KafkaServicePage from "./pages/admin/KafkaServicePage";
 // [GENERATOR_INSERT_IMPORT]
 
 // Client / reader pages
@@ -165,6 +167,7 @@ function App() {
 
             {/* Admin Routes */}
             <Route path="admin">
+              <Route index element={<Dashboard />} />
               <Route path="apikeys" element={<PermissionGuard permission={PERMS.GET_API_KEY}><ApiKeyPage /></PermissionGuard>} />
               <Route path="users" element={<PermissionGuard permission={PERMS.GET_USER}><Users /></PermissionGuard>} />
               <Route path="roles" element={<PermissionGuard permission={PERMS.GET_ROLE}><Roles /></PermissionGuard>} />
@@ -206,6 +209,11 @@ function App() {
                 element={<PermissionGuard permission={PERMS.GET_MEDICPEDIANUTRISI}><MedicpediaNutrisiPage /></PermissionGuard>}
               />
               <Route path="faq" element={<PermissionGuard permission={PERMS.GET_FAQ}><FaqPage /></PermissionGuard>} />
+              
+              {/* Services Monitoring */}
+              <Route path="services/redis" element={<PermissionGuard permission={PERMS.MANAGE_CACHE}><RedisServicePage /></PermissionGuard>} />
+              <Route path="services/kafka" element={<PermissionGuard permission={PERMS.MANAGE_CACHE}><KafkaServicePage /></PermissionGuard>} />
+
               {/* [GENERATOR_INSERT_ROUTE] */}
             </Route>
           </Route>

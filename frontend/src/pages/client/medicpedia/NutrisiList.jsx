@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicNutrisiAll } from "../../../api/client/medicpedia";
+import Skeleton from "../../../components/Skeleton";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -23,6 +24,12 @@ const NutrisiList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+
+  // SEO
+  useEffect(() => {
+    document.title = "Nutrisi A-Z — Medicpedia Nadi";
+    return () => { document.title = "Nadi"; };
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -155,7 +162,7 @@ const NutrisiList = () => {
                 key={letter}
                 id={`nutrisi-alpha-${letter}`}
                 onClick={() => handleLetterFilter(letter)}
-                className={`w-8 h-8 rounded-lg text-sm font-bold transition-all duration-200
+                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200
                                     ${
                                       activeLetter === letter
                                         ? "bg-emerald-600 text-white shadow-md scale-110"
@@ -174,7 +181,7 @@ const NutrisiList = () => {
         <div className="flex items-center justify-between mb-8">
           <p className="text-surface-on-variant text-sm">
             {loading ? (
-              "Memuat..."
+              <Skeleton className="w-24 h-4" />
             ) : (
               <span>
                 Menampilkan{" "}
@@ -190,10 +197,7 @@ const NutrisiList = () => {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {Array.from({ length: 9 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl bg-surface-variant/20 animate-pulse h-52"
-              />
+              <Skeleton key={i} className="h-52" />
             ))}
           </div>
         ) : data.length === 0 ? (
@@ -256,23 +260,55 @@ const NutrisiList = () => {
         )}
 
         {!loading && totalPages > 1 && (
-          <div className="flex justify-center gap-2 mt-12">
+          <div className="flex justify-center items-center gap-2 mt-12 flex-wrap">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
-              ← Prev
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Sebelumnya
             </button>
-            <span className="px-4 py-2 text-sm text-surface-on-variant">
-              {currentPage} / {totalPages}
-            </span>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let page;
+                if (totalPages <= 5) {
+                  page = i + 1;
+                } else if (currentPage <= 3) {
+                  page = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  page = totalPages - 4 + i;
+                } else {
+                  page = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
+                      currentPage === page
+                        ? "bg-emerald-600 text-white shadow-md"
+                        : "bg-surface-variant/30 hover:bg-emerald-500/10 hover:text-emerald-600 text-surface-on-variant"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+            </div>
+
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
-              Next →
+              Berikutnya
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </button>
           </div>
         )}

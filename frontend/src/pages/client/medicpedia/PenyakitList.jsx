@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicPenyakitAll } from "../../../api/client/medicpedia";
+import Skeleton from "../../../components/Skeleton";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const PAGE_LIMIT = 24;
@@ -15,6 +16,12 @@ const PenyakitList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+
+  // SEO
+  useEffect(() => {
+    document.title = "Penyakit A-Z — Medicpedia Nadi";
+    return () => { document.title = "Nadi"; };
+  }, []);
 
   // Debounce search input
   useEffect(() => {
@@ -174,7 +181,7 @@ const PenyakitList = () => {
                 key={letter}
                 id={`alpha-${letter}`}
                 onClick={() => handleLetterClick(letter)}
-                className={`w-8 h-8 rounded-lg text-sm font-bold transition-all duration-200 ${
+                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 ${
                   activeLetter === letter
                     ? "bg-primary text-white shadow-md scale-110"
                     : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
@@ -193,7 +200,7 @@ const PenyakitList = () => {
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <p className="text-surface-on-variant text-sm">
             {loading ? (
-              <span className="animate-pulse">Memuat data...</span>
+              <Skeleton className="w-24 h-4" />
             ) : (
               <span>
                 Menampilkan{" "}
@@ -239,10 +246,7 @@ const PenyakitList = () => {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 9 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl bg-surface-variant/20 animate-pulse h-20"
-              />
+              <Skeleton key={i} className="h-20" />
             ))}
           </div>
         ) : data.length === 0 ? (
@@ -314,7 +318,7 @@ const PenyakitList = () => {
 
         {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-12">
+          <div className="flex justify-center items-center gap-2 mt-12 flex-wrap">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
@@ -325,9 +329,35 @@ const PenyakitList = () => {
               </svg>
               Sebelumnya
             </button>
-            <span className="px-4 py-2 text-sm font-medium text-surface-on-variant">
-              {currentPage} / {totalPages}
-            </span>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                let page;
+                if (totalPages <= 5) {
+                  page = i + 1;
+                } else if (currentPage <= 3) {
+                  page = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  page = totalPages - 4 + i;
+                } else {
+                  page = currentPage - 2 + i;
+                }
+                return (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
+                      currentPage === page
+                        ? "bg-primary text-white shadow-md"
+                        : "bg-surface-variant/30 hover:bg-surface-variant/50 text-surface-on-variant"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+            </div>
+
             <button
               onClick={() =>
                 setCurrentPage((p) => Math.min(totalPages, p + 1))

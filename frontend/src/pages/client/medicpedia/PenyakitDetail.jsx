@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicPenyakitBySlug } from "../../../api/client/medicpedia";
+import Skeleton from "../../../components/Skeleton";
 
 const SECTIONS = [
   { key: "description", label: "Deskripsi", color: "text-primary" },
@@ -40,7 +41,11 @@ const PenyakitDetail = () => {
       setLoading(true);
       try {
         const res = await getPublicPenyakitBySlug(slug);
-        setData(res.data?.data);
+        const item = res.data?.data;
+        setData(item);
+        if (item?.name) {
+          document.title = `${item.name} — Medicpedia Nadi`;
+        }
       } catch {
         toast.error("Informasi penyakit tidak ditemukan");
       } finally {
@@ -48,6 +53,7 @@ const PenyakitDetail = () => {
       }
     };
     fetchData();
+    return () => { document.title = "Nadi"; };
   }, [slug]);
 
   // Scroll progress bar
@@ -95,10 +101,15 @@ const PenyakitDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-[#0f1117] flex items-center justify-center">
-        <div className="space-y-4 w-full max-w-4xl mx-auto px-6">
-          <div className="h-10 bg-zinc-200 dark:bg-slate-800 rounded-2xl animate-pulse" />
-          <div className="h-6 bg-zinc-200 dark:bg-slate-800 rounded-xl animate-pulse w-2/3" />
-          <div className="h-64 bg-zinc-200 dark:bg-slate-800 rounded-2xl animate-pulse mt-8" />
+        <div className="space-y-6 w-full max-w-4xl mx-auto px-6">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/2" />
+          <div className="space-y-4 pt-8">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </div>
+          <Skeleton className="h-64 w-full mt-8" />
         </div>
       </div>
     );
@@ -279,7 +290,7 @@ const PenyakitDetail = () => {
                       w-full min-w-0 break-words overflow-x-hidden
                       prose prose-base md:prose-lg prose-zinc dark:prose-invert max-w-none
                       prose-headings:font-bold prose-headings:tracking-tight
-                      prose-h2:text-xl prose-h3:text-lg
+                      prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
                       prose-p:text-slate-600 dark:prose-p:text-slate-300 prose-p:leading-relaxed prose-p:my-4
                       prose-li:text-slate-600 dark:prose-li:text-slate-300 prose-li:leading-relaxed
                       prose-strong:text-slate-800 dark:prose-strong:text-white prose-strong:font-semibold
@@ -288,7 +299,7 @@ const PenyakitDetail = () => {
                       [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl
                       [&_iframe]:max-w-full [&_video]:max-w-full
                       [&_table]:block [&_table]:overflow-x-auto [&_table]:max-w-full [&_table]:w-full
-                      [&_*]:!text-base md:[&_*]:!text-lg [&_*]:max-w-full [&_*]:break-words"
+                      [&_*]:max-w-full [&_*]:break-words"
                     dangerouslySetInnerHTML={{ __html: content }}
                   />
                 </section>
@@ -414,11 +425,11 @@ const PenyakitDetail = () => {
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
               <Link
                 to={`/new-check?topic=${encodeURIComponent(data.name)}`}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 transition-transform hover:scale-105 w-full group"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
               >
-                <span className="text-xl group-hover:rotate-12 transition-transform">
-                  🤖
-                </span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
                 Diskusi AI
               </Link>
             </div>
@@ -429,9 +440,12 @@ const PenyakitDetail = () => {
       <div className="md:hidden fixed bottom-6 right-4 z-50">
         <Link
           to={`/new-check?topic=${encodeURIComponent(data.name)}`}
-          className="flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600 text-white w-14 h-14 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all text-2xl group"
+          className="flex items-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white pl-4 pr-5 h-14 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all font-bold text-sm"
         >
-          <span className="group-hover:rotate-12 transition-transform">🤖</span>
+          <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+          Tanya AI
         </Link>
       </div>
     </div>

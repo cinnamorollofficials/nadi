@@ -3,7 +3,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import Button from "../components/Button";
 import Card from "../components/Card";
-import { clearCache } from "../api/admin";
 import { getDashboardStats } from "../api/statistics";
 import logApi from "../api/log";
 import { PERMS } from "../utils/permissions";
@@ -15,27 +14,7 @@ const Dashboard = () => {
 
   const hasPermission = (p) => isAdmin || (mask & p) !== 0n;
 
-  const clearCacheMutation = useMutation({
-    mutationFn: clearCache,
-    onSuccess: () => {
-      toast.success("Cache cleared successfully!");
-    },
-    onError: (error) => {
-      toast.error(
-        error.response?.data?.meta?.message || "Failed to clear cache",
-      );
-    },
-  });
 
-  const handleClearCache = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to clear all cache? This action cannot be undone.",
-      )
-    ) {
-      clearCacheMutation.mutate();
-    }
-  };
 
   // Fetch real statistics from API
   const { data: statsData, isLoading } = useQuery({
@@ -358,38 +337,7 @@ const Dashboard = () => {
               </Link>
             ))}
 
-            {hasPermission(PERMS.MANAGE_CACHE) && (
-              <div className="pt-3 mt-3 border-t border-outline-variant/20">
-                <button
-                  onClick={handleClearCache}
-                  disabled={clearCacheMutation.isPending}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-error/5 hover:bg-error/10 border border-error/20
-                           text-error font-bold transition-all duration-300 hover:shadow-md hover:border-error/30
-                           disabled:opacity-50 disabled:cursor-not-allowed group active:scale-[0.98]"
-                >
-                  <div className="p-2 bg-error/10 rounded-lg group-hover:bg-error/20 transition-transform group-hover:rotate-12">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-xs tracking-wide">
-                    {clearCacheMutation.isPending
-                      ? "Clearing..."
-                      : "Clear Cache"}
-                  </span>
-                </button>
-              </div>
-            )}
+
           </div>
         </div>
       </div>

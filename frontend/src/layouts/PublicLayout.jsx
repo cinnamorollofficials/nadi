@@ -21,6 +21,12 @@ const PublicLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-zinc-100 dark:bg-slate-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-white focus:rounded-xl focus:font-bold focus:shadow-2xl transition-all"
+      >
+        Lanjut ke konten utama
+      </a>
 
       {/* ── Mobile Sidebar Overlay ── */}
       {mobileOpen && (
@@ -217,7 +223,7 @@ const PublicLayout = () => {
       </header>
 
       {/* ── Main Content ── */}
-      <main className="flex-grow">
+      <main id="main-content" className="flex-grow">
         <Outlet />
       </main>
 

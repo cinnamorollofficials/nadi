@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicNutrisiBySlug } from "../../../api/client/medicpedia";
+import Skeleton from "../../../components/Skeleton";
 
 const SECTIONS = [
   {
@@ -38,7 +39,11 @@ const NutrisiDetail = () => {
       setLoading(true);
       try {
         const res = await getPublicNutrisiBySlug(slug);
-        setData(res.data?.data);
+        const item = res.data?.data;
+        setData(item);
+        if (item?.name) {
+          document.title = `${item.name} — Medicpedia Nadi`;
+        }
       } catch {
         toast.error("Informasi nutrisi tidak ditemukan");
       } finally {
@@ -46,6 +51,7 @@ const NutrisiDetail = () => {
       }
     };
     fetchData();
+    return () => { document.title = "Nadi"; };
   }, [slug]);
 
   useEffect(() => {
@@ -75,10 +81,15 @@ const NutrisiDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="space-y-4 w-full max-w-4xl mx-auto px-6">
-          <div className="h-10 bg-surface-variant/30 rounded-2xl animate-pulse" />
-          <div className="h-6 bg-surface-variant/20 rounded-xl animate-pulse w-2/3" />
-          <div className="h-64 bg-surface-variant/15 rounded-2xl animate-pulse mt-8" />
+        <div className="space-y-6 w-full max-w-4xl mx-auto px-6">
+          <Skeleton className="h-10 w-3/4" />
+          <Skeleton className="h-6 w-1/2" />
+          <div className="space-y-4 pt-8">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </div>
+          <Skeleton className="h-64 w-full mt-8" />
         </div>
       </div>
     );
@@ -217,12 +228,13 @@ const NutrisiDetail = () => {
                 </div>
               </div>
               <div
-                className="prose prose-neutral dark:prose-invert max-w-none text-surface-on leading-relaxed
-                                    prose-headings:font-bold prose-headings:text-surface-on
+                className="prose prose-base md:prose-lg prose-neutral dark:prose-invert max-w-none text-surface-on leading-relaxed
+                                    prose-headings:font-bold prose-headings:text-surface-on prose-headings:tracking-tight
+                                    prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg
                                     prose-p:text-surface-on/80 prose-p:leading-7
                                     prose-li:text-surface-on/80 prose-li:leading-7
                                     prose-strong:text-surface-on prose-strong:font-semibold
-                                    bg-surface-variant/10 p-6 md:p-8"
+                                    bg-surface-variant/10 p-6 md:p-8 rounded-3xl"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             </section>

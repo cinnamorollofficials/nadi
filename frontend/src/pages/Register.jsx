@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
@@ -22,6 +22,20 @@ const Register = () => {
   const [isRegistered, setIsRegistered] = useState(false);
 
   const isRegistrationClosed = registration_open === "false" || registration_open === false;
+
+  // SEO & Auto Redirect
+  useEffect(() => {
+    document.title = "Daftar — Nadi";
+    if (localStorage.getItem("token")) {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        const user = JSON.parse(userData);
+        navigate(user.role_id === 3 ? "/dashboard" : "/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [navigate]);
 
   const registerMutation = useMutation({
     mutationFn: async (userData) => {
@@ -56,7 +70,8 @@ const Register = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      navigate("/dashboard");
+      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      navigate(destination);
     },
     onError: (error) => {
       setErrors({
@@ -320,13 +335,18 @@ const Register = () => {
                       required
                     />
                     {formData.password && (
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((level) => (
-                          <div
-                            key={level}
-                            className={`h-1 flex-1 rounded ${level <= passwordStrength.strength ? passwordStrength.color : "bg-outline-variant/30"}`}
-                          />
-                        ))}
+                      <div className="flex flex-col gap-1">
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map((level) => (
+                            <div
+                              key={level}
+                              className={`h-1 flex-1 rounded ${level <= passwordStrength.strength ? passwordStrength.color : "bg-outline-variant/30"}`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] font-bold tracking-widest uppercase text-surface-on-variant self-end">
+                          {passwordStrength.label}
+                        </span>
                       </div>
                     )}
                   </div>

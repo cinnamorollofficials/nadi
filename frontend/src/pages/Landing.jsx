@@ -12,6 +12,11 @@ const Landing = () => {
   const [isSymptomModalOpen, setIsSymptomModalOpen] = useState(false);
 
   useEffect(() => {
+    document.title = "Nadi — Platform Kesehatan Digital Indonesia";
+    return () => { document.title = "Nadi"; };
+  }, []);
+
+  useEffect(() => {
     getPublicFaqs({ limit: 10 })
       .then((res) => {
         if (res.data && res.data.data) {
@@ -168,23 +173,21 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* PARTNERS LOGO */}
-      <section className="py-14 border-y border-zinc-200 dark:border-white/5 bg-zinc-200 dark:bg-slate-900/80">
-        <div className="container mx-auto px-6 overflow-hidden">
-          <p className="text-center text-[10px] font-bold tracking-[0.4em] mb-8 text-slate-500 uppercase">
-            Dipercaya Oleh Institusi Terkemuka
-          </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 lg:gap-24 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-            {["Biocare", "Medix", "Vicare", "NeuroBeat", "Health+"].map(
-              (name) => (
-                <span
-                  key={name}
-                  className="text-base md:text-xl font-bold text-slate-500 dark:text-white tracking-widest"
-                >
-                  {name}
-                </span>
-              ),
-            )}
+      {/* SOCIAL PROOF STRIP */}
+      <section className="py-10 border-y border-zinc-200 dark:border-white/5 bg-zinc-200 dark:bg-slate-900/80">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            {[
+              { value: "1.500+", label: "Artikel Penyakit" },
+              { value: "400+", label: "Artikel Nutrisi" },
+              { value: "98.4%", label: "Akurasi AI" },
+              { value: "24/7", label: "Tersedia Gratis" },
+            ].map((s) => (
+              <div key={s.label}>
+                <div className="text-2xl font-bold text-primary mb-1">{s.value}</div>
+                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -397,17 +400,19 @@ const Landing = () => {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
             <div className="lg:w-1/2 w-full grid grid-cols-2 gap-3 md:gap-4">
               {[
-                { title: "Tersandikan", icon: "🛡️" },
-                { title: "Terdesentralisasi", icon: "🌐" },
-                { title: "Privasi Penuh", icon: "👤" },
-                { title: "Audit Logging", icon: "📑" },
+                { title: "Tersandikan", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
+                { title: "Terdesentralisasi", icon: "M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" },
+                { title: "Privasi Penuh", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
+                { title: "Audit Logging", icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" },
               ].map((item) => (
                 <div
                   key={item.title}
                   className="glass-card p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-zinc-100 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 flex flex-col items-center justify-center text-center group hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/20 transition-all cursor-default duration-500"
                 >
-                  <div className="text-3xl md:text-4xl mb-3 md:mb-6 transform group-hover:scale-110 transition-transform">
-                    {item.icon}
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3 md:mb-6 text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                    <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                    </svg>
                   </div>
                   <div className="text-[10px] md:text-xs font-bold uppercase text-slate-500 dark:text-slate-300 tracking-widest leading-relaxed">
                     {item.title}
@@ -595,7 +600,7 @@ const Landing = () => {
       </section>
 
       {/* NEWSLETTER SECTION */}
-      <section className="py-16 md:py-32 bg-zinc-100 dark:bg-slate-900/60">
+      <section id="contact" className="py-16 md:py-32 bg-zinc-100 dark:bg-slate-900/60">
         <div className="container mx-auto px-6">
           <div className="bg-primary rounded-[2rem] md:rounded-[3rem] p-8 md:p-24 relative overflow-hidden group shadow-2xl shadow-primary/20 transform-gpu transition-all duration-700">
             <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
