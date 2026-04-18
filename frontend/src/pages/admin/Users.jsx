@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
@@ -7,8 +7,11 @@ import Button from '../../components/Button';
 import UserFormModal from '../../components/UserFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers } from '../../api/admin';
+import { usePermission } from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 
 const Users = () => {
+    const { hasPermission } = usePermission();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
@@ -158,6 +161,11 @@ const Users = () => {
         },
     ];
 
+    const tableActions = useMemo(() => [
+        hasPermission(PERMS.USER_EDIT) && { label: 'Edit', onClick: openEditModal },
+        hasPermission(PERMS.USER_DELETE) && { label: 'Delete', onClick: openDeleteDialog, className: 'text-error' },
+    ].filter(Boolean), [hasPermission]);
+
     if (error) {
         return (
             <div className="text-center py-12">
@@ -177,27 +185,31 @@ const Users = () => {
                     <p className="text-surface-on-variant mt-2">Manage user accounts and roles</p>
                 </div>
                 <div className="flex gap-2">
-                    <div className="flex bg-surface-variant/20 p-1 rounded-lg">
-                        <button
-                            onClick={() => handleExport('excel')}
-                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                            disabled={isExporting}
-                        >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            Excel
-                        </button>
-                        <button
-                            onClick={() => handleExport('csv')}
-                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                            disabled={isExporting}
-                        >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            CSV
-                        </button>
-                    </div>
-                    <Button onClick={() => setIsCreateModalOpen(true)}>
-                        Add New User
-                    </Button>
+                    {hasPermission(PERMS.SYSTEM_EXPORT) && (
+                        <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                            <button
+                                onClick={() => handleExport('excel')}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isExporting}
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                Excel
+                            </button>
+                            <button
+                                onClick={() => handleExport('csv')}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isExporting}
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                CSV
+                            </button>
+                        </div>
+                    )}
+                    {hasPermission(PERMS.USER_CREATE) && (
+                        <Button onClick={() => setIsCreateModalOpen(true)}>
+                            Add New User
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -223,10 +235,7 @@ const Users = () => {
             </div>
 
             <Card className="p-0 overflow-hidden">
-                <Table columns={columns} data={users} loading={isLoading} actions={[
-                    { label: 'Edit', onClick: openEditModal },
-                    { label: 'Delete', onClick: openDeleteDialog, className: 'text-error' },
-                ]} />
+                <Table columns={columns} data={users} loading={isLoading} actions={tableActions} />
                 {!isLoading && users.length > 0 && (
                     <Pagination
                         currentPage={currentPage}

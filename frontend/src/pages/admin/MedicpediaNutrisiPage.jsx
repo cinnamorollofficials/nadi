@@ -7,7 +7,7 @@ import Modal from "../../components/Modal";
 import Pagination from "../../components/Pagination";
 import TextField from "../../components/TextField";
 import WysiwygEditor from "../../components/WysiwygEditor";
-import usePermission from "../../hooks/usePermission";
+import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from "../../utils/permissions";
 import {
   getAllMedicpediaNutrisis,
@@ -18,7 +18,7 @@ import {
 } from "../../api/medicpedianutrisi";
 
 const MedicpediaNutrisiPage = () => {
-  const can = usePermission();
+  const { hasPermission: can } = usePermission();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -223,10 +223,10 @@ const MedicpediaNutrisiPage = () => {
   };
 
   const tableActions = [
-    ...(can(PERMS.UPDATE_MEDICPEDIANUTRISI)
+    ...(can(PERMS.NUTRISI_EDIT)
       ? [{ label: "Edit", onClick: handleOpenModal }]
       : []),
-    ...(can(PERMS.DELETE_MEDICPEDIANUTRISI)
+    ...(can(PERMS.NUTRISI_DELETE)
       ? [
           {
             label: "Delete",
@@ -249,49 +249,51 @@ const MedicpediaNutrisiPage = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          <div className="flex bg-surface-variant/20 p-1 rounded-lg shrink-0">
-            <button
-              onClick={() => handleExport("excel")}
-              className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-              disabled={isExporting}
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+          {can(PERMS.SYSTEM_EXPORT) && (
+            <div className="flex bg-surface-variant/20 p-1 rounded-lg shrink-0">
+              <button
+                onClick={() => handleExport("excel")}
+                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                disabled={isExporting}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              Excel
-            </button>
-            <button
-              onClick={() => handleExport("csv")}
-              className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-              disabled={isExporting}
-            >
-              <svg
-                className="w-3.5 h-3.5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Excel
+              </button>
+              <button
+                onClick={() => handleExport("csv")}
+                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                disabled={isExporting}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              CSV
-            </button>
-          </div>
-          {can(PERMS.CREATE_MEDICPEDIANUTRISI) && (
+                <svg
+                  className="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                CSV
+              </button>
+            </div>
+          )}
+          {can(PERMS.NUTRISI_CREATE) && (
             <Button variant="primary" onClick={() => handleOpenModal()}>
               Add MedicpediaNutrisi
             </Button>

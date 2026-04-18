@@ -147,12 +147,12 @@ const AdminLayout = () => {
               />
             </svg>
           ),
-          permission: [PERMS.GET_USER, PERMS.GET_ROLE, PERMS.GET_PERMISSION],
+          permission: [PERMS.USER_VIEW, PERMS.ROLE_VIEW, PERMS.PERMISSION_VIEW, PERMS.APIKEY_VIEW],
           subItems: [
             {
               path: "/admin/users",
               label: "Users",
-              permission: PERMS.GET_USER,
+              permission: PERMS.USER_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -172,7 +172,7 @@ const AdminLayout = () => {
             {
               path: "/admin/roles",
               label: "Roles",
-              permission: PERMS.GET_ROLE,
+              permission: PERMS.ROLE_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -192,7 +192,7 @@ const AdminLayout = () => {
             {
               path: "/admin/permissions",
               label: "Permissions",
-              permission: PERMS.GET_PERMISSION,
+              permission: PERMS.PERMISSION_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -212,7 +212,7 @@ const AdminLayout = () => {
             {
               path: "/admin/apikeys",
               label: "API Keys",
-              permission: PERMS.GET_API_KEY,
+              permission: PERMS.APIKEY_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -269,14 +269,14 @@ const AdminLayout = () => {
             </svg>
           ),
           permission: [
-            PERMS.GET_MEDICPEDIAPENYAKIT,
-            PERMS.GET_MEDICPEDIANUTRISI,
+            PERMS.PENYAKIT_VIEW,
+            PERMS.NUTRISI_VIEW,
           ],
           subItems: [
             {
               path: "/admin/medicpediapenyakit",
               label: "Penyakit A-Z",
-              permission: PERMS.GET_MEDICPEDIAPENYAKIT,
+              permission: PERMS.PENYAKIT_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -296,7 +296,7 @@ const AdminLayout = () => {
             {
               path: "/admin/medicpedianutrisi",
               label: "Nutrisi A-Z",
-              permission: PERMS.GET_MEDICPEDIANUTRISI,
+              permission: PERMS.NUTRISI_VIEW,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -318,7 +318,7 @@ const AdminLayout = () => {
         {
           label: "BlogPost",
           path: "/admin/blogpost",
-          permission: PERMS.GET_BLOGPOST,
+          permission: PERMS.BLOGPOST_VIEW,
           icon: (
             <svg
               className="w-5 h-5"
@@ -339,7 +339,7 @@ const AdminLayout = () => {
         {
           label: "FAQ",
           path: "/admin/faq",
-          permission: PERMS.GET_FAQ,
+          permission: PERMS.FAQ_VIEW,
           icon: (
             <svg
               className="w-5 h-5"
@@ -359,7 +359,7 @@ const AdminLayout = () => {
        {
           label: "Storage",
           path: "/admin/storage",
-          permission: PERMS.GET_FILE,
+          permission: PERMS.STORAGE_VIEW,
           icon: (
             <svg
               className="w-5 h-5"
@@ -383,7 +383,14 @@ const AdminLayout = () => {
       items:[
 {
           label: "Settings",
-          permission: PERMS.GET_SETTING,
+          permission: [
+            PERMS.SETTING_VIEW_WEBSITE,
+            PERMS.SETTING_VIEW_SMTP,
+            PERMS.SETTING_VIEW_STORAGE,
+            PERMS.SETTING_VIEW_SECURITY,
+            PERMS.SETTING_VIEW_INFRA,
+            PERMS.SETTING_VIEW_ADVANCE,
+          ],
           icon: (
             <svg
               className="w-5 h-5"
@@ -409,7 +416,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/website",
               label: "Website",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_WEBSITE,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -429,7 +436,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/smtp",
               label: "Email (SMTP)",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_SMTP,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -449,7 +456,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/storage",
               label: "Storages",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_STORAGE,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -469,7 +476,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/security",
               label: "Security",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_SECURITY,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -489,7 +496,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/internal",
               label: "Infrastructure",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_INFRA,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -509,7 +516,7 @@ const AdminLayout = () => {
             {
               path: "/admin/settings/advance",
               label: "Advanced",
-              permission: PERMS.GET_SETTING,
+              permission: PERMS.SETTING_VIEW_ADVANCE,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -531,7 +538,7 @@ const AdminLayout = () => {
         },
         {
           label: "Services",
-          permission: PERMS.MANAGE_CACHE,
+          permission: [PERMS.SERVICE_VIEW_REDIS, PERMS.SERVICE_VIEW_KAFKA],
           icon: (
             <svg
               className="w-5 h-5"
@@ -551,7 +558,7 @@ const AdminLayout = () => {
             {
               path: "/admin/services/redis",
               label: "Redis",
-              permission: PERMS.MANAGE_CACHE,
+              permission: PERMS.SERVICE_VIEW_REDIS,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -571,7 +578,7 @@ const AdminLayout = () => {
             {
               path: "/admin/services/kafka",
               label: "Kafka",
-              permission: PERMS.MANAGE_CACHE,
+              permission: PERMS.SERVICE_VIEW_KAFKA,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -608,16 +615,15 @@ const AdminLayout = () => {
             </svg>
           ),
           permission: [
-            PERMS.GET_AUDIT_LOG,
-            PERMS.GET_ALL_LOGS,
-            PERMS.GET_AUTH_LOG,
-            PERMS.GET_HTTP_LOG,
+            PERMS.LOG_AUDIT,
+            PERMS.LOG_SYSTEM,
+            PERMS.LOG_HTTP,
           ],
           subItems: [
             {
               path: "/admin/logs/audit",
               label: "Audit",
-              permission: PERMS.GET_AUDIT_LOG,
+              permission: PERMS.LOG_AUDIT,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -637,7 +643,7 @@ const AdminLayout = () => {
             {
               path: "/admin/logs/system",
               label: "System",
-              permission: PERMS.GET_ALL_LOGS,
+              permission: PERMS.LOG_SYSTEM,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -663,7 +669,7 @@ const AdminLayout = () => {
             {
               path: "/admin/logs/http",
               label: "HTTP",
-              permission: PERMS.GET_HTTP_LOG,
+              permission: PERMS.LOG_HTTP,
               icon: (
                 <svg
                   className="w-4 h-4"
@@ -685,7 +691,7 @@ const AdminLayout = () => {
         {
           path: "/admin/generator",
           label: "Module Generator",
-          permission: PERMS.CREATE_MODULE,
+          permission: PERMS.SYSTEM_GEN,
           icon: (
             <svg
               className="w-5 h-5"

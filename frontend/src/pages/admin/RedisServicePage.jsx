@@ -3,8 +3,11 @@ import { toast } from "react-hot-toast";
 import { getHealthStatus, clearCache } from "../../api/admin";
 import Button from "../../components/Button";
 import Card from "../../components/Card";
+import { usePermission } from "../../hooks/usePermission";
+import { PERMS } from "../../utils/permissions";
 
 const RedisServicePage = () => {
+    const { hasPermission } = usePermission();
     const queryClient = useQueryClient();
 
     const { data, isLoading, isError, refetch } = useQuery({
@@ -111,18 +114,25 @@ const RedisServicePage = () => {
                         </div>
 
                         <div className="mt-auto pt-6 space-y-4">
-                            <Button 
-                                className="w-full bg-red-600 hover:bg-red-500 text-white rounded-2xl py-4 font-bold shadow-lg shadow-red-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
-                                onClick={handleFlush}
-                                isLoading={flushMutation.isPending}
-                                disabled={!isOnline}
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                Flush Redis Cache
-                            </Button>
-                            <p className="text-[10px] text-center text-red-400 font-bold uppercase tracking-widest opacity-60">Caution: This action is destructive</p>
+                            {hasPermission(PERMS.SERVICE_MANAGE_REDIS) && (
+                                <>
+                                    <Button 
+                                        className="w-full bg-red-600 hover:bg-red-500 text-white rounded-2xl py-4 font-bold shadow-lg shadow-red-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                                        onClick={handleFlush}
+                                        isLoading={flushMutation.isPending}
+                                        disabled={!isOnline}
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Flush Redis Cache
+                                    </Button>
+                                    <p className="text-[10px] text-center text-red-400 font-bold uppercase tracking-widest opacity-60">Caution: This action is destructive</p>
+                                </>
+                            )}
+                            {!hasPermission(PERMS.SERVICE_MANAGE_REDIS) && (
+                                <p className="text-sm text-surface-on-variant opacity-50 italic text-center">You do not have permission to perform maintenance actions.</p>
+                            )}
                         </div>
                     </div>
                 </Card>

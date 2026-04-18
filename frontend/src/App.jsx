@@ -159,7 +159,7 @@ function App() {
             <Route
               path="storage"
               element={
-                <PermissionGuard permission={PERMS.GET_FILE}>
+                <PermissionGuard permission={PERMS.STORAGE_VIEW}>
                   <StoragePage />
                 </PermissionGuard>
               }
@@ -168,51 +168,50 @@ function App() {
             {/* Admin Routes */}
             <Route path="admin">
               <Route index element={<Dashboard />} />
-              <Route path="apikeys" element={<PermissionGuard permission={PERMS.GET_API_KEY}><ApiKeyPage /></PermissionGuard>} />
-              <Route path="users" element={<PermissionGuard permission={PERMS.GET_USER}><Users /></PermissionGuard>} />
-              <Route path="roles" element={<PermissionGuard permission={PERMS.GET_ROLE}><Roles /></PermissionGuard>} />
-              <Route path="permissions" element={<PermissionGuard permission={PERMS.GET_PERMISSION}><Permissions /></PermissionGuard>} />
+              <Route path="apikeys" element={<PermissionGuard permission={PERMS.APIKEY_VIEW}><ApiKeyPage /></PermissionGuard>} />
+              <Route path="users" element={<PermissionGuard permission={PERMS.USER_VIEW}><Users /></PermissionGuard>} />
+              <Route path="roles" element={<PermissionGuard permission={PERMS.ROLE_VIEW}><Roles /></PermissionGuard>} />
+              <Route path="permissions" element={<PermissionGuard permission={PERMS.PERMISSION_VIEW}><Permissions /></PermissionGuard>} />
               <Route
                 path="logs"
                 element={<Navigate to="/admin/logs/all" replace />}
               />
-              <Route path="logs/http" element={<PermissionGuard permission={PERMS.GET_HTTP_LOG}><HttpLogs /></PermissionGuard>} />
+              <Route path="logs/http" element={<PermissionGuard permission={PERMS.LOG_HTTP}><HttpLogs /></PermissionGuard>} />
               <Route
                 path="logs/:type"
                 element={
                   <PermissionGuard
                     permission={[
-                      PERMS.GET_ALL_LOGS,
-                      PERMS.GET_AUDIT_LOG,
-                      PERMS.GET_AUTH_LOG,
-                      PERMS.GET_OWN_LOGS,
+                      PERMS.LOG_SYSTEM,
+                      PERMS.LOG_AUDIT,
+                      PERMS.LOG_HTTP,
                     ]}
                   >
                     <Logs />
                   </PermissionGuard>
                 }
               />
-              <Route path="generator" element={<PermissionGuard permission={PERMS.CREATE_MODULE}><GeneratorPage /></PermissionGuard>} />
-              <Route path="storage" element={<PermissionGuard permission={PERMS.GET_FILE}><StoragePage /></PermissionGuard>} />
+              <Route path="generator" element={<PermissionGuard permission={PERMS.SYSTEM_GEN}><GeneratorPage /></PermissionGuard>} />
+              <Route path="storage" element={<PermissionGuard permission={PERMS.STORAGE_VIEW}><StoragePage /></PermissionGuard>} />
               <Route
                 path="settings"
                 element={<Navigate to="/admin/settings/website" replace />}
               />
-              <Route path="settings/:category" element={<PermissionGuard permission={PERMS.GET_SETTING}><SettingsPage /></PermissionGuard>} />
-              <Route path="blogpost" element={<PermissionGuard permission={PERMS.GET_BLOGPOST}><BlogPostPage /></PermissionGuard>} />
+              <Route path="settings/:category" element={<PermissionGuard permission={[PERMS.SETTING_VIEW_WEBSITE, PERMS.SETTING_VIEW_SMTP, PERMS.SETTING_VIEW_STORAGE, PERMS.SETTING_VIEW_SECURITY, PERMS.SETTING_VIEW_INFRA, PERMS.SETTING_VIEW_ADVANCE]}><SettingsPage /></PermissionGuard>} />
+              <Route path="blogpost" element={<PermissionGuard permission={PERMS.BLOGPOST_VIEW}><BlogPostPage /></PermissionGuard>} />
               <Route
                 path="medicpediapenyakit"
-                element={<PermissionGuard permission={PERMS.GET_MEDICPEDIAPENYAKIT}><MedicpediaPenyakitPage /></PermissionGuard>}
+                element={<PermissionGuard permission={PERMS.PENYAKIT_VIEW}><MedicpediaPenyakitPage /></PermissionGuard>}
               />
               <Route
                 path="medicpedianutrisi"
-                element={<PermissionGuard permission={PERMS.GET_MEDICPEDIANUTRISI}><MedicpediaNutrisiPage /></PermissionGuard>}
+                element={<PermissionGuard permission={PERMS.NUTRISI_VIEW}><MedicpediaNutrisiPage /></PermissionGuard>}
               />
-              <Route path="faq" element={<PermissionGuard permission={PERMS.GET_FAQ}><FaqPage /></PermissionGuard>} />
+              <Route path="faq" element={<PermissionGuard permission={PERMS.FAQ_VIEW}><FaqPage /></PermissionGuard>} />
               
               {/* Services Monitoring */}
-              <Route path="services/redis" element={<PermissionGuard permission={PERMS.MANAGE_CACHE}><RedisServicePage /></PermissionGuard>} />
-              <Route path="services/kafka" element={<PermissionGuard permission={PERMS.MANAGE_CACHE}><KafkaServicePage /></PermissionGuard>} />
+              <Route path="services/redis" element={<PermissionGuard permission={PERMS.SERVICE_VIEW_REDIS}><RedisServicePage /></PermissionGuard>} />
+              <Route path="services/kafka" element={<PermissionGuard permission={PERMS.SERVICE_VIEW_KAFKA}><KafkaServicePage /></PermissionGuard>} />
 
               {/* [GENERATOR_INSERT_ROUTE] */}
             </Route>

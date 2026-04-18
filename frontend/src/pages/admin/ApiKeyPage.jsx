@@ -6,13 +6,13 @@ import Card from '../../components/Card';
 import Table from '../../components/Table';
 import Modal from '../../components/Modal';
 import Pagination from '../../components/Pagination';
-import usePermission from '../../hooks/usePermission';
+import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
 import { getApiKeys, createApiKey, deleteApiKey } from '../../api/api_key';
 import { getRoles } from '../../api/admin';
 
 const ApiKeyPage = () => {
-    const can = usePermission();
+    const { hasPermission: can } = usePermission();
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [paginationMeta, setPaginationMeta] = useState({ total_data: 0, total_pages: 1 });
@@ -103,7 +103,7 @@ const ApiKeyPage = () => {
     ];
 
     const actions = [
-        ...(can(PERMS.DELETE_API_KEY) ? [{
+        ...(can(PERMS.APIKEY_DELETE) ? [{
             label: 'Revoke',
             onClick: (row) => handleDelete(row.id),
             className: 'text-error',
@@ -118,7 +118,7 @@ const ApiKeyPage = () => {
                     <h1 className="text-xl font-bold text-surface-on tracking-tight">API Keys</h1>
                     <p className="text-xs text-surface-on-variant mt-0.5">Manage external application access</p>
                 </div>
-                {can(PERMS.CREATE_API_KEY) && (
+                {can(PERMS.APIKEY_CREATE) && (
                     <Button variant="primary" onClick={() => { setIsCreateModalOpen(true); setCreatedKey(null); }}>
                         Generate Key
                     </Button>

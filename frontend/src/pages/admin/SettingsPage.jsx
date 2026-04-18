@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from '../../components/Card';
 import Button from '../../components/Button';
@@ -9,16 +9,32 @@ import { useSettings } from '../../context/SettingsContext';
 import { getSettingsByCategory, updateSettings } from '../../api/settings';
 import { uploadFile } from '../../api/storage';
 import toast from 'react-hot-toast';
+import { usePermission } from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 
 const SettingsPage = () => {
     const { category = 'website' } = useParams();
     const queryClient = useQueryClient();
     const { refreshSettings } = useSettings();
+    const { hasPermission } = usePermission();
+
+    // Map categories to permission bits
+    const permissionMap = useMemo(() => ({
+        website: { view: PERMS.SETTING_VIEW_WEBSITE, edit: PERMS.SETTING_EDIT_WEBSITE },
+        smtp: { view: PERMS.SETTING_VIEW_SMTP, edit: PERMS.SETTING_EDIT_SMTP },
+        storage: { view: PERMS.SETTING_VIEW_STORAGE, edit: PERMS.SETTING_EDIT_STORAGE },
+        security: { view: PERMS.SETTING_VIEW_SECURITY, edit: PERMS.SETTING_EDIT_SECURITY },
+        internal: { view: PERMS.SETTING_VIEW_INFRA, edit: PERMS.SETTING_EDIT_INFRA },
+        advance: { view: PERMS.SETTING_VIEW_ADVANCE, edit: PERMS.SETTING_EDIT_ADVANCE }
+    }), []);
+
+    const currentPerms = permissionMap[category] || permissionMap.website;
 
     // Fetch settings for the category from URL
     const { data: settingsData, isLoading } = useQuery({
         queryKey: ['settings', category],
         queryFn: () => getSettingsByCategory(category),
+        enabled: hasPermission(currentPerms.view),
     });
 
     const settings = settingsData?.data || [];
@@ -74,7 +90,6 @@ const SettingsPage = () => {
 
         try {
             const res = await uploadFile(formData);
-            // res.data is the axios response body { meta: ..., data: { id: ... } }
             const fileId = res.data.data.id;
             handleInputChange(key, String(fileId));
             toast.success('File uploaded. Save settings to apply.');
@@ -101,7 +116,14 @@ const SettingsPage = () => {
         return labels[category] || 'Settings';
     };
 
+    // Permission check for viewing
+    if (!hasPermission(currentPerms.view) && !isLoading) {
+        return <Navigate to="/admin" replace />;
+    }
+
     if (isLoading) return <div className="p-8 text-center text-surface-on-variant">Loading settings...</div>;
+
+    const canEdit = hasPermission(currentPerms.edit);
 
     return (
         <div className="p-4 sm:p-8 max-w-5xl mx-auto">
@@ -150,6 +172,7 @@ const SettingsPage = () => {
                                                 </div>
                                                 <div className="flex-1">
                                                     <FileUploadDropzone 
+                                                        disabled={!canEdit}
                                                         onUpload={(file) => handleFileUpload(setting.key, file)}
                                                     />
                                                 </div>
@@ -158,9 +181,10 @@ const SettingsPage = () => {
                                             <div className="flex items-center gap-3">
                                                 <button
                                                     type="button"
+                                                    disabled={!canEdit}
                                                     onClick={() => handleInputChange(setting.key, String(formState[setting.key]) === 'true' ? 'false' : 'true')}
                                                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-                                                        ${String(formState[setting.key]) === 'true' ? 'bg-primary' : 'bg-surface-variant'}`}
+                                                        ${String(formState[setting.key]) === 'true' ? 'bg-primary' : 'bg-surface-variant'} ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
                                                     <span
                                                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform
@@ -178,21 +202,24 @@ const SettingsPage = () => {
                                                 onChange={(e) => handleInputChange(setting.key, e.target.value)}
                                                 placeholder={setting.label}
                                                 className="max-w-md"
+                                                disabled={!canEdit}
                                             />
                                         )}
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="pt-6 border-t border-outline-variant flex justify-end">
-                                <Button 
-                                    type="submit" 
-                                    isLoading={updateMutation.isPending}
-                                    className="px-8 shadow-lg shadow-primary/20"
-                                >
-                                    Save Changes
-                                </Button>
-                            </div>
+                            {canEdit && (
+                                <div className="pt-6 border-t border-outline-variant flex justify-end">
+                                    <Button 
+                                        type="submit" 
+                                        isLoading={updateMutation.isPending}
+                                        className="px-8 shadow-lg shadow-primary/20"
+                                    >
+                                        Save Changes
+                                    </Button>
+                                </div>
+                            )}
                         </form>
                     </Card>
                     

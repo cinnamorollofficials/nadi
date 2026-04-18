@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import Table from '../../components/Table';
@@ -8,8 +8,11 @@ import Button from '../../components/Button';
 import RoleFormModal from '../../components/RoleFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import { getRoles, createRole, updateRole, deleteRole, exportRoles } from '../../api/admin';
+import { usePermission } from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 
 const Roles = () => {
+    const { hasPermission } = usePermission();
     const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -115,6 +118,7 @@ const Roles = () => {
             setIsExporting(false);
         }
     };
+
     const columns = [
         { header: 'ID', accessor: 'id' },
         { header: 'Name', accessor: 'name' },
@@ -128,6 +132,11 @@ const Roles = () => {
         },
         { header: 'Description', accessor: 'description' },
     ];
+
+    const tableActions = useMemo(() => [
+        hasPermission(PERMS.ROLE_EDIT) && { label: 'Edit', onClick: handleEditRole },
+        hasPermission(PERMS.ROLE_DELETE) && { label: 'Delete', onClick: handleDeleteRole, className: 'text-error' },
+    ].filter(Boolean), [hasPermission]);
 
     if (error) {
         return (
@@ -154,27 +163,31 @@ const Roles = () => {
                     <p className="text-surface-on-variant mt-1">Manage user roles and their associated permissions</p>
                 </div>
                 <div className="flex gap-2">
-                    <div className="flex bg-surface-variant/20 p-1 rounded-lg">
-                        <button
-                            onClick={() => handleExport('excel')}
-                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                            disabled={isExporting}
-                        >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            Excel
-                        </button>
-                        <button
-                            onClick={() => handleExport('csv')}
-                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                            disabled={isExporting}
-                        >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                            CSV
-                        </button>
-                    </div>
-                    <Button onClick={handleCreateRole}>
-                        Create Role
-                    </Button>
+                    {hasPermission(PERMS.SYSTEM_EXPORT) && (
+                        <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                            <button
+                                onClick={() => handleExport('excel')}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isExporting}
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                Excel
+                            </button>
+                            <button
+                                onClick={() => handleExport('csv')}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isExporting}
+                            >
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                CSV
+                            </button>
+                        </div>
+                    )}
+                    {hasPermission(PERMS.ROLE_CREATE) && (
+                        <Button onClick={handleCreateRole}>
+                            Create Role
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -207,10 +220,7 @@ const Roles = () => {
             </div>
 
             <Card className="p-0 overflow-hidden border border-outline-variant">
-                <Table columns={columns} data={filteredRoles} loading={isLoading} actions={[
-                    { label: 'Edit', onClick: handleEditRole },
-                    { label: 'Delete', onClick: handleDeleteRole, className: 'text-error' },
-                ]} />
+                <Table columns={columns} data={filteredRoles} loading={isLoading} actions={tableActions} />
                 {!isLoading && roles.length > 0 && (
                     <Pagination
                         currentPage={currentPage}

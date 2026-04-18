@@ -41,22 +41,22 @@ func (r *Router) setupPrivateRoutes(
 	generator := v1.Group("/generator")
 	generator.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		generator.POST("", permGuard.Check("create-module"), generatorHandler.Generate)
+		generator.POST("", permGuard.Check("system:gen"), generatorHandler.Generate)
 	}
 	// Storage routes (authenticated)
 	storageGroup := v1.Group("/storage")
 	storageGroup.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		storageGroup.POST("/upload", permGuard.Check("upload-file"), storageHandler.Upload)
-		storageGroup.GET("", permGuard.Check("get-file"), storageHandler.GetFiles)
-		storageGroup.GET("/:id", permGuard.Check("get-file"), storageHandler.GetFileByID)
-		storageGroup.DELETE("/:id", permGuard.Check("delete-file"), storageHandler.DeleteFile)
-		storageGroup.GET("/:id/download", permGuard.Check("get-file"), storageHandler.DownloadFile)
-		storageGroup.POST("/:id/share", permGuard.Check("share-file"), storageHandler.CreateShareLink)
-		storageGroup.GET("/:id/shares", permGuard.Check("share-file"), storageHandler.GetShareLinks)
-		storageGroup.PUT("/shares/:shareId", permGuard.Check("share-file"), storageHandler.UpdateShareLink)
-		storageGroup.DELETE("/shares/:shareId", permGuard.Check("share-file"), storageHandler.RevokeShareLink)
-		storageGroup.GET("/shares/:shareId/logs", permGuard.Check("share-file"), storageHandler.GetShareLinkLogs)
+		storageGroup.POST("/upload", permGuard.Check("storage:upload"), storageHandler.Upload)
+		storageGroup.GET("", permGuard.Check("storage:view"), storageHandler.GetFiles)
+		storageGroup.GET("/:id", permGuard.Check("storage:view"), storageHandler.GetFileByID)
+		storageGroup.DELETE("/:id", permGuard.Check("storage:delete"), storageHandler.DeleteFile)
+		storageGroup.GET("/:id/download", permGuard.Check("storage:view"), storageHandler.DownloadFile)
+		storageGroup.POST("/:id/share", permGuard.Check("storage:share"), storageHandler.CreateShareLink)
+		storageGroup.GET("/:id/shares", permGuard.Check("storage:share"), storageHandler.GetShareLinks)
+		storageGroup.PUT("/shares/:shareId", permGuard.Check("storage:share"), storageHandler.UpdateShareLink)
+		storageGroup.DELETE("/shares/:shareId", permGuard.Check("storage:share"), storageHandler.RevokeShareLink)
+		storageGroup.GET("/shares/:shareId/logs", permGuard.Check("storage:share"), storageHandler.GetShareLinkLogs)
 	}
 
 	// Public share routes (no auth required)
@@ -80,42 +80,42 @@ func (r *Router) setupPrivateRoutes(
 	blogpost := v1.Group("/blogposts")
 	blogpost.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		blogpost.POST("", blogpostHandler.Create)
-		blogpost.GET("", blogpostHandler.GetAll)
-		blogpost.GET("/export", blogpostHandler.Export)
-		blogpost.GET("/:id", blogpostHandler.GetByID)
-		blogpost.PUT("/:id", blogpostHandler.Update)
-		blogpost.DELETE("/:id", blogpostHandler.Delete)
+		blogpost.POST("", permGuard.Check("blogpost:create"), blogpostHandler.Create)
+		blogpost.GET("", permGuard.Check("blogpost:view"), blogpostHandler.GetAll)
+		blogpost.GET("/export", permGuard.Check("system:export"), blogpostHandler.Export)
+		blogpost.GET("/:id", permGuard.Check("blogpost:view"), blogpostHandler.GetByID)
+		blogpost.PUT("/:id", permGuard.Check("blogpost:edit"), blogpostHandler.Update)
+		blogpost.DELETE("/:id", permGuard.Check("blogpost:delete"), blogpostHandler.Delete)
 	}
 	medicpediapenyakit := v1.Group("/medicpedia_penyakit")
 	medicpediapenyakit.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		medicpediapenyakit.POST("", medicpediapenyakitHandler.Create)
-		medicpediapenyakit.GET("", medicpediapenyakitHandler.GetAll)
-		medicpediapenyakit.GET("/export", medicpediapenyakitHandler.Export)
-		medicpediapenyakit.GET("/:id", medicpediapenyakitHandler.GetByID)
-		medicpediapenyakit.PUT("/:id", medicpediapenyakitHandler.Update)
-		medicpediapenyakit.DELETE("/:id", medicpediapenyakitHandler.Delete)
+		medicpediapenyakit.POST("", permGuard.Check("penyakit:create"), medicpediapenyakitHandler.Create)
+		medicpediapenyakit.GET("", permGuard.Check("penyakit:view"), medicpediapenyakitHandler.GetAll)
+		medicpediapenyakit.GET("/export", permGuard.Check("system:export"), medicpediapenyakitHandler.Export)
+		medicpediapenyakit.GET("/:id", permGuard.Check("penyakit:view"), medicpediapenyakitHandler.GetByID)
+		medicpediapenyakit.PUT("/:id", permGuard.Check("penyakit:edit"), medicpediapenyakitHandler.Update)
+		medicpediapenyakit.DELETE("/:id", permGuard.Check("penyakit:delete"), medicpediapenyakitHandler.Delete)
 	}
 	medicpedianutrisi := v1.Group("/medicpedia_nutrisi")
 	medicpedianutrisi.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		medicpedianutrisi.POST("", medicpedianutrisiHandler.Create)
-		medicpedianutrisi.GET("", medicpedianutrisiHandler.GetAll)
-		medicpedianutrisi.GET("/export", medicpedianutrisiHandler.Export)
-		medicpedianutrisi.GET("/:id", medicpedianutrisiHandler.GetByID)
-		medicpedianutrisi.PUT("/:id", medicpedianutrisiHandler.Update)
-		medicpedianutrisi.DELETE("/:id", medicpedianutrisiHandler.Delete)
+		medicpedianutrisi.POST("", permGuard.Check("nutrisi:create"), medicpedianutrisiHandler.Create)
+		medicpedianutrisi.GET("", permGuard.Check("nutrisi:view"), medicpedianutrisiHandler.GetAll)
+		medicpedianutrisi.GET("/export", permGuard.Check("system:export"), medicpedianutrisiHandler.Export)
+		medicpedianutrisi.GET("/:id", permGuard.Check("nutrisi:view"), medicpedianutrisiHandler.GetByID)
+		medicpedianutrisi.PUT("/:id", permGuard.Check("nutrisi:edit"), medicpedianutrisiHandler.Update)
+		medicpedianutrisi.DELETE("/:id", permGuard.Check("nutrisi:delete"), medicpedianutrisiHandler.Delete)
 	}
 		faq := v1.Group("/faqs")
 	faq.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		faq.POST("", faqHandler.Create)
-		faq.GET("", faqHandler.GetAll)
-		faq.GET("/export", faqHandler.Export)
-		faq.GET("/:id", faqHandler.GetByID)
-		faq.PUT("/:id", faqHandler.Update)
-		faq.DELETE("/:id", faqHandler.Delete)
+		faq.POST("", permGuard.Check("faq:create"), faqHandler.Create)
+		faq.GET("", permGuard.Check("faq:view"), faqHandler.GetAll)
+		faq.GET("/export", permGuard.Check("system:export"), faqHandler.Export)
+		faq.GET("/:id", permGuard.Check("faq:view"), faqHandler.GetByID)
+		faq.PUT("/:id", permGuard.Check("faq:edit"), faqHandler.Update)
+		faq.DELETE("/:id", permGuard.Check("faq:delete"), faqHandler.Delete)
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")
@@ -144,13 +144,13 @@ func (r *Router) setupPrivateRoutes(
 	{
 		// Internal permission check is handled inside GetLogs
 		logs.GET("", logHandler.GetLogs)
-		logs.GET("/export", logHandler.Export) // Combined logs export
-		logs.GET("/http", permGuard.Check("get-http-log"), httpLogHandler.GetAll)
-		logs.GET("/http/export", permGuard.Check("get-http-log"), httpLogHandler.Export)
-		logs.GET("/system", permGuard.Check("get-all-logs"), systemLogHandler.GetAll)
-		logs.GET("/system/export", permGuard.Check("get-all-logs"), systemLogHandler.Export)
-		logs.GET("/audit", permGuard.Check("get-audit-log"), auditLogHandler.GetAll)
-		logs.GET("/audit/export", permGuard.Check("get-audit-log"), auditLogHandler.Export)
+		logs.GET("/export", permGuard.Check("system:export"), logHandler.Export) // Combined logs export
+		logs.GET("/http", permGuard.Check("log:http"), httpLogHandler.GetAll)
+		logs.GET("/http/export", permGuard.Check("system:export"), httpLogHandler.Export)
+		logs.GET("/system", permGuard.Check("log:system"), systemLogHandler.GetAll)
+		logs.GET("/system/export", permGuard.Check("system:export"), systemLogHandler.Export)
+		logs.GET("/audit", permGuard.Check("log:audit"), auditLogHandler.GetAll)
+		logs.GET("/audit/export", permGuard.Check("system:export"), auditLogHandler.Export)
 	}
 
 	users := v1.Group("/users")
@@ -160,65 +160,64 @@ func (r *Router) setupPrivateRoutes(
 		users.GET("/me", userHandler.Me)
 
 		// Admin only for CRUD
-		users.POST("", permGuard.Check("create-user"), userHandler.Create)
-		users.GET("", permGuard.Check("get-user"), userHandler.GetAll)
-		users.GET("/export", permGuard.Check("get-user"), userHandler.Export)
-		users.PUT("/:id", permGuard.Check("edit-user"), userHandler.Update)
-		users.DELETE("/:id", permGuard.Check("delete-user"), userHandler.Delete)
+		users.POST("", permGuard.Check("user:create"), userHandler.Create)
+		users.GET("", permGuard.Check("user:view"), userHandler.GetAll)
+		users.GET("/export", permGuard.Check("system:export"), userHandler.Export)
+		users.PUT("/:id", permGuard.Check("user:edit"), userHandler.Update)
+		users.DELETE("/:id", permGuard.Check("user:delete"), userHandler.Delete)
 	}
 
 	permissions := v1.Group("/permissions")
 	permissions.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
-	permissions.Use(permGuard.Check("get-permission")) // Assuming admin role has this
 	{
-		permissions.POST("", permGuard.Check("create-permission"), permissionHandler.Create)
-		permissions.GET("", permGuard.Check("get-permission"), permissionHandler.GetAll)
-		permissions.GET("/export", permGuard.Check("get-permission"), permissionHandler.Export)
-		permissions.PUT("/:id", permGuard.Check("edit-permission"), permissionHandler.Update)
-		permissions.DELETE("/:id", permGuard.Check("delete-permission"), permissionHandler.Delete)
+		permissions.POST("", permGuard.Check("permission:create"), permissionHandler.Create)
+		permissions.GET("", permGuard.Check("permission:view"), permissionHandler.GetAll)
+		permissions.GET("/export", permGuard.Check("system:export"), permissionHandler.Export)
+		permissions.PUT("/:id", permGuard.Check("permission:edit"), permissionHandler.Update)
+		permissions.DELETE("/:id", permGuard.Check("permission:delete"), permissionHandler.Delete)
 	}
 
 	roles := v1.Group("/roles")
 	roles.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
-	roles.Use(permGuard.Check("get-role"))
 	{
-		roles.POST("", permGuard.Check("create-role"), roleHandler.Create)
-		roles.GET("", permGuard.Check("get-role"), roleHandler.GetAll)
-		roles.GET("/export", permGuard.Check("get-role"), roleHandler.Export)
-		roles.GET("/:id", permGuard.Check("get-role"), roleHandler.GetByID)
-		roles.PUT("/:id", permGuard.Check("edit-role"), roleHandler.Update)
-		roles.DELETE("/:id", permGuard.Check("delete-role"), roleHandler.Delete)
+		roles.POST("", permGuard.Check("role:create"), roleHandler.Create)
+		roles.GET("", permGuard.Check("role:view"), roleHandler.GetAll)
+		roles.GET("/export", permGuard.Check("system:export"), roleHandler.Export)
+		roles.GET("/:id", permGuard.Check("role:view"), roleHandler.GetByID)
+		roles.PUT("/:id", permGuard.Check("role:edit"), roleHandler.Update)
+		roles.DELETE("/:id", permGuard.Check("role:delete"), roleHandler.Delete)
 	}
 
 	// Statistics
 	statistics := v1.Group("/statistics")
 	statistics.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		statistics.GET("/dashboard", statisticsHandler.GetDashboardStats)
+		statistics.GET("/dashboard", permGuard.Check("system:stat"), statisticsHandler.GetDashboardStats)
 	}
 
 	// Cache management
 	cache := v1.Group("/cache")
 	cache.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		cache.DELETE("/clear", permGuard.Check("manage-cache"), cacheHandler.ClearAll)
-		cache.GET("/status", permGuard.Check("manage-cache"), cacheHandler.GetStatus)
+		cache.DELETE("/clear", permGuard.Check("service:manage_redis"), cacheHandler.ClearAll)
+		cache.GET("/status", permGuard.Check("service:view_redis"), cacheHandler.GetStatus)
 	}
 
 	// Settings management
 	settings := v1.Group("/settings")
 	settings.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		settings.GET("/:category", permGuard.Check("get-setting"), settingHandler.GetByCategory)
-		settings.PUT("", permGuard.Check("edit-setting"), settingHandler.BulkUpdate)
+		// Internal category check is recommended in handler for granular setting:view_category
+		settings.GET("/:category", settingHandler.GetByCategory)
+		settings.PUT("", settingHandler.BulkUpdate)
 	}
 
 	// API Keys management
 	apiKeys := v1.Group("/apikeys")
 	apiKeys.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
-		apiKeys.POST("", permGuard.Check("create-api-key"), apiKeyHandler.Create)
-		apiKeys.GET("", permGuard.Check("get-api-key"), apiKeyHandler.GetAll)
-		apiKeys.DELETE("/:id", permGuard.Check("delete-api-key"), apiKeyHandler.Delete)
+		apiKeys.POST("", permGuard.Check("apikey:create"), apiKeyHandler.Create)
+		apiKeys.GET("", permGuard.Check("apikey:view"), apiKeyHandler.GetAll)
+		apiKeys.DELETE("/:id", permGuard.Check("apikey:delete"), apiKeyHandler.Delete)
 	}
 }

@@ -6,8 +6,11 @@ import Card from '../../components/Card';
 import Modal from '../../components/Modal';
 import logApi from '../../api/log';
 import { safeStringify } from '../../utils/json';
+import { usePermission } from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 
 const HttpLogs = () => {
+    const { hasPermission } = usePermission();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [selectedLog, setSelectedLog] = useState(null);
@@ -212,24 +215,26 @@ const HttpLogs = () => {
                     </h1>
                     <p className="text-surface-on-variant mt-2">Monitor incoming HTTP requests and responses</p>
                 </div>
-                <div className="flex bg-surface-variant/20 p-1 rounded-lg">
-                    <button
-                        onClick={() => handleExport('excel')}
-                        className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                        disabled={isExporting}
-                    >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        Excel
-                    </button>
-                    <button
-                        onClick={() => handleExport('csv')}
-                        className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
-                        disabled={isExporting}
-                    >
-                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        CSV
-                    </button>
-                </div>
+                {hasPermission(PERMS.SYSTEM_EXPORT) && (
+                    <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                        <button
+                            onClick={() => handleExport('excel')}
+                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                            disabled={isExporting}
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            Excel
+                        </button>
+                        <button
+                            onClick={() => handleExport('csv')}
+                            className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                            disabled={isExporting}
+                        >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            CSV
+                        </button>
+                    </div>
+                )}
             </div>
             
             <Card className="mb-6 p-4 flex flex-wrap gap-4 items-end bg-surface border border-outline-variant/30">

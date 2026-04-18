@@ -7,7 +7,7 @@ import Modal from '../../components/Modal';
 import Pagination from '../../components/Pagination';
 import FileUploadDropzone from '../../components/FileUploadDropzone';
 import ShareLinkModal from '../../components/ShareLinkModal';
-import usePermission from '../../hooks/usePermission';
+import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
 import {
     uploadFile,
@@ -175,7 +175,7 @@ const ShareLinksPanel = ({ file, onCreateNew, onEdit }) => {
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 const StoragePage = () => {
-    const can = usePermission();
+    const { hasPermission: can } = usePermission();
     const { max_file_size_mb = 50 } = useSettings();
 
     // Data state
@@ -422,7 +422,7 @@ const StoragePage = () => {
     ];
 
     const tableActions = [
-        ...(can(PERMS.GET_FILE)
+        ...(can(PERMS.STORAGE_VIEW)
             ? [{
                 label: 'Download',
                 onClick: handleDownload,
@@ -434,7 +434,7 @@ const StoragePage = () => {
                 ),
             }]
             : []),
-        ...(can(PERMS.SHARE_FILE)
+        ...(can(PERMS.STORAGE_SHARE)
             ? [{
                 label: 'Share',
                 onClick: (row) => openShareModal(row),
@@ -446,7 +446,7 @@ const StoragePage = () => {
                 ),
             }]
             : []),
-        ...(can(PERMS.DELETE_FILE)
+        ...(can(PERMS.STORAGE_DELETE)
             ? [{
                 label: 'Delete',
                 onClick: handleDelete,
@@ -473,7 +473,7 @@ const StoragePage = () => {
                         {paginationMeta.total_data} file{paginationMeta.total_data !== 1 ? 's' : ''} stored
                     </p>
                 </div>
-                {can(PERMS.UPLOAD_FILE) && (
+                {can(PERMS.STORAGE_UPLOAD) && (
                     <Button variant="primary" onClick={() => setIsUploadModalOpen(true)}>
                         <svg className="w-4 h-4 mr-1.5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -550,7 +550,7 @@ const StoragePage = () => {
                                                 <p className="text-sm text-surface-on-variant">
                                                     {debouncedSearch ? 'No files match your search.' : 'No files uploaded yet.'}
                                                 </p>
-                                                {!debouncedSearch && can(PERMS.UPLOAD_FILE) && (
+                                                {!debouncedSearch && can(PERMS.STORAGE_UPLOAD) && (
                                                     <button
                                                         onClick={() => setIsUploadModalOpen(true)}
                                                         className="mt-2 text-xs text-primary hover:underline font-medium"

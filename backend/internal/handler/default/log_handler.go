@@ -42,7 +42,7 @@ func (h *logHandler) hasPermission(ctx *gin.Context, permName string) bool {
 	// Admin role bypass (same as PermissionGuard)
 	role, exists := ctx.Get("role")
 	if exists && role != nil {
-		if roleStr, ok := role.(string); ok && roleStr == "admin" {
+		if roleStr, ok := role.(string); ok && (roleStr == "superadmin" || roleStr == "admin") {
 			return true
 		}
 	}
@@ -90,8 +90,9 @@ func (h *logHandler) GetLogs(ctx *gin.Context) {
 		return
 	}
 
-	isAdmin := h.hasPermission(ctx, "get-all-logs")
-	canSeeOwn := h.hasPermission(ctx, "get-own-logs")
+	isAdmin := h.hasPermission(ctx, "log:audit") || h.hasPermission(ctx, "log:http") || h.hasPermission(ctx, "log:system")
+	// For now, GetLogs is a combined view, if they have any log perm they can see it
+	canSeeOwn := h.hasPermission(ctx, "system:profile") // fallback for own logs
 
 	if !isAdmin && !canSeeOwn {
 		response.Error(ctx, http.StatusForbidden, "you don't have permission to view logs")

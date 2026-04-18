@@ -4,8 +4,11 @@ import { toast } from 'react-hot-toast';
 import Button from '../../components/Button';
 import IconPicker from '../../components/IconPicker';
 import { generateModule } from '../../api/admin';
+import { usePermission } from '../../hooks/usePermission';
+import { PERMS } from '../../utils/permissions';
 
 const GeneratorPage = () => {
+    const { hasPermission } = usePermission();
     const navigate = useNavigate();
     const [config, setConfig] = useState({
         module_name: '',
@@ -192,9 +195,15 @@ const GeneratorPage = () => {
                 </div>
 
                 <div className="pt-6 flex justify-end">
-                    <Button type="submit" variant="primary" size="lg" disabled={loading}>
-                        {loading ? 'Generating...' : 'Generate Module'}
-                    </Button>
+                    {hasPermission(PERMS.SYSTEM_GEN) ? (
+                        <Button type="submit" variant="primary" size="lg" disabled={loading}>
+                            {loading ? 'Generating...' : 'Generate Module'}
+                        </Button>
+                    ) : (
+                        <p className="text-sm text-error font-medium px-4 py-2 bg-error/10 rounded-xl border border-error/20">
+                            Insufficient permissions to generate modules.
+                        </p>
+                    )}
                 </div>
             </form>
         </div>

@@ -7,6 +7,9 @@ import { SettingsProvider } from "./context/SettingsContext";
 import './index.css'
 import App from './App.jsx'
 
+// Fix BigInt serialization for JSON.stringify
+BigInt.prototype.toJSON = function() { return this.toString() }
+
 // Configure Tanstack Query
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -30,7 +30,7 @@ func (g *PermissionGuard) Check(requiredPermission string) gin.HandlerFunc {
 
 		role, exists := c.Get("role")
 		if exists && role != nil {
-			if roleStr, ok := role.(string); ok && roleStr == "admin" {
+			if roleStr, ok := role.(string); ok && (roleStr == "superadmin" || roleStr == "admin") {
 				c.Next()
 				return
 			}
