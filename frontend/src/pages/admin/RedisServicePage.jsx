@@ -38,7 +38,7 @@ const RedisServicePage = () => {
             {/* Header section with rich aesthetics */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-outline-variant/30">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+                    <h1 className="text-3xl font-bold tracking-tight text-surface-on flex items-center gap-3">
                         <div className="p-2.5 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20">
                             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.8L19.4 7 12 11.2 4.6 7 12 4.8zM4 15.6V8.4l7.2 4.1v7.2L4 15.6zm16 0l-7.2 4.1v-7.2l7.2-4.1v7.2z"/>
@@ -60,7 +60,7 @@ const RedisServicePage = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
                 {/* Status Card */}
-                <Card className="p-8 border-none bg-white/5 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl relative overflow-hidden group">
+                <Card className="p-8 border-none bg-surface-container-low backdrop-blur-xl ring-1 ring-outline-variant/20 shadow-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                         <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
@@ -79,7 +79,7 @@ const RedisServicePage = () => {
                         </div>
 
                         <div className="space-y-1">
-                            <p className="text-4xl font-bold text-white tracking-tight">
+                            <p className="text-4xl font-bold text-surface-on tracking-tight">
                                 {isOnline ? "Healthy" : "Issue Detected"}
                             </p>
                             <p className="text-sm text-surface-on-variant opacity-70 font-medium">
@@ -89,19 +89,19 @@ const RedisServicePage = () => {
 
                         <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-[10px] font-bold uppercase text-surface-on-variant opacity-50 mb-1">Provider</p>
-                                <p className="text-sm font-semibold text-white">Redis Stack</p>
+                                <p className="text-[10px] font-bold uppercase text-surface-on-variant opacity-70 mb-1">Provider</p>
+                                <p className="text-sm font-semibold text-surface-on">Redis Stack</p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold uppercase text-surface-on-variant opacity-50 mb-1">Version</p>
-                                <p className="text-sm font-semibold text-white">7.2.4 stable</p>
+                                <p className="text-[10px] font-bold uppercase text-surface-on-variant opacity-70 mb-1">Version</p>
+                                <p className="text-sm font-semibold text-surface-on">7.2.4 stable</p>
                             </div>
                         </div>
                     </div>
                 </Card>
 
                 {/* Actions Card */}
-                <Card className="p-8 border-none bg-white/5 backdrop-blur-xl ring-1 ring-white/10 shadow-2xl relative overflow-hidden group">
+                <Card className="p-8 border-none bg-surface-container-low backdrop-blur-xl ring-1 ring-outline-variant/20 shadow-2xl relative overflow-hidden group">
                     <div className="relative z-10 space-y-6 h-full flex flex-col">
                         <div>
                             <h3 className="text-sm font-bold uppercase tracking-widest text-surface-on-variant opacity-60 mb-4">Maintenance Actions</h3>
@@ -129,7 +129,7 @@ const RedisServicePage = () => {
             </div>
             
             {/* System Info */}
-            <Card className="p-6 border-none bg-slate-900/40 rounded-3xl ring-1 ring-white/5">
+            <Card className="p-6 border-none bg-surface-container-high rounded-3xl ring-1 ring-outline-variant/10">
                 <div className="flex items-start gap-4">
                     <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,8 +137,8 @@ const RedisServicePage = () => {
                         </svg>
                     </div>
                     <div className="space-y-1">
-                        <h4 className="text-sm font-bold text-white">About Redis Service</h4>
-                        <p className="text-xs text-surface-on-variant font-medium leading-relaxed opacity-60">
+                        <h4 className="text-sm font-bold text-surface-on">About Redis Service</h4>
+                        <p className="text-xs text-surface-on-variant font-medium leading-relaxed opacity-80">
                             NADI utilizes Redis as its primary cache layer for session management, rate limiting, and database query acceleration. 
                             Regular monitoring ensures optimal performance for end-users. Access to this management panel is restricted to System Administrators.
                         </p>

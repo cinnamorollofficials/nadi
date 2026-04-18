@@ -46,8 +46,8 @@ const Sidebar = ({
 
   return (
     <aside
-      className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${collapsed ? "w-[56px]" : "w-56"}`}
-      style={{ overflow: "hidden" }}
+      className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${collapsed ? "w-[56px]" : "w-56"} z-30`}
+      style={{ overflow: collapsed ? "visible" : "hidden" }}
     >
       {/* Header with toggle button */}
       <div
@@ -96,7 +96,7 @@ const Sidebar = ({
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-2 custom-scrollbar">
+      <nav className={`flex-1 ${collapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>
         {sections.map((section, idx) => (
           <div key={idx} className="mb-4">
             {section.label && !collapsed && (
@@ -123,15 +123,15 @@ const Sidebar = ({
                 const isExpanded = expandedSections[item.label];
 
                 if (collapsed) {
-                  // Icon-only mode: flat, no sub-items expansion
+                  // Icon-only mode: floating submenu or tooltip on hover
                   const href = item.subItems
                     ? item.subItems[0]?.path
                     : item.path;
                   return (
-                    <li key={item.label}>
+                    <li key={item.label} className="relative group/sidebar-item">
                       <Link
                         to={href || "#"}
-                        className={`group relative flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
+                        className={`flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
                           active
                             ? "bg-primary text-on-primary shadow-md"
                             : item.highlight
@@ -142,12 +142,48 @@ const Sidebar = ({
                         }`}
                       >
                         {item.icon}
-
-                        {/* Tooltip */}
-                        <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
-                          {item.label}
-                        </span>
                       </Link>
+
+                      {/* Floating Menu / Tooltip */}
+                      <div className="absolute left-full top-0 ml-2 invisible opacity-0 -translate-x-2 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-200 z-50">
+                        {hasSubItems ? (
+                          <div className="w-52 bg-surface-container-highest/90 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-outline-variant/30 overflow-hidden">
+                            <div className="px-3 py-2 border-b border-outline-variant/10 mb-1">
+                              <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                                {item.label}
+                              </p>
+                            </div>
+                            <ul className="space-y-0.5">
+                              {item.subItems.map((sub) => {
+                                const subActive = isActive(sub.path);
+                                return (
+                                  <li key={sub.path}>
+                                    <Link
+                                      to={sub.path}
+                                      className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 group/sub ${
+                                        subActive
+                                          ? "bg-primary text-on-primary shadow-sm"
+                                          : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                                      }`}
+                                    >
+                                      <div className="scale-90 group-hover/sub:scale-110 transition-transform">
+                                        {sub.icon}
+                                      </div>
+                                      <span className="text-xs font-bold whitespace-nowrap">
+                                        {sub.label}
+                                      </span>
+                                    </Link>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        ) : (
+                          <span className="px-3 py-1.5 rounded-xl bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 whitespace-nowrap block">
+                            {item.label}
+                          </span>
+                        )}
+                      </div>
                     </li>
                   );
                 }
