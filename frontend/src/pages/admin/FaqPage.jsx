@@ -4,6 +4,7 @@ import Button from "../../components/Button";
 import Card from "../../components/Card";
 import Table from "../../components/Table";
 import Modal from "../../components/Modal";
+import DataDetailModal from "../../components/DataDetailModal";
 import Pagination from "../../components/Pagination";
 import TextField from "../../components/TextField";
 import WysiwygEditor from "../../components/WysiwygEditor";
@@ -29,6 +30,8 @@ const FaqPage = () => {
     total_data: 0,
     total_pages: 1,
   });
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,30 +58,13 @@ const FaqPage = () => {
   };
 
   const columns = [
-    { header: "ID", accessor: "id" },
     {
       header: "Question",
       accessor: "question",
     },
     {
-      header: "Answer",
-      accessor: "answer",
-      render: (row) => (
-        <div className="max-w-xs truncate">{stripHtml(row.answer)}</div>
-      ),
-    },
-    {
       header: "Category",
       accessor: "category",
-    },
-    {
-      header: "Status",
-      accessor: "status",
-    },
-    {
-      header: "Created At",
-      accessor: "created_at",
-      render: (row) => new Date(row.created_at).toLocaleString(),
     },
   ];
 
@@ -172,7 +158,13 @@ const FaqPage = () => {
     }
   };
 
+  const handleDetail = (item) => {
+    setSelectedItem(item);
+    setIsDetailOpen(true);
+  };
+
   const tableActions = [
+    { label: "Detail", onClick: handleDetail, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
     ...(can(PERMS.FAQ_EDIT)
       ? [{ label: "Edit", onClick: handleOpenModal }]
       : []),
@@ -355,6 +347,16 @@ const FaqPage = () => {
           </div>
         </form>
       </Modal>
+
+      <DataDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => {
+            setIsDetailOpen(false);
+            setSelectedItem(null);
+        }}
+        title="Faq Detail"
+        data={selectedItem}
+      />
     </div>
   );
 };

@@ -5,14 +5,12 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import { getDashboardStats } from "../api/statistics";
 import logApi from "../api/log";
+import { usePermission } from "../hooks/usePermission";
 import { PERMS } from "../utils/permissions";
 
 const Dashboard = () => {
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const mask = BigInt(userData.permissions_mask || 0n);
-  const isAdmin = userData.role_id === 1;
+  const { hasPermission } = usePermission();
 
-  const hasPermission = (p) => isAdmin || (mask & p) !== 0n;
 
 
 
@@ -34,7 +32,7 @@ const Dashboard = () => {
       id: 1,
       title: "Total Users",
       value: statsData?.data?.total_users?.toString() || "0",
-      permission: PERMS.GET_USER,
+      permission: PERMS.USER_VIEW,
       icon: (
         <svg
           className="w-6 h-6"
@@ -60,7 +58,7 @@ const Dashboard = () => {
       id: 2,
       title: "Total Roles",
       value: statsData?.data?.total_roles?.toString() || "0",
-      permission: PERMS.GET_ROLE,
+      permission: PERMS.ROLE_VIEW,
       icon: (
         <svg
           className="w-6 h-6"
@@ -86,7 +84,7 @@ const Dashboard = () => {
       id: 3,
       title: "Permissions",
       value: statsData?.data?.total_permissions?.toString() || "0",
-      permission: PERMS.GET_PERMISSION,
+      permission: PERMS.PERMISSION_VIEW,
       icon: (
         <svg
           className="w-6 h-6"
@@ -114,37 +112,37 @@ const Dashboard = () => {
 
   const allActions = [
     {
-      to: "/admin/users",
+       to: "/admin/users",
       label: "Manage Users",
-      permission: PERMS.GET_USER,
+      permission: PERMS.USER_VIEW,
       icon: "M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z",
       variant: "primary",
     },
     {
       to: "/admin/roles",
       label: "Manage Roles",
-      permission: PERMS.GET_ROLE,
+      permission: PERMS.ROLE_VIEW,
       icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
       variant: "surface",
     },
     {
       to: "/admin/permissions",
       label: "Permissions",
-      permission: PERMS.GET_PERMISSION,
+      permission: PERMS.PERMISSION_VIEW,
       icon: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z",
       variant: "surface",
     },
     {
       to: "/admin/logs/audit",
       label: "Audit Logs",
-      permission: PERMS.GET_AUDIT_LOG,
+      permission: PERMS.LOG_AUDIT,
       icon: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
       variant: "primary",
     },
     {
       to: "/admin/blogpost",
       label: "Blog Posts",
-      permission: PERMS.GET_BLOGPOST,
+      permission: PERMS.BLOGPOST_VIEW,
       icon: "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
       variant: "surface",
     },

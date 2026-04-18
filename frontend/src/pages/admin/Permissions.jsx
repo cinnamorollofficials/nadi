@@ -6,6 +6,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import PermissionFormModal from '../../components/PermissionFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import DataDetailModal from '../../components/DataDetailModal';
 import { getPermissions, createPermission, updatePermission, deletePermission, exportPermissions } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
@@ -20,6 +21,7 @@ const Permissions = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedPermission, setSelectedPermission] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
 
     const queryClient = useQueryClient();
@@ -105,17 +107,17 @@ const Permissions = () => {
         setIsDeleteDialogOpen(true);
     };
 
+    const openDetailModal = (permission) => {
+        setSelectedPermission(permission);
+        setIsDetailModalOpen(true);
+    };
+
     const columns = [
-        { header: 'ID', accessor: 'id' },
         { header: 'Name', accessor: 'name' },
-        { header: 'Description', accessor: 'description' },
-        {
-            header: 'Created At',
-            render: (row) => new Date(row.created_at).toLocaleDateString(),
-        },
     ];
 
     const tableActions = useMemo(() => [
+        { label: 'Detail', onClick: openDetailModal, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
         hasPermission(PERMS.PERMISSION_EDIT) && { label: 'Edit', onClick: openEditModal },
         hasPermission(PERMS.PERMISSION_DELETE) && { label: 'Delete', onClick: openDeleteDialog, className: 'text-error' },
     ].filter(Boolean), [hasPermission]);
@@ -239,6 +241,17 @@ const Permissions = () => {
                 title="Delete Permission"
                 message={`Are you sure you want to delete permission "${selectedPermission?.name}"? This action cannot be undone.`}
                 isLoading={deleteMutation.isPending}
+            />
+
+            {/* Detail Modal */}
+            <DataDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => {
+                    setIsDetailModalOpen(false);
+                    setSelectedPermission(null);
+                }}
+                title="Permission Detail"
+                data={selectedPermission}
             />
         </div>
     );

@@ -7,6 +7,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import RoleFormModal from '../../components/RoleFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import DataDetailModal from '../../components/DataDetailModal';
 import { getRoles, createRole, updateRole, deleteRole, exportRoles } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
@@ -23,6 +24,7 @@ const Roles = () => {
     // Modal state
     const [isFormModalOpen, setIsFormModalOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState(null);
     const [isExporting, setIsExporting] = useState(false);
 
@@ -91,6 +93,11 @@ const Roles = () => {
         setIsDeleteOpen(true);
     };
 
+    const handleDetailRole = (role) => {
+        setSelectedRole(role);
+        setIsDetailModalOpen(true);
+    };
+
     const handleFormSubmit = (formData) => {
         if (selectedRole) {
             updateMutation.mutate({ id: selectedRole.id, data: formData });
@@ -120,7 +127,6 @@ const Roles = () => {
     };
 
     const columns = [
-        { header: 'ID', accessor: 'id' },
         { header: 'Name', accessor: 'name' },
         {
             header: 'Category', accessor: 'category', render: (row) => (
@@ -130,10 +136,10 @@ const Roles = () => {
                 </span>
             )
         },
-        { header: 'Description', accessor: 'description' },
     ];
 
     const tableActions = useMemo(() => [
+        { label: 'Detail', onClick: handleDetailRole, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
         hasPermission(PERMS.ROLE_EDIT) && { label: 'Edit', onClick: handleEditRole },
         hasPermission(PERMS.ROLE_DELETE) && { label: 'Delete', onClick: handleDeleteRole, className: 'text-error' },
     ].filter(Boolean), [hasPermission]);
@@ -253,6 +259,17 @@ const Roles = () => {
                 title="Delete Role"
                 message={`Are you sure you want to delete the role "${selectedRole?.name}"? This action cannot be undone.`}
                 loading={deleteMutation.isPending}
+            />
+
+            {/* Detail Modal */}
+            <DataDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => {
+                    setIsDetailModalOpen(false);
+                    setSelectedRole(null);
+                }}
+                title="Role Detail"
+                data={selectedRole}
             />
         </div>
     );

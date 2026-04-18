@@ -6,6 +6,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import UserFormModal from '../../components/UserFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import DataDetailModal from '../../components/DataDetailModal';
 import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
@@ -20,6 +21,7 @@ const Users = () => {
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
+    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
 
     // Debounce search term
@@ -92,6 +94,15 @@ const Users = () => {
         setIsDeleteDialogOpen(true);
     };
 
+    const openDetailModal = (user) => {
+        const enrichedUser = {
+            ...user,
+            role_name: rolesMap[user.role_id] || `Role ${user.role_id}`
+        };
+        setSelectedUser(enrichedUser);
+        setIsDetailModalOpen(true);
+    };
+
     const handleExport = async (format) => {
         setIsExporting(true);
         try {
@@ -120,7 +131,6 @@ const Users = () => {
     }
 
     const columns = [
-        { header: 'ID', accessor: 'id' },
         { header: 'Email', accessor: 'email' },
         {
             header: 'Role',
@@ -129,42 +139,22 @@ const Users = () => {
         {
             header: 'Status',
             render: (row) => (
-                <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${
+                <span className={`px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider ${
                     row.status === 'active' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
                     row.status === 'freezed' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
                     'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                 }`}>
-                    {row.status ? row.status.charAt(0).toUpperCase() + row.status.slice(1) : 'Active'}
+                    {row.status ? row.status : 'Active'}
                 </span>
             ),
-        },
-        {
-            header: '2FA',
-            render: (row) => (
-                <div className="flex items-center gap-1.5">
-                    {row.two_fa_enabled ? (
-                        <span className="flex items-center gap-1 text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zM10 5a1 1 0 011 1v3.586l2.293 2.293a1 1 0 11-1.414 1.414l-3-3A1 1 0 019 9V6a1 1 0 011-1z" clipRule="evenodd" /></svg>
-                            Active
-                        </span>
-                    ) : (
-                        <span className="text-xs font-medium text-surface-on-variant bg-surface-variant/20 px-2 py-0.5 rounded-full">
-                            Off
-                        </span>
-                    )}
-                </div>
-            )
-        },
-        {
-            header: 'Created At',
-            render: (row) => new Date(row.created_at).toLocaleDateString(),
         },
     ];
 
     const tableActions = useMemo(() => [
+        { label: 'Detail', onClick: openDetailModal, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
         hasPermission(PERMS.USER_EDIT) && { label: 'Edit', onClick: openEditModal },
         hasPermission(PERMS.USER_DELETE) && { label: 'Delete', onClick: openDeleteDialog, className: 'text-error' },
-    ].filter(Boolean), [hasPermission]);
+    ].filter(Boolean), [hasPermission, rolesMap]);
 
     if (error) {
         return (
@@ -282,6 +272,17 @@ const Users = () => {
                 title="Delete User"
                 message={`Are you sure you want to delete ${selectedUser?.name}? This action cannot be undone.`}
                 loading={deleteMutation.isPending}
+            />
+
+            {/* Detail Modal */}
+            <DataDetailModal
+                isOpen={isDetailModalOpen}
+                onClose={() => {
+                    setIsDetailModalOpen(false);
+                    setSelectedUser(null);
+                }}
+                title="User Detail"
+                data={selectedUser}
             />
         </div>
     );

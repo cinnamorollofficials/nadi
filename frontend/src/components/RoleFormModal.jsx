@@ -75,6 +75,20 @@ const RoleFormModal = ({ isOpen, onClose, onSubmit, role, loading = false }) => 
             return { ...prev, permission_ids: currentIds };
         });
     };
+ 
+    const handleSelectAll = () => {
+        setFormData(prev => ({
+            ...prev,
+            permission_ids: allPermissions.map(p => p.id)
+        }));
+    };
+ 
+    const handleUnselectAll = () => {
+        setFormData(prev => ({
+            ...prev,
+            permission_ids: []
+        }));
+    };
 
     const validate = () => {
         const newErrors = {};
@@ -139,10 +153,30 @@ const RoleFormModal = ({ isOpen, onClose, onSubmit, role, loading = false }) => 
                     </div>
 
                     <div>
-                        <label className="text-field-label mb-3">
-                            Permissions
-                            {fetchingPermissions && <span className="ml-2 text-xs text-surface-on-variant">(Loading...)</span>}
-                        </label>
+                        <div className="flex items-center justify-between mb-3">
+                            <label className="text-field-label">
+                                Permissions
+                                {fetchingPermissions && <span className="ml-2 text-xs text-surface-on-variant">(Loading...)</span>}
+                            </label>
+                            {allPermissions.length > 0 && !fetchingPermissions && (
+                                <div className="flex gap-4">
+                                    <button 
+                                        type="button" 
+                                        onClick={handleSelectAll}
+                                        className="text-[10px] font-bold text-primary uppercase tracking-wider hover:underline"
+                                    >
+                                        Select All
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        onClick={handleUnselectAll}
+                                        className="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider hover:underline"
+                                    >
+                                        Unselect All
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 bg-surface-variant p-4 rounded-md3 max-h-60 overflow-y-auto">
                             {allPermissions.map((permission) => (
                                 <label

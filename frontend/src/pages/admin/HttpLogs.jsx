@@ -42,15 +42,6 @@ const HttpLogs = () => {
 
     const columns = [
         {
-            header: 'Req ID',
-            accessor: 'request_id',
-            render: (row) => (
-                <div className="font-mono text-xs text-surface-on-variant truncate max-w-[80px]" title={row.request_id}>
-                    {row.request_id?.split('-')[0] || '-'}
-                </div>
-            )
-        },
-        {
             header: 'Method',
             accessor: 'method',
             render: (row) => {
@@ -63,7 +54,7 @@ const HttpLogs = () => {
                 };
                 const colorClass = colors[row.method] || 'bg-surface-variant/30 text-surface-on';
                 return (
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${colorClass}`}>
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${colorClass}`}>
                         {row.method}
                     </span>
                 );
@@ -81,7 +72,7 @@ const HttpLogs = () => {
                 else if (status >= 500) colorClass = 'bg-red-500/10 text-red-600 dark:text-red-400';
                 
                 return (
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${colorClass}`}>
+                    <span className={`px-2 py-1 rounded text-[10px] font-bold ${colorClass}`}>
                         {status}
                     </span>
                 );
@@ -91,17 +82,8 @@ const HttpLogs = () => {
             header: 'Path',
             accessor: 'path',
             render: (row) => (
-                <div className="truncate max-w-[200px]" title={row.path}>
+                <div className="truncate max-w-[200px] text-sm text-surface-on font-medium" title={row.path}>
                     {row.path}
-                </div>
-            )
-        },
-        {
-            header: 'User Email',
-            accessor: 'user_email',
-            render: (row) => (
-                <div className="truncate max-w-[150px] text-sm text-surface-on-variant" title={row.user_email || '-'}>
-                    {row.user_email || '-'}
                 </div>
             )
         },
@@ -111,7 +93,7 @@ const HttpLogs = () => {
             render: (row) => {
                 const ms = row.latency;
                 const color = ms > 1000 ? 'text-red-500' : ms > 500 ? 'text-yellow-500' : 'text-surface-on-variant';
-                return <span className={`font-mono text-sm ${color}`}>{ms}ms</span>;
+                return <span className={`font-mono text-xs ${color}`}>{ms}ms</span>;
             }
         },
         {
@@ -120,8 +102,8 @@ const HttpLogs = () => {
             render: (row) => {
                 const date = new Date(row.created_at);
                 return (
-                    <div className="whitespace-nowrap text-sm">
-                        {date.toLocaleString()}
+                    <div className="whitespace-nowrap text-xs text-surface-on-variant">
+                        {date.toLocaleTimeString()}
                     </div>
                 );
             }
@@ -136,9 +118,10 @@ const HttpLogs = () => {
                         setActiveTab('request');
                         setIsDetailsModalOpen(true);
                     }}
-                    className="text-primary hover:bg-primary-container/20 px-2 py-1 rounded transition-colors font-medium text-sm"
+                    className="flex items-center gap-1.5 p-1.5 rounded-full hover:bg-surface-variant/40 transition-colors text-primary"
+                    title="Detail"
                 >
-                    Detail
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                 </button>
             )
         }

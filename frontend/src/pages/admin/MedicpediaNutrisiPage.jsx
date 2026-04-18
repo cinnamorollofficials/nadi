@@ -4,9 +4,11 @@ import Button from "../../components/Button";
 import Card from "../../components/Card";
 import Table from "../../components/Table";
 import Modal from "../../components/Modal";
+import DataDetailModal from "../../components/DataDetailModal";
 import Pagination from "../../components/Pagination";
 import TextField from "../../components/TextField";
 import WysiwygEditor from "../../components/WysiwygEditor";
+import ImageUpload from "../../components/ImageUpload";
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from "../../utils/permissions";
 import {
@@ -29,6 +31,8 @@ const MedicpediaNutrisiPage = () => {
     total_data: 0,
     total_pages: 1,
   });
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [isExporting, setIsExporting] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -60,64 +64,27 @@ const MedicpediaNutrisiPage = () => {
   };
 
   const columns = [
-    { header: "ID", accessor: "id" },
     {
       header: "Name",
       accessor: "name",
     },
     {
-      header: "Slug",
-      accessor: "slug",
-    },
-    {
-      header: "Image",
-      accessor: "image",
-    },
-    {
-      header: "Description",
-      accessor: "description",
-      render: (row) => (
-        <div className="max-w-xs truncate">{stripHtml(row.description)}</div>
-      ),
-    },
-    {
-      header: "Benefits",
-      accessor: "benefits",
-      render: (row) => (
-        <div className="max-w-xs truncate">{stripHtml(row.benefits)}</div>
-      ),
-    },
-    {
-      header: "Sources",
-      accessor: "sources",
-      render: (row) => (
-        <div className="max-w-xs truncate">{stripHtml(row.sources)}</div>
-      ),
-    },
-    {
-      header: "DailyNeeds",
-      accessor: "daily_needs",
-      render: (row) => (
-        <div className="max-w-xs truncate">{stripHtml(row.daily_needs)}</div>
-      ),
-    },
-    {
-      header: "RisksDeficiency",
-      accessor: "risks_deficiency",
-      render: (row) => (
-        <div className="max-w-xs truncate">
-          {stripHtml(row.risks_deficiency)}
-        </div>
-      ),
-    },
-    {
       header: "Status",
       accessor: "status",
-    },
-    {
-      header: "Created At",
-      accessor: "created_at",
-      render: (row) => new Date(row.created_at).toLocaleString(),
+      render: (row) => {
+          const statusStr = String(row.status).toLowerCase();
+          const colors = {
+              published: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+              draft: 'bg-surface-variant/30 text-surface-on-variant',
+              archived: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+          };
+          const colorClass = colors[statusStr] || 'bg-surface-variant/30 text-surface-on-variant';
+          return (
+              <span className={`px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider ${colorClass}`}>
+                  {String(row.status)}
+              </span>
+          );
+      }
     },
   ];
 
@@ -222,7 +189,13 @@ const MedicpediaNutrisiPage = () => {
     }
   };
 
+  const handleDetail = (item) => {
+    setSelectedItem(item);
+    setIsDetailOpen(true);
+  };
+
   const tableActions = [
+    { label: "Detail", onClick: handleDetail, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
     ...(can(PERMS.NUTRISI_EDIT)
       ? [{ label: "Edit", onClick: handleOpenModal }]
       : []),
@@ -369,13 +342,10 @@ const MedicpediaNutrisiPage = () => {
             onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
             required
           />
-          <TextField
+          <ImageUpload
             label="Image"
-            name="image"
             value={formData.image.toString()}
-            onChange={(e) =>
-              setFormData({ ...formData, image: e.target.value })
-            }
+            onChange={(url) => setFormData({ ...formData, image: url })}
             required
           />
           <WysiwygEditor
@@ -457,6 +427,16 @@ const MedicpediaNutrisiPage = () => {
           </div>
         </form>
       </Modal>
+
+      <DataDetailModal
+        isOpen={isDetailOpen}
+        onClose={() => {
+            setIsDetailOpen(false);
+            setSelectedItem(null);
+        }}
+        title="Nutrisi Detail"
+        data={selectedItem}
+      />
     </div>
   );
 };
