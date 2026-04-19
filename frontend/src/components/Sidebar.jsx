@@ -93,9 +93,9 @@ const Sidebar = ({
           )}
         </div>
         <button
-          onClick={onToggleCollapse}
+          onClick={mobileOpen ? onCloseMobile : onToggleCollapse}
           className="p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-all duration-200 flex-shrink-0"
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <svg
             className={`w-4 h-4 transition-transform duration-300 ${isActuallyCollapsed ? "rotate-180" : ""}`}
@@ -145,30 +145,6 @@ const Sidebar = ({
         </div>
       )}
 
-      {/* Collapsed Search Icon */}
-      {collapsed && onSearch && (
-        <div className="flex justify-center py-2 border-b border-outline-variant/10">
-          <button
-            onClick={onToggleCollapse}
-            className="p-2 rounded-xl text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all"
-            title="Search history"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-        </div>
-      )}
 
       {/* Navigation */}
       <nav className={`flex-1 ${isActuallyCollapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>

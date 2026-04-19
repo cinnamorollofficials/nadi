@@ -65,7 +65,7 @@ const ClientDashboard = () => {
       {/* Main Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* New Symptom Check Card */}
-        <Card className="relative overflow-hidden bg-primary text-on-primary p-8 border-0 shadow-lg">
+        <Card className="relative overflow-hidden bg-primary text-on-primary p-8 border-0">
           <div className="relative z-10">
             <div className="w-12 h-12 bg-on-primary/20 rounded-xl flex items-center justify-center mb-4">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@ const ClientDashboard = () => {
               Connect instantly with our AI medical specialists for detailed guidance.
             </p>
             <Link
-              to="/medicpedia/nutrisi"
+              to="/new-check?mode=chat"
               className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3 transition-all"
             >
               Start Chat

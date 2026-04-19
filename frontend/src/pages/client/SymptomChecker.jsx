@@ -1,23 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams, useLocation } from "react-router-dom";
 
 const SymptomChecker = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      type: "ai",
-      content:
-        "Hello! I'm your Clinical Assistant. I'm here to help you understand what might be causing your symptoms.",
-      timestamp: new Date(),
-    },
-    {
-      id: 2,
-      type: "ai",
-      content:
-        "To get started, could you please describe what symptoms you are experiencing today and when they began?",
-      timestamp: new Date(),
-    },
-  ]);
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const mode = searchParams.get("mode");
+  const isChatMode = mode === "chat";
+
+  const [messages, setMessages] = useState([]);
 
   const [currentInput, setCurrentInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -25,6 +15,59 @@ const SymptomChecker = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  // Initialize messages including optional initial prompt
+  useEffect(() => {
+    const initialPrompt = location.state?.initialPrompt;
+    
+    const baseMessages = [
+      {
+        id: 1,
+        type: "ai",
+        content: isChatMode
+          ? "Hello! I'm your Health Assistant. I'm here to help you with general health tips, nutrition, and wellness advice. How can I assist you today?"
+          : "Hello! I'm your Clinical Assistant. I'm here to help you understand what might be causing your symptoms.",
+        timestamp: new Date(),
+      },
+      {
+        id: 2,
+        type: "ai",
+        content: isChatMode
+          ? "Feel free to ask me anything about health, diet, or overall well-being."
+          : "To get started, could you please describe what symptoms you are experiencing today and when they began?",
+        timestamp: new Date(),
+      },
+    ];
+
+    if (initialPrompt) {
+      setMessages([
+        ...baseMessages,
+        {
+          id: 3,
+          type: "user",
+          content: initialPrompt,
+          timestamp: new Date(),
+        }
+      ]);
+      
+      // Simulate follow-up after initial prompt
+      setIsTyping(true);
+      setTimeout(() => {
+        const aiResponse = {
+          id: 4,
+          type: "ai",
+          content: isChatMode 
+            ? "That's a great question. Let me provide some context and help you with that. " 
+            : "Thank you for describing that. I've noted your initial symptoms. Does the pain or discomfort shift, or is it constant in one area?",
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, aiResponse]);
+        setIsTyping(false);
+      }, 1500);
+    } else {
+      setMessages(baseMessages);
+    }
+  }, [isChatMode, location.state]);
 
   const steps = [
     {
@@ -119,117 +162,30 @@ const SymptomChecker = () => {
       )}
 
       {/* Left Sidebar - Progress Steps (Drawer on Mobile) */}
-      <div
-        className={`
-        fixed inset-y-0 left-0 w-80 bg-surface z-[50] transform transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0 lg:z-0 lg:w-80 flex-shrink-0 border-r border-outline-variant/5
-        ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-      `}
-      >
-        <div className="p-8 h-full flex flex-col">
-          <div className="mb-10 pl-1">
-            <div className="flex items-center justify-between lg:block">
-              <div>
-                <h1 className="text-lg font-bold text-surface-on mb-1 tracking-tight">
-                  Diagnostic Path
-                </h1>
-                <p className="text-surface-on-variant text-[9px] font-medium opacity-80 uppercase tracking-widest leading-none">
-                  Clinical AI Protocol
-                </p>
-              </div>
-              <button
-                onClick={() => setIsSidebarOpen(false)}
-                className="lg:hidden p-2 rounded-full hover:bg-surface-variant/30 text-surface-on-variant"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+      {!isChatMode && (
+        <div
+          className={`
+          fixed inset-y-0 left-0 w-80 bg-surface z-[50] transform transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0 lg:z-0 lg:w-80 flex-shrink-0 border-r border-outline-variant/5
+          ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        `}
+        >
+          <div className="p-8 h-full flex flex-col">
+            <div className="mb-10 pl-1">
+              <div className="flex items-center justify-between lg:block">
+                <div>
+                  <h1 className="text-lg font-bold text-surface-on mb-1 tracking-tight">
+                    Diagnostic Path
+                  </h1>
+                  <p className="text-surface-on-variant text-[9px] font-medium opacity-80 uppercase tracking-widest leading-none">
+                    Clinical AI Protocol
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsSidebarOpen(false)}
+                  className="lg:hidden p-2 rounded-full hover:bg-surface-variant/30 text-surface-on-variant"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-2">
-            {steps.map((step, index) => (
-              <div key={step.id} className="group flex items-start gap-5">
-                <div className="flex flex-col items-center">
-                  <div
-                    className={`w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                      step.status === "current"
-                        ? "bg-primary text-on-primary shadow-lg shadow-primary/20 scale-110"
-                        : step.status === "completed"
-                          ? "bg-primary/20 text-primary"
-                          : "bg-surface-container-highest text-surface-on-variant border border-outline-variant/30"
-                    }`}
-                  >
-                    {step.status === "completed" ? (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2.5}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    ) : (
-                      step.id
-                    )}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div
-                      className={`w-0.5 h-12 mt-2 rounded-full transition-colors duration-500 ${
-                        step.status === "completed"
-                          ? "bg-primary/40"
-                          : "bg-outline-variant/10"
-                      }`}
-                    />
-                  )}
-                </div>
-                <div className="flex-1 pt-1.5 pb-2">
-                  <h3
-                    className={`text-[13px] font-bold mb-1 transition-colors ${
-                      step.status === "current"
-                        ? "text-surface-on"
-                        : "text-surface-on-variant/60"
-                    }`}
-                  >
-                    {step.label}
-                  </h3>
-                  {step.description && (
-                    <p
-                      className={`text-[11px] leading-relaxed transition-opacity duration-300 ${
-                        step.status === "current"
-                          ? "text-surface-on-variant"
-                          : "text-surface-on-variant/40"
-                      }`}
-                    >
-                      {step.description}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-auto pt-8">
-            <div className="p-5 bg-surface-container-highest/20 rounded-3xl border border-outline-variant/10 backdrop-blur-sm">
-              <div className="flex items-start gap-4">
-                <div className="w-6 h-6 bg-error/10 text-error rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg
-                    className="w-3.5 h-3.5"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -237,19 +193,108 @@ const SymptomChecker = () => {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2.5}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-2">
+              {steps.map((step, index) => (
+                <div key={step.id} className="group flex items-start gap-5">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                        step.status === "current"
+                          ? "bg-primary text-on-primary shadow-lg shadow-primary/20 scale-110"
+                          : step.status === "completed"
+                            ? "bg-primary/20 text-primary"
+                            : "bg-surface-container-highest text-surface-on-variant border border-outline-variant/30"
+                      }`}
+                    >
+                      {step.status === "completed" ? (
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      ) : (
+                        step.id
+                      )}
+                    </div>
+                    {index < steps.length - 1 && (
+                      <div
+                        className={`w-0.5 h-12 mt-2 rounded-full transition-colors duration-500 ${
+                          step.status === "completed"
+                            ? "bg-primary/40"
+                            : "bg-outline-variant/10"
+                        }`}
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 pt-1.5 pb-2">
+                    <h3
+                      className={`text-[13px] font-bold mb-1 transition-colors ${
+                        step.status === "current"
+                          ? "text-surface-on"
+                          : "text-surface-on-variant/60"
+                      }`}
+                    >
+                      {step.label}
+                    </h3>
+                    {step.description && (
+                      <p
+                        className={`text-[11px] leading-relaxed transition-opacity duration-300 ${
+                          step.status === "current"
+                            ? "text-surface-on-variant"
+                            : "text-surface-on-variant/40"
+                        }`}
+                      >
+                        {step.description}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <p className="text-[9px] uppercase font-bold tracking-widest text-surface-on-variant/50 leading-relaxed">
-                  Non-substitution for medical advice. Protocol in development.
-                </p>
+              ))}
+            </div>
+
+            <div className="mt-auto pt-8">
+              <div className="p-5 bg-surface-container-highest/20 rounded-3xl border border-outline-variant/10 backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 bg-error/10 text-error rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-[9px] uppercase font-bold tracking-widest text-surface-on-variant/50 leading-relaxed">
+                    Non-substitution for medical advice. Protocol in development.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
@@ -371,7 +416,7 @@ const SymptomChecker = () => {
           {/* Quick Response & Input Area Wrapper */}
           <div className="flex flex-col flex-shrink-0 bg-surface/90 backdrop-blur-2xl border-t border-outline-variant/10 p-6 lg:p-10 pb-10 lg:pb-12">
             {/* Quick Response Buttons */}
-            {quickResponses.length > 0 && (
+            {!isChatMode && quickResponses.length > 0 && (
               <div className="mb-6 overflow-x-auto no-scrollbar">
                 <div className="flex gap-3 min-w-max">
                   {quickResponses.map((response, index) => (
@@ -395,7 +440,7 @@ const SymptomChecker = () => {
                   value={currentInput}
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Describe your symptoms professionally..."
+                  placeholder={isChatMode ? "Ask me anything about health..." : "Describe your symptoms professionally..."}
                   className="w-full px-8 py-5 pr-16 bg-surface-container-highest/30 border border-outline-variant/10 rounded-[2.5rem] focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/40 transition-all resize-none shadow-sm min-h-[64px] max-h-[160px] text-sm font-medium"
                   rows="1"
                   onInput={(e) => {
