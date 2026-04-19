@@ -9,9 +9,14 @@ const Sidebar = ({
   onLogout,
   collapsed = false,
   onToggleCollapse,
+  mobileOpen = false,
+  onCloseMobile,
+  onSearch,
+  headerAction,
 }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
+  const isActuallyCollapsed = collapsed && !mobileOpen;
 
   const isActive = (path) => location.pathname === path;
   const isChildActive = (item) => {
@@ -45,18 +50,31 @@ const Sidebar = ({
   };
 
   return (
-    <aside
-      className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${collapsed ? "w-[56px]" : "w-56"} z-30`}
-      style={{ overflow: collapsed ? "visible" : "hidden" }}
-    >
+    <>
+      {/* Mobile Backdrop */}
+      {mobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden transition-opacity duration-300"
+          onClick={onCloseMobile}
+        />
+      )}
+
+      <aside
+        className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out 
+          ${isActuallyCollapsed ? "w-[56px]" : "w-56"} 
+          fixed inset-y-0 left-0 z-[70] lg:relative lg:translate-x-0
+          ${mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"}
+        `}
+        style={{ overflow: (isActuallyCollapsed && !mobileOpen) ? "visible" : "hidden" }}
+      >
       {/* Header with toggle button */}
       <div
-        className={`h-12 flex items-center flex-shrink-0 ${collapsed ? "justify-center px-2" : "justify-between px-3"}`}
+        className={`h-12 flex items-center flex-shrink-0 ${isActuallyCollapsed ? "justify-center px-2" : "justify-between px-3"}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
           {logo && (
             <div
-              className={`flex-shrink-0 transition-all duration-300 ${collapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20`}
+              className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20`}
             >
               <img
                 src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
@@ -68,7 +86,7 @@ const Sidebar = ({
               />
             </div>
           )}
-          {!collapsed && (
+          {!isActuallyCollapsed && (
             <h2 className="text-sm font-semibold text-surface-on truncate">
               {title}
             </h2>
@@ -80,7 +98,7 @@ const Sidebar = ({
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <svg
-            className={`w-4 h-4 transition-transform duration-300 ${collapsed ? "rotate-180" : ""}`}
+            className={`w-4 h-4 transition-transform duration-300 ${isActuallyCollapsed ? "rotate-180" : ""}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -95,11 +113,68 @@ const Sidebar = ({
         </button>
       </div>
 
+      {/* Search & Action Section */}
+      {!collapsed && (onSearch || headerAction) && (
+        <div className="px-3 pb-2 pt-1 border-b border-outline-variant/10 space-y-3">
+          {onSearch && (
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  className="w-3.5 h-3.5 text-surface-on-variant opacity-50 group-focus-within:opacity-100 group-focus-within:text-primary transition-all"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                onChange={(e) => onSearch(e.target.value)}
+                placeholder="Search history..."
+                className="w-full pl-9 pr-3 py-2 text-[11px] font-bold uppercase tracking-wider bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 transition-all placeholder:text-[10px] placeholder:tracking-widest"
+              />
+            </div>
+          )}
+          {headerAction && <div className="animate-fade-in">{headerAction}</div>}
+        </div>
+      )}
+
+      {/* Collapsed Search Icon */}
+      {collapsed && onSearch && (
+        <div className="flex justify-center py-2 border-b border-outline-variant/10">
+          <button
+            onClick={onToggleCollapse}
+            className="p-2 rounded-xl text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all"
+            title="Search history"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* Navigation */}
-      <nav className={`flex-1 ${collapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>
+      <nav className={`flex-1 ${isActuallyCollapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>
         {sections.map((section, idx) => (
           <div key={idx} className="mb-4">
-            {section.label && !collapsed && (
+            {section.label && !isActuallyCollapsed && (
               <div className="px-4 py-2">
                 <h3 className="text-xs font-bold text-surface-on tracking-tight">
                   {section.label}
@@ -122,7 +197,7 @@ const Sidebar = ({
                 const hasSubItems = !!item.subItems;
                 const isExpanded = expandedSections[item.label];
 
-                if (collapsed) {
+                if (isActuallyCollapsed) {
                   // Icon-only mode: floating submenu or tooltip on hover
                   const href = item.subItems
                     ? item.subItems[0]?.path
@@ -287,11 +362,11 @@ const Sidebar = ({
 
       {/* Bottom: Logout */}
       <div
-        className={`flex-shrink-0 p-1.5 border-t border-outline-variant/30 ${collapsed ? "flex justify-center" : "px-2"}`}
+        className={`flex-shrink-0 p-1.5 border-t border-outline-variant/30 ${isActuallyCollapsed ? "flex justify-center" : "px-2"}`}
       >
         <button
           onClick={onLogout}
-          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${collapsed ? "justify-center w-full" : "w-full"}`}
+          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${isActuallyCollapsed ? "justify-center w-full" : "w-full"}`}
         >
           <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
             <svg
@@ -308,20 +383,21 @@ const Sidebar = ({
               />
             </svg>
           </div>
-          {!collapsed && (
+          {!isActuallyCollapsed && (
             <span className="font-medium text-xs whitespace-nowrap">
               Logout
             </span>
           )}
 
-          {collapsed && (
+          {isActuallyCollapsed && (
             <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
               Logout
             </span>
           )}
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 
@@ -350,6 +426,10 @@ Sidebar.propTypes = {
   onLogout: PropTypes.func.isRequired,
   collapsed: PropTypes.bool,
   onToggleCollapse: PropTypes.func.isRequired,
+  mobileOpen: PropTypes.bool,
+  onCloseMobile: PropTypes.func,
+  onSearch: PropTypes.func,
+  headerAction: PropTypes.node,
 };
 
 export default Sidebar;

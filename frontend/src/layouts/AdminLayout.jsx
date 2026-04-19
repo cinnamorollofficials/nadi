@@ -14,6 +14,46 @@ const AdminLayout = () => {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const historyItems = [
+    {
+      id: 1,
+      label: "Demam Panas Lebih dari 3 Hari",
+      path: "/new-check?id=1",
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+    },
+    {
+      id: 2,
+      label: "Sakit Kepala Sebelah Kiri",
+      path: "/new-check?id=2",
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+    },
+    {
+      id: 3,
+      label: "Nyeri Punggung Bawah",
+      path: "/new-check?id=3",
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+    },
+  ];
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setIsMobileSidebarOpen(false);
+  }, [location.pathname]);
 
   // Function to refresh user profile and permissions from server
   const refreshUserData = useCallback(async () => {
@@ -55,7 +95,13 @@ const AdminLayout = () => {
     }
 
     if (userData) {
-      setUser(JSON.parse(userData));
+      const parsedUser = JSON.parse(userData);
+      setUser(parsedUser);
+
+      // Secondary safety check: Redirect 'user' role out of admin layout
+      if (parsedUser.role_id === 3) {
+        navigate("/dashboard");
+      }
     }
   }, [navigate]);
 
@@ -72,28 +118,36 @@ const AdminLayout = () => {
     navigate("/login", { replace: true });
   };
 
-  // Update document title dynamically
-  useEffect(() => {
-    // Basic title mapping
+  // Determine dynamic page title based on route
+  const pageTitle = useMemo(() => {
     const path = location.pathname;
-    let pageTitle = "Dashboard";
-    if (path.includes("/admin/users")) pageTitle = "Users";
-    if (path.includes("/admin/roles")) pageTitle = "Roles";
-    if (path.includes("/admin/permissions")) pageTitle = "Permissions";
-    if (path.includes("/admin/apikeys")) pageTitle = "API Keys";
-    if (path.includes("/admin/settings")) pageTitle = "Settings";
-    if (path.includes("/admin/storage")) pageTitle = "Storage";
-    if (path.includes("/profile")) pageTitle = "Profile";
+    let title = "Dashboard";
 
-    document.title = `${pageTitle} | ${app_name}`;
+    if (path.includes("/admin/users")) title = "Users Management";
+    else if (path.includes("/admin/roles")) title = "Roles & Access";
+    else if (path.includes("/admin/permissions")) title = "Permissions Matrix";
+    else if (path.includes("/admin/apikeys")) title = "API Security Keys";
+    else if (path.includes("/admin/settings")) title = "System Settings";
+    else if (path.includes("/admin/storage")) title = "Cloud Storage";
+    else if (path.includes("/profile")) title = "User Profile";
+    else if (path.includes("/new-check"))
+      title = "Demam Panas Lebih dari 3 Hari";
+    else if (path.includes("/history")) title = "Assessment History";
 
-    // Special handling for dynamic settings titles
+    // Special handling for dynamic settings categories
     if (path.startsWith("/admin/settings/")) {
       const category = path.split("/").pop();
-      const capitalized = category.charAt(0).toUpperCase() + category.slice(1);
-      document.title = `${capitalized} Settings | ${app_name}`;
+      title =
+        category.charAt(0).toUpperCase() + category.slice(1) + " Configuration";
     }
-  }, [location.pathname, app_name]);
+
+    return title;
+  }, [location.pathname]);
+
+  // Update document title dynamically
+  useEffect(() => {
+    document.title = `${pageTitle} | ${app_name}`;
+  }, [pageTitle, app_name]);
 
   // Navigation Configuration
   const navigationSections = [
@@ -147,7 +201,12 @@ const AdminLayout = () => {
               />
             </svg>
           ),
-          permission: [PERMS.USER_VIEW, PERMS.ROLE_VIEW, PERMS.PERMISSION_VIEW, PERMS.APIKEY_VIEW],
+          permission: [
+            PERMS.USER_VIEW,
+            PERMS.ROLE_VIEW,
+            PERMS.PERMISSION_VIEW,
+            PERMS.APIKEY_VIEW,
+          ],
           subItems: [
             {
               path: "/admin/users",
@@ -237,14 +296,7 @@ const AdminLayout = () => {
             },
           ],
         },
-        
-        
-        
 
-       
-       
-        
-        
         // [GENERATOR_INSERT_ADMIN_ITEM]
       ],
     },
@@ -268,10 +320,7 @@ const AdminLayout = () => {
               />
             </svg>
           ),
-          permission: [
-            PERMS.PENYAKIT_VIEW,
-            PERMS.NUTRISI_VIEW,
-          ],
+          permission: [PERMS.PENYAKIT_VIEW, PERMS.NUTRISI_VIEW],
           subItems: [
             {
               path: "/admin/medicpediapenyakit",
@@ -335,7 +384,7 @@ const AdminLayout = () => {
             </svg>
           ),
         },
-        
+
         {
           label: "FAQ",
           path: "/admin/faq",
@@ -356,7 +405,7 @@ const AdminLayout = () => {
             </svg>
           ),
         },
-       {
+        {
           label: "Storage",
           path: "/admin/storage",
           permission: PERMS.STORAGE_VIEW,
@@ -376,12 +425,12 @@ const AdminLayout = () => {
             </svg>
           ),
         },
-      ]
+      ],
     },
     {
-      label:"System & Operations",
-      items:[
-{
+      label: "System & Operations",
+      items: [
+        {
           label: "Settings",
           permission: [
             PERMS.SETTING_VIEW_WEBSITE,
@@ -533,7 +582,6 @@ const AdminLayout = () => {
                 </svg>
               ),
             },
-            
           ],
         },
         {
@@ -597,7 +645,7 @@ const AdminLayout = () => {
             },
           ],
         },
-         {
+        {
           label: "Logs",
           icon: (
             <svg
@@ -614,11 +662,7 @@ const AdminLayout = () => {
               />
             </svg>
           ),
-          permission: [
-            PERMS.LOG_AUDIT,
-            PERMS.LOG_SYSTEM,
-            PERMS.LOG_HTTP,
-          ],
+          permission: [PERMS.LOG_AUDIT, PERMS.LOG_SYSTEM, PERMS.LOG_HTTP],
           subItems: [
             {
               path: "/admin/logs/audit",
@@ -708,13 +752,23 @@ const AdminLayout = () => {
             </svg>
           ),
         },
-      ]
-    }
+      ],
+    },
   ];
 
-  // Filter navigation based on user permissions
   const filteredNavigation = useMemo(() => {
-    if (!user || user.role_id === 1) return navigationSections; // Admin full access (fallback check on role_id)
+    const filteredHistory = historyItems.filter((item) =>
+      item.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const historySection = {
+      label: "Recent Conversations",
+      items: filteredHistory,
+    };
+
+    if (!user || user.role_id === 1) {
+      return [historySection, ...navigationSections];
+    }
 
     const checkPermission = (item) => {
       if (item.permission === undefined) return true;
@@ -742,13 +796,15 @@ const AdminLayout = () => {
         .filter(Boolean);
     };
 
-    return navigationSections
+    const baseSections = navigationSections
       .map((section) => ({
         ...section,
         items: filterItems(section.items),
       }))
       .filter((section) => section.items.length > 0);
-  }, [user]);
+
+    return [historySection, ...baseSections];
+  }, [user, searchQuery]);
 
   if (!user) {
     return (
@@ -770,32 +826,55 @@ const AdminLayout = () => {
         onLogout={handleLogout}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        mobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        onSearch={setSearchQuery}
+        headerAction={
+          <button
+            onClick={() => navigate("/new-check")}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-2xl font-bold shadow-lg shadow-primary/20 group hover:brightness-110 active:scale-95 transition-all duration-300"
+          >
+            <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <span className="text-[13px] tracking-tight">New Conversation</span>
+          </button>
+        }
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-6 bg-surface-container-low border-b border-outline-variant/30 sticky top-0 z-10 shadow-sm shadow-surface/5">
-          <div className="flex flex-col gap-0.5">
-            <h2 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-              Administration
-            </h2>
-            <div className="flex items-center gap-2 overflow-hidden">
-              {logo && (
-                <div className="w-6 h-6 rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20 flex-shrink-0">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                    alt="Logo"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                </div>
-              )}
-              <span className="text-sm font-bold text-surface-on truncate max-w-[200px]">
-                {app_name}
-              </span>
+        <header className="h-14 flex items-center justify-between px-4 lg:px-6 bg-surface-container-low border-b border-outline-variant/30 sticky top-0 z-10 shadow-sm shadow-surface/5">
+          <div className="flex items-center gap-3">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileSidebarOpen(true)}
+              className="lg:hidden p-2 rounded-xl hover:bg-surface-variant/30 text-surface-on-variant transition-all duration-200 active:scale-95"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+
+            <div className="flex flex-col gap-0.5 mt-0.5">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <span className="text-sm font-bold text-surface-on truncate max-w-[180px] lg:max-w-none">
+                  {pageTitle}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -837,8 +916,6 @@ const AdminLayout = () => {
               )}
             </button>
 
-
-
             <div className="flex items-center gap-3 pl-2 border-l border-outline-variant/30">
               <div className="hidden md:flex flex-col items-end">
                 <span className="text-xs font-bold text-surface-on truncate max-w-[150px]">
@@ -863,7 +940,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+        <main className="flex-1 overflow-y-auto custom-scrollbar">
           <div className="max-w-6xl mx-auto animate-fade-in-up pb-10">
             <Outlet />
           </div>

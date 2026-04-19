@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import SymptomChecker from "./pages/client/SymptomChecker";
@@ -107,6 +107,26 @@ function RoleBasedDashboard() {
   return <Dashboard />;
 }
 
+/**
+ * A guard component that prevents users with the 'user' role (role_id 3)
+ * from accessing administrative routes.
+ */
+function AdminGuard({ children }) {
+  const userData = localStorage.getItem("user");
+  if (!userData) return <Navigate to="/login" replace />;
+  const user = JSON.parse(userData);
+
+  if (user.role_id === 3) {
+    setTimeout(
+      () => toast.error("Role 'User' is not allowed to access administration."),
+      0
+    );
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children || <Outlet />;
+}
+
 function App() {
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || "PLACEHOLDER"}>
@@ -166,7 +186,7 @@ function App() {
             />
 
             {/* Admin Routes */}
-            <Route path="admin">
+            <Route path="admin" element={<AdminGuard />}>
               <Route index element={<Dashboard />} />
               <Route path="apikeys" element={<PermissionGuard permission={PERMS.APIKEY_VIEW}><ApiKeyPage /></PermissionGuard>} />
               <Route path="users" element={<PermissionGuard permission={PERMS.USER_VIEW}><Users /></PermissionGuard>} />
