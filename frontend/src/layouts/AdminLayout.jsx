@@ -825,6 +825,8 @@ const AdminLayout = () => {
         title={app_name}
         logo={logo}
         onLogout={handleLogout}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}

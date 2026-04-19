@@ -168,68 +168,7 @@ const UserLayout = () => {
         label: "Recent Conversations",
         items: filteredHistory,
       },
-      {
-        label: "Portal",
-        items: [
-          {
-            path: "/dashboard",
-            label: "Overview",
-            icon: (
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                />
-              </svg>
-            ),
-          },
-          {
-            path: "/consultations",
-            label: "Physicians",
-            icon: (
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            ),
-          },
-          {
-            path: "/health-stats",
-            label: "Vitals & Stats",
-            icon: (
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-            ),
-          },
-        ],
-      },
+      //
     ];
   }, [searchQuery]);
 
@@ -256,6 +195,8 @@ const UserLayout = () => {
         title={app_name}
         logo={logo}
         onLogout={handleLogout}
+        theme={theme}
+        onToggleTheme={toggleTheme}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
@@ -321,16 +262,25 @@ const UserLayout = () => {
                 <span className="text-xs font-bold text-surface-on truncate max-w-[150px]">
                   {user.email}
                 </span>
-                <span className="text-[10px] text-surface-on-variant font-bold uppercase tracking-tighter opacity-70">
-                  {user.role?.name || "Member"}
-                </span>
               </div>
               <Link
                 to="/profile"
-                className="relative group p-0.5 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all"
+                className="relative group p-0.5 rounded-xl border border-outline-variant/30 hover:border-primary/50 transition-all overflow-hidden"
               >
-                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                  {user.email.charAt(0).toUpperCase()}
+                <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xs overflow-hidden">
+                  {user.picture || user.avatar ? (
+                    <img
+                      src={user.picture || user.avatar}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.innerText = user.email.charAt(0).toUpperCase();
+                      }}
+                    />
+                  ) : (
+                    user.email.charAt(0).toUpperCase()
+                  )}
                 </div>
               </Link>
             </div>

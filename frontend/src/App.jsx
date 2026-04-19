@@ -82,7 +82,7 @@ function PermissionGuard({ permission, children }) {
     () => toast.error("You don't have permission to access that page."),
     0,
   );
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to="/start-new" replace />;
 }
 
 function RoleBasedLayout() {
@@ -103,7 +103,7 @@ function RoleBasedDashboard() {
   const user = JSON.parse(userData);
 
   if (user.role_id === ROLES.USER) {
-    return <ClientDashboard />;
+    return <Navigate to="/start-new" replace />;
   }
   
   return <Dashboard />;
@@ -123,7 +123,7 @@ function AdminGuard({ children }) {
       () => toast.error("Role 'User' is not allowed to access administration."),
       0
     );
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/start-new" replace />;
   }
 
   return children || <Outlet />;
@@ -170,6 +170,7 @@ function App() {
 
           {/* Dynamic Layout based on Role (Logged-in only) */}
             <Route path="/" element={<RoleBasedLayout />}>
+              <Route index element={<Navigate to="/start-new" replace />} />
               <Route path="dashboard" element={<RoleBasedDashboard />} />
               <Route path="start-new" element={<StartSelection />} />
               <Route path="new-check" element={<SymptomChecker />} />

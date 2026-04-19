@@ -51,28 +51,28 @@ const ClientDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Welcome Section */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-surface-on mb-2">
+      <div className="mb-4">
+        <h1 className="text-xl font-bold text-surface-on mb-1">
           Hello, {user?.name?.split(' ')[0] || user?.email?.split("@")[0] || "Julian"}
         </h1>
-        <p className="text-surface-on-variant">
+        <p className="text-surface-on-variant text-sm">
           Your health indicators are looking stable today. How can we assist you?
         </p>
       </div>
 
       {/* Main Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {/* New Symptom Check Card */}
-        <Card className="relative overflow-hidden bg-primary text-on-primary p-8 border-0">
+        <Card className="relative overflow-hidden bg-primary text-on-primary p-6 border-0">
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-on-primary/20 rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-on-primary/20 rounded-xl flex items-center justify-center mb-3">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-2">New Symptom Check</h3>
+            <h3 className="text-lg font-bold mb-1">New Symptom Check</h3>
             <p className="text-on-primary/80 text-sm mb-4">
               Start a precise, AI-guided clinical evaluation of your current symptoms.
             </p>
@@ -94,14 +94,14 @@ const ClientDashboard = () => {
         </Card>
 
         {/* Health Consultation Card */}
-        <Card className="relative overflow-hidden bg-surface-container-low/20 p-8 border border-outline-variant/10">
+        <Card className="relative overflow-hidden bg-surface-container-low/20 p-6 border border-outline-variant/10">
           <div className="relative z-10">
-            <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-3">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
               </svg>
             </div>
-            <h3 className="text-xl font-bold mb-2 text-surface-on">Start Health Consultation</h3>
+            <h3 className="text-lg font-bold mb-1 text-surface-on">Start Health Consultation</h3>
             <p className="text-surface-on-variant text-sm mb-4">
               Connect instantly with our AI medical specialists for detailed guidance.
             </p>
@@ -127,19 +127,19 @@ const ClientDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Weekly Activity Chart */}
         <div className="lg:col-span-2">
-          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
-            <div className="flex items-center justify-between mb-6">
+          <Card className="p-5 border border-outline-variant/10 bg-surface-container-low/10">
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <h3 className="text-lg font-bold text-surface-on">Weekly Activity</h3>
+                <h3 className="text-base font-bold text-surface-on">Weekly Activity</h3>
                 <p className="text-xs text-surface-on-variant">Past 7 Days</p>
               </div>
             </div>
             
             {/* Simple Bar Chart */}
-            <div className="flex items-end justify-between h-32 gap-2">
+            <div className="flex items-end justify-between h-28 gap-2">
               {weeklyActivity.map((item, index) => (
                 <div key={index} className="flex flex-col items-center flex-1">
-                  <div className="w-full bg-surface-variant/20 rounded-t-lg relative overflow-hidden" style={{ height: '100px' }}>
+                  <div className="w-full bg-surface-variant/20 rounded-t-lg relative overflow-hidden" style={{ height: '80px' }}>
                     <div 
                       className={`absolute bottom-0 w-full rounded-t-lg transition-all duration-1000 ${
                         index === 3 ? 'bg-primary' : 'bg-surface-variant/60'
@@ -156,9 +156,9 @@ const ClientDashboard = () => {
           </Card>
 
           {/* Symptom Trends */}
-          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10 mt-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-bold text-surface-on">Symptom Trends</h3>
+          <Card className="p-5 border border-outline-variant/10 bg-surface-container-low/10 mt-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-bold text-surface-on">Symptom Trends</h3>
               <div className="flex items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-primary"></div>
@@ -194,10 +194,10 @@ const ClientDashboard = () => {
         </div>
 
         {/* Water Intake & Recent Activity */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Water Intake */}
-          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
-            <h3 className="text-lg font-bold text-surface-on mb-4">Water Intake</h3>
+          <Card className="p-5 border border-outline-variant/10 bg-surface-container-low/10">
+            <h3 className="text-base font-bold text-surface-on mb-3">Water Intake</h3>
             <div className="flex items-center justify-center mb-4">
               <div className="relative w-24 h-24">
                 <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
@@ -235,9 +235,9 @@ const ClientDashboard = () => {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-surface-on">Recent Activity</h3>
+          <Card className="p-4 border border-outline-variant/10 bg-surface-container-low/10">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-bold text-surface-on">Recent Activity</h3>
               <Link to="/profile" className="text-xs text-primary font-bold hover:underline">
                 View all history
               </Link>
@@ -272,15 +272,15 @@ const ClientDashboard = () => {
       </div>
 
       {/* Daily Tip */}
-      <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/30">
+      <Card className="p-4 border border-outline-variant/10 bg-surface-container-low/30">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
           </div>
           <div className="flex-1">
-            <h3 className="text-lg font-bold text-surface-on mb-2">Daily Personalized Tip</h3>
+            <h3 className="text-base font-bold text-surface-on mb-1">Daily Personalized Tip</h3>
             <p className="text-surface-on-variant text-sm mb-4">
               Increasing your hydration by just 500ml today could improve your focus levels by up to 15%. 
               Your current trend shows a slight dip in the afternoon — try a glass of water at 2:00 PM.

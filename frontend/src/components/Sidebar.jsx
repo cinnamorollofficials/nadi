@@ -13,6 +13,8 @@ const Sidebar = ({
   onCloseMobile,
   onSearch,
   headerAction,
+  theme = "light",
+  onToggleTheme,
 }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
@@ -336,13 +338,45 @@ const Sidebar = ({
         ))}
       </nav>
 
-      {/* Bottom: Logout */}
-      <div
-        className={`flex-shrink-0 p-1.5 border-t border-outline-variant/30 ${isActuallyCollapsed ? "flex justify-center" : "px-2"}`}
-      >
+      {/* Bottom Actions: Theme & Logout */}
+      <div className="flex-shrink-0 border-t border-outline-variant/30 p-1.5 space-y-1">
+        {onToggleTheme && (
+          <button
+            onClick={onToggleTheme}
+            className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${
+              isActuallyCollapsed ? "justify-center w-full" : "w-full"
+            }`}
+          >
+            <div className="transition-transform duration-300 group-hover:rotate-12 flex-shrink-0">
+              {theme === "dark" ? (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                </svg>
+              )}
+            </div>
+            {!isActuallyCollapsed && (
+              <span className="font-medium text-xs whitespace-nowrap lowercase first-letter:uppercase">
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              </span>
+            )}
+
+            {isActuallyCollapsed && (
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
+                {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
+              </span>
+            )}
+          </button>
+        )}
+
         <button
           onClick={onLogout}
-          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${isActuallyCollapsed ? "justify-center w-full" : "w-full"}`}
+          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-error/10 hover:text-error transition-all duration-300 ${
+            isActuallyCollapsed ? "justify-center w-full" : "w-full"
+          }`}
         >
           <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
             <svg
@@ -360,9 +394,7 @@ const Sidebar = ({
             </svg>
           </div>
           {!isActuallyCollapsed && (
-            <span className="font-medium text-xs whitespace-nowrap">
-              Logout
-            </span>
+            <span className="font-medium text-xs whitespace-nowrap">Logout</span>
           )}
 
           {isActuallyCollapsed && (

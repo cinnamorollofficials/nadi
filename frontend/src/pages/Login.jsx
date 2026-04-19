@@ -26,9 +26,9 @@ const Login = () => {
       const userData = localStorage.getItem("user");
       if (userData) {
         const user = JSON.parse(userData);
-        navigate(user.role_id === ROLES.USER ? "/dashboard" : "/admin");
+        navigate(user.role_id === ROLES.USER ? "/start-new" : "/admin");
       } else {
-        navigate("/dashboard");
+        navigate("/start-new");
       }
     }
   }, [navigate]);
@@ -50,7 +50,7 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
+      const destination = data.data.user.role_id === ROLES.USER ? "/start-new" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
@@ -72,7 +72,7 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
+      const destination = data.data.user.role_id === ROLES.USER ? "/start-new" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
