@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams, useLocation } from "react-router-dom";
+import LottieLogo from "../../components/LottieLogo";
 
 const SymptomChecker = () => {
   const [searchParams] = useSearchParams();
@@ -315,19 +316,7 @@ const SymptomChecker = () => {
                   }`}
                 >
                   {message.type === "ai" ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                      />
-                    </svg>
+                    <LottieLogo className="w-full h-full" autoplay={false} loop={false} />
                   ) : (
                     <svg
                       className="w-5 h-5"
@@ -369,20 +358,8 @@ const SymptomChecker = () => {
 
             {isTyping && (
               <div className="flex w-full gap-4 lg:gap-6 animate-fade-in-up flex-row">
-                <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary text-on-primary rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/10">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
+                <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary text-on-primary rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/10 p-1.5">
+                  <LottieLogo className="w-full h-full" autoplay={true} loop={true} />
                 </div>
                 <div className="flex flex-col max-w-[70%] items-start">
                   <div className="p-5 rounded-3xl bg-surface-container-highest text-surface-on rounded-tl-none border border-outline-variant/10 shadow-sm">

@@ -13,6 +13,7 @@
     "@react-oauth/google": "^0.13.4",
     "@tanstack/react-query": "^5.90.21",
     "axios": "^1.13.5",
+    "lottie-react": "^2.4.1",
     "prop-types": "^15.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

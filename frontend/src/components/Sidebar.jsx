@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import LottieLogo from "./LottieLogo";
 
 const Sidebar = ({
   sections = [],
@@ -74,20 +75,22 @@ const Sidebar = ({
         className={`h-12 flex items-center flex-shrink-0 ${isActuallyCollapsed ? "justify-center px-2" : "justify-between px-3"}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
-          {logo && (
-            <div
-              className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/20`}
-            >
+          <div
+            className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/10 flex items-center justify-center p-0.5`}
+          >
+            {logo ? (
               <img
                 src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                 alt="Logo"
                 className="w-full h-full object-contain"
                 onError={(e) => {
-                  e.target.style.display = "none";
+                  e.target.className = "hidden";
                 }}
               />
-            </div>
-          )}
+            ) : (
+              <LottieLogo className="w-full h-full" />
+            )}
+          </div>
           {!isActuallyCollapsed && (
             <h2 className="text-sm font-semibold text-surface-on truncate">
               {title}
