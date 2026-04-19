@@ -100,31 +100,33 @@ const ResetPassword = () => {
             <div className="p-6">
               {/* Branding */}
               <div className="text-center mb-8">
-                {logo ? (
-                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
-                    <img
-                      src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                      alt="Logo"
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-14 h-14 mx-auto rounded-xl bg-error/10 flex items-center justify-center text-error mb-4">
-                    <svg
-                      className="w-8 h-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                <Link to="/" className="group transition-transform active:scale-95 inline-block">
+                  {logo ? (
+                    <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                      <img
+                        src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                        alt="Logo"
+                        className="w-full h-full object-contain"
                       />
-                    </svg>
-                  </div>
-                )}
+                    </div>
+                  ) : (
+                    <div className="w-14 h-14 mx-auto rounded-xl bg-error/10 flex items-center justify-center text-error mb-4 group-hover:bg-error/20 transition-all">
+                      <svg
+                        className="w-8 h-8"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </Link>
                 <h1 className="text-xl font-bold text-surface-on">
                   Invalid Reset Link
                 </h1>
@@ -169,31 +171,33 @@ const ResetPassword = () => {
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">
-              {logo ? (
-                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                    alt="Logo"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
-                  <svg
-                    className="w-8 h-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              <Link to="/" className="group transition-transform active:scale-95 inline-block">
+                {logo ? (
+                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                      alt="Logo"
+                      className="w-full h-full object-contain"
                     />
-                  </svg>
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary/20 transition-all">
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </Link>
               <h1 className="text-xl font-bold text-surface-on">
                 Reset Password
               </h1>

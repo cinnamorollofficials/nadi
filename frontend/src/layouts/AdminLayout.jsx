@@ -6,6 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify } from "../utils/json";
+import { ROLES } from "../utils/constants";
 
 const AdminLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -99,7 +100,7 @@ const AdminLayout = () => {
       setUser(parsedUser);
 
       // Secondary safety check: Redirect 'user' role out of admin layout
-      if (parsedUser.role_id === 3) {
+      if (parsedUser.role_id === ROLES.USER) {
         navigate("/dashboard");
       }
     }
@@ -766,7 +767,7 @@ const AdminLayout = () => {
       items: filteredHistory,
     };
 
-    if (!user || user.role_id === 1) {
+    if (!user || user.role_id === ROLES.SUPERADMIN) {
       return [historySection, ...navigationSections];
     }
 

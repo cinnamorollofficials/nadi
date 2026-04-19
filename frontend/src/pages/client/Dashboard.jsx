@@ -94,7 +94,7 @@ const ClientDashboard = () => {
         </Card>
 
         {/* Health Consultation Card */}
-        <Card className="relative overflow-hidden bg-surface-container-high p-8 border border-outline-variant/30">
+        <Card className="relative overflow-hidden bg-surface-container-low/20 p-8 border border-outline-variant/10">
           <div className="relative z-10">
             <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-4">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@ const ClientDashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Weekly Activity Chart */}
         <div className="lg:col-span-2">
-          <Card className="p-6 border border-outline-variant/30">
+          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="text-lg font-bold text-surface-on">Weekly Activity</h3>
@@ -156,7 +156,7 @@ const ClientDashboard = () => {
           </Card>
 
           {/* Symptom Trends */}
-          <Card className="p-6 border border-outline-variant/30 mt-6">
+          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10 mt-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-surface-on">Symptom Trends</h3>
               <div className="flex items-center gap-4 text-xs">
@@ -196,7 +196,7 @@ const ClientDashboard = () => {
         {/* Water Intake & Recent Activity */}
         <div className="space-y-6">
           {/* Water Intake */}
-          <Card className="p-6 border border-outline-variant/30">
+          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
             <h3 className="text-lg font-bold text-surface-on mb-4">Water Intake</h3>
             <div className="flex items-center justify-center mb-4">
               <div className="relative w-24 h-24">
@@ -235,7 +235,7 @@ const ClientDashboard = () => {
           </Card>
 
           {/* Recent Activity */}
-          <Card className="p-6 border border-outline-variant/30">
+          <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/10">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-bold text-surface-on">Recent Activity</h3>
               <Link to="/profile" className="text-xs text-primary font-bold hover:underline">
@@ -272,7 +272,7 @@ const ClientDashboard = () => {
       </div>
 
       {/* Daily Tip */}
-      <Card className="p-6 border border-outline-variant/30 bg-surface-container-high">
+      <Card className="p-6 border border-outline-variant/10 bg-surface-container-low/30">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

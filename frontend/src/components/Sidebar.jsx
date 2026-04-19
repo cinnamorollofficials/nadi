@@ -114,7 +114,7 @@ const Sidebar = ({
       </div>
 
       {/* Search & Action Section */}
-      {!collapsed && (onSearch || headerAction) && (
+      {!isActuallyCollapsed && (onSearch || headerAction) && (
         <div className="px-3 pb-2 pt-1 border-b border-outline-variant/10 space-y-3">
           {onSearch && (
             <div className="relative group">

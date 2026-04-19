@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Card from "../../components/Card";
 
 const SymptomChecker = () => {
   const [messages, setMessages] = useState([
@@ -110,11 +109,11 @@ const SymptomChecker = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-6rem)] lg:h-[calc(100vh-8rem)] gap-0 lg:gap-6 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] gap-0 overflow-hidden bg-surface">
       {/* Mobile Backdrop Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[40] lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black/60 backdrop-blur-md z-[40] lg:hidden transition-opacity duration-300"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
@@ -122,18 +121,18 @@ const SymptomChecker = () => {
       {/* Left Sidebar - Progress Steps (Drawer on Mobile) */}
       <div
         className={`
-        fixed inset-y-0 left-0 w-80 bg-surface z-[50] transform transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0 lg:z-0 lg:w-80 flex-shrink-0
+        fixed inset-y-0 left-0 w-80 bg-surface z-[50] transform transition-transform duration-500 ease-in-out lg:relative lg:translate-x-0 lg:z-0 lg:w-80 flex-shrink-0 border-r border-outline-variant/5
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
       `}
       >
-        <Card className="p-6 h-full border-0 lg:border border-outline-variant/30 rounded-none lg:rounded-md3-xl flex flex-col">
-          <div className="mb-8 pl-1">
+        <div className="p-8 h-full flex flex-col">
+          <div className="mb-10 pl-1">
             <div className="flex items-center justify-between lg:block">
               <div>
                 <h1 className="text-lg font-bold text-surface-on mb-1 tracking-tight">
                   Diagnostic Path
                 </h1>
-                <p className="text-surface-on-variant text-[9px] font-medium opacity-80 uppercase tracking-widest">
+                <p className="text-surface-on-variant text-[9px] font-medium opacity-80 uppercase tracking-widest leading-none">
                   Clinical AI Protocol
                 </p>
               </div>
@@ -158,9 +157,9 @@ const SymptomChecker = () => {
             </div>
           </div>
 
-          <div className="space-y-6 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-8 flex-1 overflow-y-auto custom-scrollbar pr-2">
             {steps.map((step, index) => (
-              <div key={step.id} className="group flex items-start gap-4">
+              <div key={step.id} className="group flex items-start gap-5">
                 <div className="flex flex-col items-center">
                   <div
                     className={`w-9 h-9 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
@@ -191,29 +190,27 @@ const SymptomChecker = () => {
                   </div>
                   {index < steps.length - 1 && (
                     <div
-                      className={`w-0.5 h-10 mt-2 rounded-full transition-colors duration-500 ${
+                      className={`w-0.5 h-12 mt-2 rounded-full transition-colors duration-500 ${
                         step.status === "completed"
                           ? "bg-primary/40"
-                          : "bg-outline-variant/30"
+                          : "bg-outline-variant/10"
                       }`}
                     />
                   )}
                 </div>
                 <div className="flex-1 pt-1.5 pb-2">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <h3
-                      className={`text-[13px] sm:text-xs font-bold transition-colors ${
-                        step.status === "current"
-                          ? "text-surface-on"
-                          : "text-surface-on-variant/60"
-                      }`}
-                    >
-                      {step.label}
-                    </h3>
-                  </div>
+                  <h3
+                    className={`text-[13px] font-bold mb-1 transition-colors ${
+                      step.status === "current"
+                        ? "text-surface-on"
+                        : "text-surface-on-variant/60"
+                    }`}
+                  >
+                    {step.label}
+                  </h3>
                   {step.description && (
                     <p
-                      className={`text-[11px] sm:text-[10px] leading-relaxed transition-opacity duration-300 ${
+                      className={`text-[11px] leading-relaxed transition-opacity duration-300 ${
                         step.status === "current"
                           ? "text-surface-on-variant"
                           : "text-surface-on-variant/40"
@@ -227,10 +224,9 @@ const SymptomChecker = () => {
             ))}
           </div>
 
-          {/* Disclaimer (MD3 Style Card) */}
-          <div className="mt-auto pt-6">
-            <div className="p-4 bg-surface-container-highest/50 rounded-2xl border border-outline-variant/20 backdrop-blur-sm">
-              <div className="flex items-start gap-3">
+          <div className="mt-auto pt-8">
+            <div className="p-5 bg-surface-container-highest/20 rounded-3xl border border-outline-variant/10 backdrop-blur-sm">
+              <div className="flex items-start gap-4">
                 <div className="w-6 h-6 bg-error/10 text-error rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg
                     className="w-3.5 h-3.5"
@@ -246,30 +242,28 @@ const SymptomChecker = () => {
                     />
                   </svg>
                 </div>
-                <p className="text-[9px] uppercase font-bold tracking-wider text-surface-on-variant/70 leading-normal">
+                <p className="text-[9px] uppercase font-bold tracking-widest text-surface-on-variant/50 leading-relaxed">
                   Non-substitution for medical advice. Protocol in development.
                 </p>
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        <Card className="flex-1 flex flex-col border-0 lg:border border-outline-variant/30 rounded-none lg:rounded-md3-xl overflow-hidden bg-surface-container-low shadow-sm transition-all duration-300">
-          {/* Chat Header */}
-
+        <div className="flex-1 flex flex-col overflow-hidden bg-surface transition-all duration-300">
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-0 lg:p-8 space-y-8 custom-scrollbar bg-surface/30">
+          <div className="flex-1 overflow-y-auto px-6 lg:px-12 py-10 space-y-10 custom-scrollbar bg-surface">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex w-full gap-3 lg:gap-4 animate-fade-in-up ${message.type === "user" ? "flex-row-reverse" : "flex-row"}`}
+                className={`flex w-full gap-4 lg:gap-6 animate-fade-in-up ${message.type === "user" ? "flex-row-reverse" : "flex-row"}`}
               >
                 {/* Avatar */}
                 <div
-                  className={`w-8 h-8 lg:w-9 lg:h-9 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm ${
+                  className={`w-9 h-9 lg:w-10 lg:h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm ${
                     message.type === "ai"
                       ? "bg-primary text-on-primary ring-4 ring-primary/5"
                       : "bg-surface-container-highest text-surface-on-variant"
@@ -277,7 +271,7 @@ const SymptomChecker = () => {
                 >
                   {message.type === "ai" ? (
                     <svg
-                      className="w-4 h-4 lg:w-5 lg:h-5"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -291,7 +285,7 @@ const SymptomChecker = () => {
                     </svg>
                   ) : (
                     <svg
-                      className="w-4 h-4 lg:w-5 lg:h-5"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -307,20 +301,20 @@ const SymptomChecker = () => {
                 </div>
 
                 <div
-                  className={`flex flex-col max-w-[85%] lg:max-w-[75%] ${message.type === "user" ? "items-end" : "items-start"}`}
+                  className={`flex flex-col max-w-[85%] lg:max-w-[70%] ${message.type === "user" ? "items-end" : "items-start"}`}
                 >
                   <div
-                    className={`p-4 lg:p-5 rounded-3xl shadow-sm leading-relaxed transition-all ${
+                    className={`p-5 lg:p-6 rounded-3xl shadow-sm leading-relaxed transition-all ${
                       message.type === "user"
                         ? "bg-primary text-on-primary rounded-tr-none border-0"
                         : "bg-surface-container-highest text-surface-on rounded-tl-none border border-outline-variant/10"
                     }`}
                   >
-                    <p className="text-[13px] sm:text-[13px]">
+                    <p className="text-[14px] sm:text-[13px] font-medium">
                       {message.content}
                     </p>
                   </div>
-                  <span className="mt-2 text-[10px] font-bold text-surface-on-variant/60 uppercase tracking-widest px-1">
+                  <span className="mt-3 text-[10px] font-bold text-surface-on-variant/40 uppercase tracking-widest px-1">
                     {message.type === "user" ? "Patient" : "Clinical AI"} • JUST
                     NOW
                   </span>
@@ -329,10 +323,10 @@ const SymptomChecker = () => {
             ))}
 
             {isTyping && (
-              <div className="flex w-full gap-3 lg:gap-4 animate-fade-in-up flex-row">
-                <div className="w-8 h-8 lg:w-9 lg:h-9 bg-primary text-on-primary rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/10">
+              <div className="flex w-full gap-4 lg:gap-6 animate-fade-in-up flex-row">
+                <div className="w-9 h-9 lg:w-10 lg:h-10 bg-primary text-on-primary rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-primary/10">
                   <svg
-                    className="w-4 h-4 lg:w-5 lg:h-5"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -345,10 +339,10 @@ const SymptomChecker = () => {
                     />
                   </svg>
                 </div>
-                <div className="flex flex-col max-w-[75%] items-start">
-                  <div className="p-4 rounded-3xl bg-surface-container-highest text-surface-on rounded-tl-none border border-outline-variant/20 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="flex gap-1.5">
+                <div className="flex flex-col max-w-[70%] items-start">
+                  <div className="p-5 rounded-3xl bg-surface-container-highest text-surface-on rounded-tl-none border border-outline-variant/10 shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="flex gap-2">
                         <div
                           className="w-2 h-2 bg-primary rounded-full animate-bounce"
                           style={{ animationDelay: "0ms" }}
@@ -362,8 +356,8 @@ const SymptomChecker = () => {
                           style={{ animationDelay: "400ms" }}
                         ></div>
                       </div>
-                      <span className="text-[10px] font-bold text-primary/70 uppercase tracking-widest">
-                        Processing Clinical Context...
+                      <span className="text-[10px] font-bold text-primary/60 uppercase tracking-widest">
+                        Processing Context...
                       </span>
                     </div>
                   </div>
@@ -375,16 +369,16 @@ const SymptomChecker = () => {
           </div>
 
           {/* Quick Response & Input Area Wrapper */}
-          <div className="flex flex-col flex-shrink-0 bg-surface-container-low/80 backdrop-blur-xl border-t border-outline-variant/20 p-4 lg:p-6 pb-6 lg:pb-8">
+          <div className="flex flex-col flex-shrink-0 bg-surface/90 backdrop-blur-2xl border-t border-outline-variant/10 p-6 lg:p-10 pb-10 lg:pb-12">
             {/* Quick Response Buttons */}
             {quickResponses.length > 0 && (
-              <div className="mb-4 overflow-x-auto no-scrollbar">
-                <div className="flex gap-2 min-w-max">
+              <div className="mb-6 overflow-x-auto no-scrollbar">
+                <div className="flex gap-3 min-w-max">
                   {quickResponses.map((response, index) => (
                     <button
                       key={index}
                       onClick={() => handleQuickResponse(response)}
-                      className="px-4 py-2.5 text-[11px] sm:text-[10px] font-bold bg-surface-container-highest/60 hover:bg-primary/10 hover:text-primary border border-outline-variant/30 hover:border-primary/40 rounded-full transition-all duration-300 whitespace-nowrap active:scale-95"
+                      className="px-5 py-3 text-[11px] font-bold bg-surface-container-highest/40 hover:bg-primary/10 hover:text-primary border border-outline-variant/10 hover:border-primary/30 rounded-full transition-all duration-300 whitespace-nowrap active:scale-95"
                     >
                       {response}
                     </button>
@@ -394,7 +388,7 @@ const SymptomChecker = () => {
             )}
 
             {/* Input Island */}
-            <div className="relative flex items-end gap-3 lg:gap-4 max-w-5xl mx-auto w-full group">
+            <div className="relative flex items-end gap-4 max-w-5xl mx-auto w-full group">
               <div className="flex-1 relative">
                 <textarea
                   ref={inputRef}
@@ -402,16 +396,16 @@ const SymptomChecker = () => {
                   onChange={(e) => setCurrentInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Describe your symptoms professionally..."
-                  className="w-full px-6 py-4 pr-14 bg-surface-container-highest/40 border border-outline-variant/40 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 transition-all resize-none shadow-sm min-h-[56px] max-h-[160px] text-sm"
+                  className="w-full px-8 py-5 pr-16 bg-surface-container-highest/30 border border-outline-variant/10 rounded-[2.5rem] focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/40 transition-all resize-none shadow-sm min-h-[64px] max-h-[160px] text-sm font-medium"
                   rows="1"
                   onInput={(e) => {
                     e.target.style.height = "auto";
                     e.target.style.height = e.target.scrollHeight + "px";
                   }}
                 />
-                <button className="absolute right-4 bottom-3 p-2 text-surface-on-variant/50 hover:text-primary transition-colors rounded-full hover:bg-primary/5">
+                <button className="absolute right-5 bottom-4 p-2 text-surface-on-variant/40 hover:text-primary transition-colors rounded-full hover:bg-primary/5">
                   <svg
-                    className="w-5 h-5"
+                    className="w-6 h-6"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -429,14 +423,14 @@ const SymptomChecker = () => {
               <button
                 onClick={handleSendMessage}
                 disabled={!currentInput.trim() || isTyping}
-                className={`p-4 h-14 w-14 lg:h-[56px] lg:w-[56px] rounded-full flex items-center justify-center transition-all duration-300 shadow-lg shadow-primary/20 ${
+                className={`p-5 h-16 w-16 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl shadow-primary/10 ${
                   !currentInput.trim() || isTyping
-                    ? "bg-surface-container-highest text-surface-on-variant/30 cursor-not-allowed shadow-none border border-outline-variant/20"
+                    ? "bg-surface-container-highest text-surface-on-variant/20 cursor-not-allowed shadow-none border border-outline-variant/10"
                     : "bg-primary text-on-primary hover:brightness-110 active:scale-90 scale-100 hover:scale-105"
                 }`}
               >
                 <svg
-                  className="w-6 h-6 transform rotate-45 -translate-y-0.5 -translate-x-0.5"
+                  className="w-7 h-7 transform rotate-45 -translate-y-0.5 -translate-x-0.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -451,7 +445,7 @@ const SymptomChecker = () => {
               </button>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

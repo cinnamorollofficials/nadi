@@ -44,31 +44,33 @@ const ForgotPassword = () => {
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">
-              {logo ? (
-                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                    alt="Logo"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="w-14 h-14 mx-auto rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 mb-4">
-                  <svg
-                    className="w-8 h-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+              <Link to="/" className="group transition-transform active:scale-95 inline-block">
+                {logo ? (
+                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                      alt="Logo"
+                      className="w-full h-full object-contain"
                     />
-                  </svg>
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary/20 transition-all">
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </Link>
               <h1 className="text-xl font-bold text-surface-on">
                 Forgot Password?
               </h1>

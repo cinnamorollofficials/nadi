@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import apiClient from "../api/client";
 import { useSettings } from "../context/SettingsContext";
 import { safeStringify } from "../utils/json";
+import { ROLES } from "../utils/constants";
 
 const TwoFAChallengePage = () => {
   const { logo, app_name } = useSettings();
@@ -27,7 +28,7 @@ const TwoFAChallengePage = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
       navigate(destination);
     },
     onError: (err) => {
@@ -59,32 +60,33 @@ const TwoFAChallengePage = () => {
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">
-              {logo ? (
-                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
-                  <img
-                    src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                    alt="Logo"
-                    onClick={() => navigate("/")}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
-                  <svg
-                    className="w-8 h-8"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              <Link to="/" className="group transition-transform active:scale-95 inline-block">
+                {logo ? (
+                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                      alt="Logo"
+                      className="w-full h-full object-contain"
                     />
-                  </svg>
-                </div>
-              )}
+                  </div>
+                ) : (
+                  <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4 group-hover:bg-primary/20 transition-all">
+                    <svg
+                      className="w-8 h-8"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </Link>
               <h1 className="text-xl font-bold text-surface-on">
                 Two-Factor Auth
               </h1>

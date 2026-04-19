@@ -5,13 +5,14 @@ import Modal from './Modal';
 import TextField from './TextField';
 import Button from './Button';
 import { getRoles } from '../api/admin';
+import { ROLES } from '../utils/constants';
 
 const UserFormModal = ({ isOpen, onClose, onSubmit, user, loading = false }) => {
     const isEdit = !!user;
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        role_id: 2,
+        role_id: ROLES.ADMIN,
         status: 'active',
     });
     const [errors, setErrors] = useState({});
@@ -30,14 +31,14 @@ const UserFormModal = ({ isOpen, onClose, onSubmit, user, loading = false }) => 
             setFormData({
                 email: user.email || '',
                 password: '',
-                role_id: user.role_id || 2,
+                role_id: user.role_id || ROLES.ADMIN,
                 status: user.status || 'active',
             });
         } else {
             setFormData({
                 email: '',
                 password: '',
-                role_id: 2,
+                role_id: ROLES.ADMIN,
                 status: 'active',
             });
         }

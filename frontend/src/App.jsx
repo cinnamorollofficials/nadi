@@ -33,6 +33,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import ClientDashboard from "./pages/client/Dashboard";
 import MedicpediaHome from "./pages/client/medicpedia/MedicpediaHome";
 import { PERMS } from "./utils/permissions";
+import { ROLES } from "./utils/constants";
 
 // Admin pages
 import BlogPostPage from "./pages/admin/BlogPostPage";
@@ -72,7 +73,7 @@ function PermissionGuard({ permission, children }) {
 
   const hasPermission = checkPermission(permission);
 
-  if (user.role_id === 1 || hasPermission) {
+  if (user.role_id === ROLES.SUPERADMIN || hasPermission) {
     return children;
   }
 
@@ -88,10 +89,10 @@ function RoleBasedLayout() {
   if (!userData) return <Navigate to="/login" replace />;
   const user = JSON.parse(userData);
 
-  if (user.role_id === 3) {
+  if (user.role_id === ROLES.USER) {
     return <UserLayout />;
   }
-
+  
   return <AdminLayout />;
 }
 
@@ -100,10 +101,10 @@ function RoleBasedDashboard() {
   if (!userData) return <Navigate to="/login" replace />;
   const user = JSON.parse(userData);
 
-  if (user.role_id === 3) {
+  if (user.role_id === ROLES.USER) {
     return <ClientDashboard />;
   }
-
+  
   return <Dashboard />;
 }
 
@@ -116,7 +117,7 @@ function AdminGuard({ children }) {
   if (!userData) return <Navigate to="/login" replace />;
   const user = JSON.parse(userData);
 
-  if (user.role_id === 3) {
+  if (user.role_id === ROLES.USER) {
     setTimeout(
       () => toast.error("Role 'User' is not allowed to access administration."),
       0

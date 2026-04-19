@@ -6,6 +6,7 @@ import TextField from "../components/TextField";
 import { useSettings } from "../context/SettingsContext";
 import apiClient from "../api/client";
 import { safeStringify } from "../utils/json";
+import { ROLES } from "../utils/constants";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Login = () => {
       const userData = localStorage.getItem("user");
       if (userData) {
         const user = JSON.parse(userData);
-        navigate(user.role_id === 3 ? "/dashboard" : "/admin");
+        navigate(user.role_id === ROLES.USER ? "/dashboard" : "/admin");
       } else {
         navigate("/dashboard");
       }
@@ -49,7 +50,7 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
@@ -71,7 +72,7 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === 3 ? "/dashboard" : "/admin";
+      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
@@ -175,6 +176,26 @@ const Login = () => {
 
         <div className="w-full max-w-sm relative">
           <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 dark:border-transparent shadow-2xl overflow-hidden p-8">
+            <div className="flex justify-center mb-8">
+              <Link to="/" className="group transition-transform active:scale-95">
+                {logo ? (
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 p-2.5 border border-primary/20 shadow-lg shadow-primary/5 group-hover:bg-primary/20 transition-all">
+                    <img
+                      src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                      alt={app_name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 group-hover:bg-primary/20 transition-all">
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                )}
+              </Link>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               {errors.submit && (
                 <div className="p-3 rounded-xl bg-error/10 border border-error/20 text-error text-xs font-medium text-center">
