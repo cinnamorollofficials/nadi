@@ -15,6 +15,8 @@ type User struct {
 	TwoFASecret  string    `gorm:"default:''" json:"-"`
 	TwoFAEnabled bool      `gorm:"default:false" json:"two_fa_enabled"`
 	TwoFACounter uint64    `gorm:"default:0" json:"-"`
+	UsageLimit   int       `gorm:"default:20" json:"usage_limit"`
+	CurrentUsage int       `gorm:"default:0" json:"current_usage"`
 	CreatedAt    time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt    time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }

@@ -3,9 +3,19 @@ import { useNavigate, Outlet, useLocation, Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
+import {
+  Bot,
+  Home,
+  History as HistoryIcon,
+  Activity,
+  User as UserIcon,
+} from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify } from "../utils/json";
+import { useQuery } from "@tanstack/react-query";
+import apiClient from "../api/client";
+import { MessageSquare } from "lucide-react";
 
 const UserLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -17,23 +27,20 @@ const UserLayout = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const historyItems = [
-    {
-      id: 1,
-      label: "Demam Panas Lebih dari 3 Hari",
-      path: "/new-check?id=1",
+  // Fetch AI Chat History globally
+  const { data: chatHistory } = useQuery({
+    queryKey: ["chat-history"],
+    queryFn: async () => {
+      try {
+        const response = await apiClient.get("/chat/history");
+        return response.data.data || [];
+      } catch (err) {
+        console.error("Failed to fetch chat history", err);
+        return [];
+      }
     },
-    {
-      id: 2,
-      label: "Sakit Kepala Sebelah Kiri",
-      path: "/new-check?id=2",
-    },
-    {
-      id: 3,
-      label: "Nyeri Punggung Bawah",
-      path: "/new-check?id=3",
-    },
-  ];
+    refetchInterval: 30000, // Refetch every 30s to keep sidebar fresh
+  });
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -45,6 +52,7 @@ const UserLayout = () => {
       const response = await getMe();
       if (response.success && response.data) {
         const updatedUser = response.data;
+        console.log("[User Data]", updatedUser); // Debug log
         setUser(updatedUser);
         localStorage.setItem("user", safeStringify(updatedUser));
       }
@@ -79,7 +87,8 @@ const UserLayout = () => {
     if (userData) {
       setUser(JSON.parse(userData));
     }
-  }, [navigate]);
+    refreshUserData();
+  }, [navigate, refreshUserData]);
 
   const handleLogout = async () => {
     try {
@@ -97,13 +106,10 @@ const UserLayout = () => {
   // Determine dynamic page title based on route
   const pageTitle = useMemo(() => {
     const path = location.pathname;
-    let title = "Dashboard";
+    let title = "AI Consultation";
 
-    if (path.includes("/new-check")) title = "New Consultation";
-    else if (path.includes("/history")) title = "History";
-    else if (path.includes("/consultations")) title = "Consultations";
-    else if (path.includes("/health-stats")) title = "Health Statistics";
-    else if (path.includes("/profile")) title = "Profile";
+    if (path.includes("/profile")) title = "Profile Saya";
+    else if (path.includes("/consultations/ai")) title = "Konsultasi AI";
 
     return title;
   }, [location.pathname]);
@@ -114,18 +120,35 @@ const UserLayout = () => {
   }, [pageTitle, app_name]);
 
   const navigationSections = useMemo(() => {
-    const filteredHistory = historyItems.filter((item) =>
-      item.label.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+    // Map AI Chat History to sidebar items
+    const aiHistoryItems = (chatHistory || [])
+      .filter((chat) =>
+        chat.title.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+      .slice(0, 5) // Show only last 5 in sidebar
+      .map((chat) => ({
+        id: `chat-${chat.id}`,
+        label: chat.title,
+        path: `/consultations/ai/${chat.id}`,
+      }));
 
     return [
       {
-        label: "Recent Conversations",
-        items: filteredHistory,
+        label: "AI Services",
+        items: [
+          {
+            label: "AI Consultation",
+            path: "/consultations/ai",
+            highlight: true,
+          },
+        ],
       },
-      //
+      {
+        label: "Recent AI Chats",
+        items: aiHistoryItems,
+      },
     ];
-  }, [searchQuery]);
+  }, [searchQuery, chatHistory]);
 
   // Filter navigation based on user permissions
   const filteredNavigation = useMemo(() => {
@@ -152,34 +175,17 @@ const UserLayout = () => {
         onLogout={handleLogout}
         theme={theme}
         onToggleTheme={toggleTheme}
+        profileTransition={{
+          label: "Profile Saya",
+          path: "/profile",
+          icon: <UserIcon size={18} />
+        }}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onSearch={setSearchQuery}
-        headerAction={
-          <button
-            onClick={() => navigate("/start-new")}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-2xl font-bold group hover:brightness-110 active:scale-95 transition-all duration-300"
-          >
-            <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </div>
-            <span className="text-[13px] tracking-tight">New Conversation</span>
-          </button>
-        }
+        usage={user?.usage}
       />
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         <header className="flex h-16 items-center justify-between px-4 lg:px-6 bg-surface sticky top-0 z-10 transition-colors">
@@ -244,8 +250,8 @@ const UserLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="max-w-6xl mx-auto animate-fade-in-up pb-10">
+        <main className="flex-1 overflow-hidden">
+          <div className="h-full animate-fade-in-up">
             <Outlet />
           </div>
         </main>

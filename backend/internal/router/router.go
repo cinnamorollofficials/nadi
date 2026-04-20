@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"encoding/base64"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadi-projects/go-react-starter/config"
@@ -19,6 +20,7 @@ import (
 	customService "github.com/hadi-projects/go-react-starter/internal/service"
 	service "github.com/hadi-projects/go-react-starter/internal/service/default"
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
+	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 	"github.com/hadi-projects/go-react-starter/pkg/kafka"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/mailer"
@@ -85,8 +87,13 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostRepo := customRepository.NewBlogPostRepository(db)
 	medicpediapenyakitRepo := customRepository.NewMedicpediaPenyakitRepository(db)
 	medicpedianutrisiRepo := customRepository.NewMedicpediaNutrisiRepository(db)
-		faqRepo := customRepository.NewFaqRepository(db)
+	faqRepo := customRepository.NewFaqRepository(db)
+	chatRepo := customRepository.NewChatRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
+
+	// Initialize Encryptor
+	keyBytes, _ := base64.StdEncoding.DecodeString(r.config.Security.EncryptionKey)
+	encryptor, _ := crypto.NewEncryptor(keyBytes)
 
 	// Services
 	settingService := service.NewSettingService(settingRepo, r.config)
@@ -112,7 +119,9 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostService := customService.NewBlogPostService(blogpostRepo, r.cache)
 	medicpediapenyakitService := customService.NewMedicpediaPenyakitService(medicpediapenyakitRepo, r.cache)
 	medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
-		faqService := customService.NewFaqService(faqRepo, r.cache)
+	faqService := customService.NewFaqService(faqRepo, r.cache)
+	geminiService := customService.NewGeminiService(r.config, chatRepo)
+	chatService := customService.NewChatService(chatRepo, userRepo, geminiService, encryptor)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -134,7 +143,8 @@ func (r *Router) SetupRouter() *gin.Engine {
 	blogpostHandler := customHandler.NewBlogPostHandler(blogpostService)
 	medicpediapenyakitHandler := customHandler.NewMedicpediaPenyakitHandler(medicpediapenyakitService)
 	medicpedianutrisiHandler := customHandler.NewMedicpediaNutrisiHandler(medicpedianutrisiService)
-		faqHandler := customHandler.NewFaqHandler(faqService)
+	faqHandler := customHandler.NewFaqHandler(faqService)
+	chatHandler := customHandler.NewChatHandler(chatService)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -152,8 +162,9 @@ func (r *Router) SetupRouter() *gin.Engine {
 			blogpostHandler,
 			medicpediapenyakitHandler,
 			medicpedianutrisiHandler,
-				faqHandler,
-		// [GENERATOR_INSERT_HANDLER_PARAM]
+			faqHandler,
+			chatHandler,
+			// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}
 

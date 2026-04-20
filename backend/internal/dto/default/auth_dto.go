@@ -20,15 +20,22 @@ type LoginResponse struct {
 	TempToken    string           `json:"temp_token,omitempty"`
 }
 
+type UsageInfo struct {
+	Limit   int `json:"limit"`
+	Used    int `json:"used"`
+	Percent int `json:"percent"`
+}
+
 type AuthUserResponse struct {
-	ID              uint   `json:"id"`
-	Name            string `json:"name"`
-	Email           string `json:"email"`
-	RoleID          uint   `json:"role_id"`
-	Role            string `json:"role"`
-	PermissionsMask uint64 `json:"permissions_mask,string"`
-	Status          string `json:"status"`
-	TwoFAEnabled    bool   `json:"two_fa_enabled"`
+	ID              uint       `json:"id"`
+	Name            string     `json:"name"`
+	Email           string     `json:"email"`
+	RoleID          uint       `json:"role_id"`
+	Role            string     `json:"role"`
+	PermissionsMask uint64     `json:"permissions_mask,string"`
+	Status          string     `json:"status"`
+	TwoFAEnabled    bool       `json:"two_fa_enabled"`
+	Usage           *UsageInfo `json:"usage,omitempty"`
 }
 
 type TwoFAEnrollResponse struct {

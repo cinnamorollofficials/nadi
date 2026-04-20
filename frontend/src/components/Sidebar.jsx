@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import LottieLogo from "./LottieLogo";
+import UsageLimit from "./UsageLimit";
 
 const Sidebar = ({
   sections = [],
@@ -16,6 +17,8 @@ const Sidebar = ({
   headerAction,
   theme = "light",
   onToggleTheme,
+  profileTransition,
+  usage,
 }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
@@ -184,7 +187,7 @@ const Sidebar = ({
                     ? item.subItems[0]?.path
                     : item.path;
                   return (
-                    <li key={item.label} className="relative group/sidebar-item">
+                    <li key={item.id || item.path || item.label} className="relative group/sidebar-item">
                       <Link
                         to={href || "#"}
                         className={`flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
@@ -245,7 +248,7 @@ const Sidebar = ({
                 }
 
                 return (
-                  <li key={item.label}>
+                  <li key={item.id || item.path || item.label}>
                     {hasSubItems ? (
                       <div>
                         <button
@@ -325,10 +328,12 @@ const Sidebar = ({
                             : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                         }`}
                       >
-                        <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                          {item.icon}
-                        </div>
-                        <span className="font-medium text-sm whitespace-nowrap">
+                        {item.icon && (
+                          <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
+                            {item.icon}
+                          </div>
+                        )}
+                        <span className="font-medium text-sm whitespace-nowrap truncate flex-1">
                           {item.label}
                         </span>
                       </Link>
@@ -341,8 +346,39 @@ const Sidebar = ({
         ))}
       </nav>
 
-      {/* Bottom Actions: Theme & Logout */}
-      <div className="flex-shrink-0 border-t border-outline-variant/30 p-1.5 space-y-1">
+      {/* Bottom Actions */}
+      <div className={`mt-auto p-2 border-t border-outline-variant/30 bg-surface-container-low transition-all duration-300`}>
+        {!isActuallyCollapsed && (
+          <UsageLimit 
+            used={usage?.used ?? 0} 
+            limit={usage?.limit ?? 20} 
+            percent={usage?.percent ?? 0} 
+          />
+        )}
+
+        {profileTransition && (
+          <Link
+            to={profileTransition.path}
+            className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${
+              isActuallyCollapsed ? "justify-center w-full" : "w-full"
+            } ${location.pathname === profileTransition.path ? "bg-primary/10 text-primary" : ""}`}
+          >
+            <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
+              {profileTransition.icon}
+            </div>
+            {!isActuallyCollapsed && (
+              <span className="font-medium text-xs whitespace-nowrap">
+                {profileTransition.label}
+              </span>
+            )}
+            {isActuallyCollapsed && (
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
+                {profileTransition.label}
+              </span>
+            )}
+          </Link>
+        )}
+
         {onToggleTheme && (
           <button
             onClick={onToggleTheme}
@@ -441,6 +477,11 @@ Sidebar.propTypes = {
   onCloseMobile: PropTypes.func,
   onSearch: PropTypes.func,
   headerAction: PropTypes.node,
+  usage: PropTypes.shape({
+    used: PropTypes.number,
+    limit: PropTypes.number,
+    percent: PropTypes.number,
+  }),
 };
 
 export default Sidebar;
