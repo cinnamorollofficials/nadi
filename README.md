@@ -24,6 +24,7 @@ A full-stack application featuring a Go (Gin) backend and a React (Vite) fronten
 The easiest way to run the application is using Docker Compose.
 
 1.  **Start the application:**
+
     ```bash
     make docker-up
     # OR
@@ -37,6 +38,7 @@ The easiest way to run the application is using Docker Compose.
     - Redis: Port `6380`
 
 3.  **View Logs:**
+
     ```bash
     make docker-logs
     # OR
@@ -44,6 +46,7 @@ The easiest way to run the application is using Docker Compose.
     ```
 
 4.  **Stop the application:**
+
     ```bash
     make docker-down
     # OR
@@ -140,16 +143,16 @@ Key environment variables used in `backend/.env`:
 - `make docker-migrate`: Run database migrations (Docker)
 - `make docker-seed`: Run database seeder (Docker)
 
-
 ## BUGS
+
 1. login with invalid password will crash the query OK
 2. Request id empty on system logs OK
 3. email input background color only on login page OK
 4. permission ubah ke bitwise operator OK
 5. file view counter is not accurate
 
-
 ## TODO
+
 1. Implement reset password OK
 2. implement remember me OK
 3. Implement 2fa by email anf HOTP OK
@@ -160,3 +163,6 @@ Key environment variables used in `backend/.env`:
 8. native event for notifications
 9. freeze user OK
 10. notify file shared by email
+11. add usage limit on user
+12. monitor limit user and overall on dashboard internal
+13. enkripsi chat

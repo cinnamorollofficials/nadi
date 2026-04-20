@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"encoding/base64"
 
 	"github.com/gin-gonic/gin"
 	"github.com/hadi-projects/go-react-starter/config"
@@ -19,6 +20,7 @@ import (
 	customService "github.com/hadi-projects/go-react-starter/internal/service"
 	service "github.com/hadi-projects/go-react-starter/internal/service/default"
 	"github.com/hadi-projects/go-react-starter/pkg/cache"
+	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 	"github.com/hadi-projects/go-react-starter/pkg/kafka"
 	"github.com/hadi-projects/go-react-starter/pkg/logger"
 	"github.com/hadi-projects/go-react-starter/pkg/mailer"
@@ -89,6 +91,10 @@ func (r *Router) SetupRouter() *gin.Engine {
 	chatRepo := customRepository.NewChatRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
+	// Initialize Encryptor
+	keyBytes, _ := base64.StdEncoding.DecodeString(r.config.Security.EncryptionKey)
+	encryptor, _ := crypto.NewEncryptor(keyBytes)
+
 	// Services
 	settingService := service.NewSettingService(settingRepo, r.config)
 	authService := service.NewAuthService(userRepo, tokenRepo, r.kafkaProducer, r.mailer, r.config, r.cache, settingService)
@@ -115,7 +121,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
 	faqService := customService.NewFaqService(faqRepo, r.cache)
 	geminiService := customService.NewGeminiService(r.config, chatRepo)
-	chatService := customService.NewChatService(chatRepo, userRepo, geminiService)
+	chatService := customService.NewChatService(chatRepo, userRepo, geminiService, encryptor)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers

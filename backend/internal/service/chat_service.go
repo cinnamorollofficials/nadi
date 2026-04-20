@@ -7,6 +7,7 @@ import (
 	"github.com/hadi-projects/go-react-starter/internal/entity"
 	"github.com/hadi-projects/go-react-starter/internal/repository"
 	defaultRepo "github.com/hadi-projects/go-react-starter/internal/repository/default"
+	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 )
 
 type ChatService interface {
@@ -20,13 +21,20 @@ type chatService struct {
 	chatRepo      repository.ChatRepository
 	userRepo      defaultRepo.UserRepository
 	geminiService GeminiService
+	encryptor     *crypto.Encryptor
 }
 
-func NewChatService(chatRepo repository.ChatRepository, userRepo defaultRepo.UserRepository, geminiService GeminiService) ChatService {
+func NewChatService(
+	chatRepo repository.ChatRepository, 
+	userRepo defaultRepo.UserRepository, 
+	geminiService GeminiService,
+	encryptor *crypto.Encryptor,
+) ChatService {
 	return &chatService{
 		chatRepo:      chatRepo,
 		userRepo:      userRepo,
 		geminiService: geminiService,
+		encryptor:     encryptor,
 	}
 }
 
@@ -46,7 +54,19 @@ func (s *chatService) GetChatHistory(ctx context.Context, userID uint) ([]entity
 }
 
 func (s *chatService) GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error) {
-	return s.chatRepo.GetMessagesByChannelID(ctx, channelID)
+	messages, err := s.chatRepo.GetMessagesByChannelID(ctx, channelID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decrypt messages
+	for i := range messages {
+		if decrypted, err := s.encryptor.Decrypt(messages[i].Content); err == nil {
+			messages[i].Content = decrypted
+		}
+	}
+
+	return messages, nil
 }
 
 func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error {
@@ -54,6 +74,13 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	channel, err := s.chatRepo.GetChannelWithMessages(ctx, channelID)
 	if err != nil {
 		return err
+	}
+
+	// Decrypt context messages for Gemini
+	for i := range channel.Messages {
+		if decrypted, err := s.encryptor.Decrypt(channel.Messages[i].Content); err == nil {
+			channel.Messages[i].Content = decrypted
+		}
 	}
 
 	// 1.1 Check User Usage Limit
@@ -66,11 +93,12 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 		return fmt.Errorf("batas konsultasi harian Anda (%d/%d) telah tercapai. Silakan coba lagi besok.", user.CurrentUsage, user.UsageLimit)
 	}
 
-	// 2. Save User Message to DB
+	// 2. Save User Message to DB (Encrypted)
+	encryptedUserMsg, _ := s.encryptor.Encrypt(userMessage)
 	userMsg := &entity.ChatMessage{
 		ChannelID: channelID,
 		Role:      "user",
-		Content:   userMessage,
+		Content:   encryptedUserMsg,
 	}
 	if err := s.chatRepo.CreateMessage(ctx, userMsg); err != nil {
 		return err
@@ -87,11 +115,12 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 		return err
 	}
 
-	// 4. Save entire AI Message to DB
+	// 4. Save entire AI Message to DB (Encrypted)
+	encryptedAiMsg, _ := s.encryptor.Encrypt(fullResponse.String())
 	aiMsg := &entity.ChatMessage{
 		ChannelID: channelID,
 		Role:      "assistant",
-		Content:   fullResponse.String(),
+		Content:   encryptedAiMsg,
 	}
 	if err := s.chatRepo.CreateMessage(ctx, aiMsg); err != nil {
 		return err
