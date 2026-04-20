@@ -241,10 +241,11 @@ func (s *userService) CreateUser(ctx context.Context, req dto.CreateUserRequest)
 func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResponse, error) {
 	// Try cache first
 	cacheKey := fmt.Sprintf("user:%d", userID)
-	var cached dto.AuthUserResponse
-	if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
-		return &cached, nil
-	}
+	s.cache.Delete(ctx, cacheKey) // Force refresh
+	// var cached dto.AuthUserResponse
+	// if err := s.cache.Get(ctx, cacheKey, &cached); err == nil {
+	// 	return &cached, nil
+	// }
 
 	user, err := s.userRepo.FindByID(ctx, userID)
 	if err != nil {
@@ -274,6 +275,16 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 		PermissionsMask: permissionsMask,
 		Status:          user.Status,
 		TwoFAEnabled:    user.TwoFAEnabled,
+		Usage: &dto.UsageInfo{
+			Limit:   user.UsageLimit,
+			Used:    user.CurrentUsage,
+			Percent: func() int {
+				if user.UsageLimit > 0 {
+					return int(float64(user.CurrentUsage) / float64(user.UsageLimit) * 100)
+				}
+				return 0
+			}(),
+		},
 	}
 
 	// Cache the result

@@ -30,6 +30,7 @@ type Config struct {
 	Frontend  FrontendConfig
 	Storage   StorageConfig
 	Google    GoogleConfig
+	Gemini    GeminiConfig
 }
 
 type StorageConfig struct {
@@ -55,6 +56,9 @@ type FrontendConfig struct {
 }
 type GoogleConfig struct {
 	ClientID string
+}
+type GeminiConfig struct {
+	APIKey string
 }
 
 func LoadConfig() (config Config) {
@@ -121,6 +125,7 @@ func LoadConfig() (config Config) {
 		"STORAGE_BASE_PATH",
 		"STORAGE_MAX_FILE_SIZE_MB",
 		"GOOGLE_CLIENT_ID",
+		"GEMINI_API_KEY",
 	}
 
 	for _, envVar := range envVars {
@@ -218,6 +223,10 @@ func LoadConfig() (config Config) {
 
 	config.Google = GoogleConfig{
 		ClientID: viper.GetString("GOOGLE_CLIENT_ID"),
+	}
+
+	config.Gemini = GeminiConfig{
+		APIKey: viper.GetString("GEMINI_API_KEY"),
 	}
 
 	// Validate required configuration

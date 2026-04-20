@@ -28,7 +28,8 @@ func (r *Router) setupPrivateRoutes(
 	blogpostHandler customHandler.BlogPostHandler,
 	medicpediapenyakitHandler customHandler.MedicpediaPenyakitHandler,
 	medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
-		faqHandler customHandler.FaqHandler,
+	faqHandler customHandler.FaqHandler,
+	chatHandler customHandler.ChatHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -116,6 +117,15 @@ func (r *Router) setupPrivateRoutes(
 		faq.GET("/:id", permGuard.Check("faq:view"), faqHandler.GetByID)
 		faq.PUT("/:id", permGuard.Check("faq:edit"), faqHandler.Update)
 		faq.DELETE("/:id", permGuard.Check("faq:delete"), faqHandler.Delete)
+	}
+
+	chat := v1.Group("/chat")
+	chat.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
+	{
+		chat.GET("/ws", chatHandler.HandleWebSocket) // Real-time chat
+		chat.GET("/history", chatHandler.GetHistory) // History of channels
+		chat.GET("/history/:id", chatHandler.GetMessages) // History of messages
+		chat.POST("/channel", chatHandler.CreateChannel) // Create new channel
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")

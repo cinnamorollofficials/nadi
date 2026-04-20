@@ -16,24 +16,29 @@ import (
 
 func AuthMiddleware(jwtSecret string, cacheService cache.CacheService) gin.HandlerFunc {
 	blacklist := token.NewBlacklist(cacheService)
-	
+
 	return func(c *gin.Context) {
 		AddToTrace(c, "AuthMiddleware")
 		authHeader := c.GetHeader("Authorization")
-		if authHeader == "" {
-			response.Error(c, http.StatusUnauthorized, "Authorization header is required")
+		tokenString := ""
+
+		if authHeader != "" {
+			parts := strings.Split(authHeader, " ")
+			if len(parts) == 2 && parts[0] == "Bearer" {
+				tokenString = parts[1]
+			}
+		}
+
+		// Fallback to query parameter (common for WebSockets)
+		if tokenString == "" {
+			tokenString = c.Query("token")
+		}
+
+		if tokenString == "" {
+			response.Error(c, http.StatusUnauthorized, "Authorization token is required")
 			c.Abort()
 			return
 		}
-
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			response.Error(c, http.StatusUnauthorized, "Invalid authorization header format")
-			c.Abort()
-			return
-		}
-
-		tokenString := parts[1]
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -61,7 +66,7 @@ func AuthMiddleware(jwtSecret string, cacheService cache.CacheService) gin.Handl
 					return
 				}
 			}
-			
+
 			var userID uint
 			var userEmail string
 

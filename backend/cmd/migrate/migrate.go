@@ -40,7 +40,9 @@ func main() {
 		&customEntity.BlogPost{},
 		&customEntity.MedicpediaPenyakit{},
 		&customEntity.MedicpediaNutrisi{},
-				&customEntity.Faq{},
+		&customEntity.Faq{},
+		&customEntity.ChatChannel{},
+		&customEntity.ChatMessage{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 
