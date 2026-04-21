@@ -12,3 +12,5 @@
 7. buatkan plan untuk memberikan estima biaya dan harga untuk pengobatan bersadarkan penyakitnya
 8. minta lokasi pengguna untuk memberikan saran rumah sakit atau klinik terdekta untuk pengobatan
 9. buatkan fitur export result dari symtomp
+10. buatkan plan untuk hemat token ai dan performa untuk meminimkan respon gagal
+11. monitor juga respon ai yang berhasil dan gagal untuk dianalisa
