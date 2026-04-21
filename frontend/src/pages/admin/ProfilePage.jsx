@@ -69,7 +69,7 @@ const ProfilePage = () => {
                 <div className="space-y-6">
                     {/* Identity Card */}
                     <div className="bg-surface-container border border-outline-variant/30 rounded-xl p-6 flex items-center gap-6">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-3xl font-bold text-white flex-shrink-0 shadow-lg">
+                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-3xl font-bold text-white flex-shrink-0 ">
                             {initial}
                         </div>
                         <div className="flex-1 min-w-0">

@@ -34,137 +34,87 @@ const Landing = () => {
   }, []);
 
   return (
-    <div className="bg-zinc-100 dark:bg-navy-950 min-h-screen font-sans selection:bg-primary/30 selection:text-primary transition-colors duration-300">
+    <div className="bg-zinc-50 dark:bg-navy-950 min-h-screen font-sans selection:bg-primary/30 selection:text-primary transition-colors duration-300">
       <MedicalDisclaimer />
       <SymptomCheckerModal
         isOpen={isSymptomModalOpen}
         onClose={() => setIsSymptomModalOpen(false)}
       />
       {/* HERO SECTION */}
-      <section className="relative min-h-[calc(100vh-80px)] flex items-center overflow-hidden transition-all duration-500">
-        {/* Animated Gradient Background for Light Mode - Maximum Visibility */}
-        <div className="absolute inset-0 z-0 bg-zinc-100 dark:bg-transparent transition-colors duration-1000">
-          <div className="absolute inset-0 bg-primary/[0.03] dark:bg-transparent"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(at_0%_0%,rgba(20,184,166,0.35)_0,transparent_50%),radial-gradient(at_100%_0%,rgba(244,63,94,0.35)_0,transparent_50%),radial-gradient(at_100%_100%,rgba(59,130,246,0.35)_0,transparent_50%),radial-gradient(at_0%_100%,rgba(20,184,166,0.35)_0,transparent_50%)] animate-mesh opacity-100 dark:opacity-0 transition-opacity duration-1000"></div>
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden transition-all duration-500 bg-medical-grid">
+        {/* Refined Background Elements */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/[0.03] to-transparent" />
+          <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-zinc-50 dark:from-navy-900 to-transparent" />
         </div>
 
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-96 h-96 bg-primary/25 dark:bg-primary/20 rounded-full blur-[120px] animate-blob" />
-          <div className="absolute bottom-10 right-10 w-[500px] h-[500px] bg-blue-600/15 dark:bg-blue-600/10 rounded-full blur-[150px] animate-blob animation-delay-2000" />
-          <div className="absolute top-1/2 left-1/4 w-80 h-80 bg-nadi-rose/20 dark:bg-nadi-rose/10 rounded-full blur-[100px] animate-blob animation-delay-4000" />
-
-          {/* Subtle Grid Pattern */}
-          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 brightness-100 contrast-150 pointer-events-none mix-blend-overlay"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-6 relative z-10 py-20">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-3/5 text-left pt-10">
+            <div className="lg:w-1/2 text-left">
               {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest mb-6 animate-fade-in">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                Trusted by 50K+ Users
+              </div>
              
               <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-[1.05] tracking-tight mb-8">
-                Cerdas Menjaga <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-teal-500 to-blue-500">
-                  Kesehatan Anda
+                Analisis Medis Akurat,<br />
+                <span className="text-primary">
+                  Di Genggaman Anda.
                 </span>
               </h1>
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-xl mb-12 font-medium leading-relaxed">
-                Platform kesehatan terintegrasi yang menghubungkan Anda dengan
-                layanan medis masa depan melalui teknologi AI dan data yang
-                presisi.
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-xl mb-10 font-medium leading-relaxed">
+                Platform kesehatan terintegrasi berbasis data klinis terverifikasi. Pahami gejala Anda dalam hitungan detik dengan AI yang dilatih oleh pakar medis.
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
                 <Link to="/register">
-                  <Button className="bg-primary text-white hover:bg-primary-600 px-10 py-4 text-sm font-bold rounded-2xl transition-all hover:scale-105 active:scale-95 shadow-xl shadow-primary/20">
-                    Mulai Sekarang
+                  <Button className="bg-primary text-white hover:bg-primary-600 px-8 py-4 text-sm font-bold rounded-2xl transition-all hover:-translate-y-0.5 active:translate-y-0">
+                    Mulai Konsultasi Gratis
                   </Button>
                 </Link>
                 <button
                   onClick={() => setIsSymptomModalOpen(true)}
-                  className="flex items-center gap-2.5 px-8 py-4 rounded-2xl border-2 border-slate-300 dark:border-outline-variant/40 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all active:scale-95"
+                  className="flex items-center gap-2.5 px-8 py-4 rounded-2xl border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  Cek Gejala Gratis
+                  Cek Gejala
                 </button>
               </div>
 
               {/* Trust indicators */}
-              <div className="flex flex-wrap items-center gap-6 mt-10 pt-10 border-t border-zinc-300 dark:border-white/10">
+              <div className="flex flex-wrap items-center gap-6 mt-12 pt-8 border-t border-zinc-200 dark:border-white/5">
                 {[
-                  { value: "50K+", label: "Pengguna Aktif" },
                   { value: "1.500+", label: "Kondisi Medis" },
-                  { value: "98.4%", label: "Akurasi AI" },
+                  { value: "98.4%", label: "Akurasi Klinis" },
+                  { value: "ISO 27001", label: "Data Certified" },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <div className="text-xl font-bold text-slate-900 dark:text-white">{stat.value}</div>
+                    <div className="text-lg font-bold text-slate-900 dark:text-white">{stat.value}</div>
                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="lg:w-2/5 w-full">
-              <div className="glass-card rounded-[2.5rem] p-8 shadow-2xl shadow-zinc-300 dark:shadow-black relative group overflow-hidden border-zinc-200 dark:border-outline-variant/20 bg-white/60 dark:bg-white/5 backdrop-blur-xl">
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 blur-3xl group-hover:bg-primary/30 transition-all duration-700" />
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 tracking-tight flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-                    <svg
-                      className="w-4 h-4 text-primary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2.5}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </div>
-                  Cek Gejala Kamu
-                </h3>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <input
-                      type="text"
-                      readOnly
-                      onClick={() => setIsSymptomModalOpen(true)}
-                      placeholder="Apa yang kamu rasakan hari ini?"
-                      className="w-full bg-zinc-100 dark:bg-white/5 border border-zinc-200 dark:border-outline-variant/20 rounded-2xl py-5 px-6 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all font-medium cursor-pointer"
-                    />
-                    <button
-                      onClick={() => setIsSymptomModalOpen(true)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all"
-                    >
-                      <svg
-                        className="w-5 h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2.5}
-                          d="M14 5l7 7m0 0l-7 7m7-7H3"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {["Pusing", "Demam", "Batuk", "Mual"].map((tag) => (
-                      <span
-                        key={tag}
-                        onClick={() => setIsSymptomModalOpen(true)}
-                        className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-outline-variant/20 px-3 py-1.5 rounded-lg hover:text-primary hover:bg-primary/10 hover:border-primary/30 dark:hover:text-white dark:hover:bg-primary/20 cursor-pointer transition-all uppercase tracking-widest"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+            <div className="lg:w-1/2 w-full relative">
+              <div className="relative z-10 animate-fluid-float">
+                <div className="relative glass-card p-2 rounded-[2.5rem] border border-slate-200 dark:border-white/10 overflow-hidden group">
+                  <img 
+                    src="/hero_medical.png" 
+                    alt="Nadi App Professional Context" 
+                    className="w-full h-auto rounded-[2rem] object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Overlay stats card */}
+                  <div className="absolute bottom-8 right-8 bg-white/95 dark:bg-slate-900/95 p-4 rounded-2xl border border-slate-200 dark:border-white/10 animate-breathing">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                      </div>
+                      <div>
+                        <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Health Pulse</div>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Normal Sinus Rhythm</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -238,8 +188,8 @@ const Landing = () => {
               </div>
             </div>
             <div className="lg:w-1/2 w-full">
-              <div className="bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-slate-800/80 dark:to-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 text-slate-900 dark:text-white relative shadow-2xl shadow-primary/10 dark:shadow-primary/5 overflow-hidden group border border-zinc-200 dark:border-white/10">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-primary/20 transition-all duration-700" />
+              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-slate-900 dark:text-white relative border border-slate-200 dark:border-white/10 overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 transition-all duration-700" />
                 <h4 className="text-6xl md:text-7xl font-bold tracking-tighter mb-4 md:mb-6 text-primary">
                   98.4%
                 </h4>
@@ -275,119 +225,68 @@ const Landing = () => {
       </section>
 
       {/* ECOSYSTEM SECTION */}
-      <section className="py-16 md:py-32 bg-zinc-200 dark:bg-slate-900/60 border-y border-zinc-300 dark:border-white/5 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent">
-        <div className="container mx-auto px-6 text-center max-w-4xl mb-12 md:mb-20">
-          <h2 className="text-4xl md:text-7xl font-bold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
-            Ekosistem <span className="text-primary">Masa Depan.</span>
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 font-medium text-base md:text-lg leading-relaxed">
-            Kami membangun fondasi kesehatan digital yang menghubungkan semua
-            lini kebutuhan medis Anda dalam satu platform.
-          </p>
-        </div>
-
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Main card — no fixed height on mobile */}
-            <div className="md:col-span-2 glass-card rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-12 group transition-all min-h-[320px] md:h-[450px] flex flex-col justify-end border-zinc-300 dark:border-white/10 relative overflow-hidden bg-zinc-50 dark:bg-slate-800/60 hover:border-primary/30 dark:hover:border-primary/30">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/20 rounded-2xl flex items-center justify-center mb-6 md:mb-8 border border-primary/20">
-                <svg
-                  className="w-6 h-6 md:w-8 md:h-8 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
+      <section className="py-16 md:py-32 bg-zinc-50 dark:bg-[#0f1117] relative overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* Left: Content */}
+            <div className="lg:w-1/3">
+              <div className="sticky top-24">
+                <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-4 block">Ekosistem Nadi</span>
+                <h2 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight leading-[1.1] mb-6">
+                  Solusi Medis <br />
+                  <span className="text-primary italic">Yang Lengkap.</span>
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 font-medium text-base leading-relaxed mb-8">
+                  Kami membangun fondasi kesehatan digital yang menghubungkan semua lini kebutuhan medis Anda dalam satu platform yang terintegrasi dan aman.
+                </p>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">ISO 27001 Data Privacy</span>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">HIPAA Compliant Cloud</span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight mb-4 md:mb-6">
-                AI Symptom <br />
-                Checker
-              </h3>
-              <p className="text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-md mb-6 md:mb-8 text-sm md:text-base">
-                Asisten virtual yang belajar setiap detik untuk membantu Anda
-                mendeteksi potensi penyakit melalui keluhan verbal maupun
-                visual.
-              </p>
-              <Link
-                to="#"
-                className="text-primary font-bold text-sm flex items-center gap-2 group-hover:gap-4 transition-all"
-              >
-                Pelajari Sistem
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </Link>
             </div>
 
-            {/* Side cards — stack naturally on mobile, fixed height only on md+ */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 md:h-[450px]">
-              <div className="glass-card rounded-[2rem] p-6 md:p-8 group hover:bg-zinc-100 dark:hover:bg-slate-700/60 transition-all border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-slate-800/50 flex flex-col md:flex-1">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 md:mb-6">
-                  <svg
-                    className="w-5 h-5 md:w-6 md:h-6 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-                <h4 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
-                  Nadi Poin
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed mb-4 md:mb-6">
-                  Dapatkan reward untuk setiap gaya hidup sehat yang Anda
-                  jalani.
-                </p>
-                <div className="h-2 bg-zinc-200 dark:bg-white/10 rounded-full overflow-hidden mt-auto">
-                  <div className="w-2/3 h-full bg-gradient-to-r from-primary to-blue-400 shadow-glow-primary" />
+            {/* Right: Grid */}
+            <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2 group relative h-80 rounded-[2.5rem] overflow-hidden border border-zinc-200 dark:border-white/10">
+                <img src="/medicpedia_visual.png" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Medicpedia Illustration" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent p-10 flex flex-col justify-end">
+                  <h3 className="text-3xl font-bold text-white mb-2">Medicpedia</h3>
+                  <p className="text-slate-300 text-sm max-w-sm mb-6">Akses ribuan artikel kesehatan dari sumber terpercaya di Indonesia.</p>
+                  <Link to="/medicpedia" className="text-white font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-4 transition-all">
+                    Jelajahi Sekarang <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                  </Link>
                 </div>
               </div>
-              <div className="glass-card rounded-[2rem] p-6 md:p-8 group hover:bg-blue-600/5 dark:hover:bg-blue-500/20 transition-all border-blue-600/10 dark:border-blue-400/20 bg-blue-50/30 dark:bg-blue-500/10 flex flex-col md:flex-1">
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 md:mb-6">
-                  <svg
-                    className="w-5 h-5 md:w-6 md:h-6 text-blue-500 dark:text-blue-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                    />
-                  </svg>
+
+              <div className="glass-card rounded-[2.5rem] p-8 border border-zinc-200 dark:border-white/5 group hover:border-primary/30 transition-all">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </div>
-                <h4 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
-                  Medicpedia
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
-                  Akses ribuan artikel kesehatan dari sumber terpercaya di
-                  Indonesia.
-                </p>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">AI Symptom Checker</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">Asisten virtual yang belajar setiap detik untuk membantu Anda mendeteksi potensi penyakit.</p>
+              </div>
+
+              <div className="bg-primary rounded-[2.5rem] p-8 group relative overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full" />
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-3">Nadi Poin Reward</h3>
+                <p className="text-white/70 text-sm font-medium leading-relaxed mb-6">Dapatkan reward untuk setiap gaya hidup sehat yang Anda jalani.</p>
+                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                  <div className="w-2/3 h-full bg-white" />
+                </div>
               </div>
             </div>
           </div>
@@ -479,7 +378,7 @@ const Landing = () => {
             ].map((t) => (
               <div
                 key={t.name}
-                className="bg-zinc-50 dark:bg-slate-800/70 border border-zinc-200 dark:border-white/10 rounded-[2rem] p-6 md:p-8 flex flex-col gap-5 hover:border-primary/30 dark:hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                className="bg-zinc-50 dark:bg-slate-800/70 border border-zinc-200 dark:border-white/10 rounded-[2rem] p-6 md:p-8 flex flex-col gap-5 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300"
               >
                 {/* Stars */}
                 <div className="flex gap-1">
@@ -531,7 +430,7 @@ const Landing = () => {
                   onClick={() =>
                     setOpenFaqId(openFaqId === faq.id ? null : faq.id)
                   }
-                  className="bg-zinc-50 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 cursor-pointer group hover:bg-zinc-100 dark:hover:bg-slate-700/60 hover:border-primary/40 dark:hover:border-primary/30 transition-all shadow-sm hover:shadow-md"
+                  className="bg-zinc-50 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 cursor-pointer group hover:bg-zinc-100 dark:hover:bg-slate-700/60 hover:border-primary/40 dark:hover:border-primary/30 transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-slate-700 dark:text-slate-300 font-bold tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
@@ -602,7 +501,7 @@ const Landing = () => {
       {/* NEWSLETTER SECTION */}
       <section id="contact" className="py-16 md:py-32 bg-zinc-100 dark:bg-slate-900/60">
         <div className="container mx-auto px-6">
-          <div className="bg-primary rounded-[2rem] md:rounded-[3rem] p-8 md:p-24 relative overflow-hidden group shadow-2xl shadow-primary/20 transform-gpu transition-all duration-700">
+          <div className="bg-primary rounded-[2rem] md:rounded-[3rem] p-8 md:p-24 relative overflow-hidden group transform-gpu transition-all duration-700">
             <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0 50 Q 25 30 50 50 T 100 50" stroke="white" fill="none" strokeWidth="0.5" />
@@ -630,7 +529,7 @@ const Landing = () => {
                   placeholder="Masukkan email anda"
                   className="flex-grow bg-white/20 border border-white/20 rounded-2xl px-6 md:px-8 py-4 md:py-5 text-white placeholder-white/50 focus:outline-none focus:bg-white/30 transition-all font-bold text-sm md:text-base"
                 />
-                <button className="bg-white text-primary font-bold px-8 md:px-10 py-4 md:py-5 rounded-2xl uppercase tracking-widest text-xs md:text-sm hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/10 whitespace-nowrap">
+                <button className="bg-white text-primary font-bold px-8 md:px-10 py-4 md:py-5 rounded-2xl uppercase tracking-widest text-xs md:text-sm hover:scale-105 active:scale-95 transition-all whitespace-nowrap">
                   Berlangganan
                 </button>
               </div>

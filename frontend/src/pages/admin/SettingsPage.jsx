@@ -214,7 +214,7 @@ const SettingsPage = () => {
                                     <Button 
                                         type="submit" 
                                         isLoading={updateMutation.isPending}
-                                        className="px-8 shadow-lg shadow-primary/20"
+                                        className="px-8  "
                                     >
                                         Save Changes
                                     </Button>

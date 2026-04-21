@@ -7,6 +7,7 @@ import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify } from "../utils/json";
 import { ROLES } from "../utils/constants";
+import { safeParse } from "../utils/json";
 
 const AdminLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -111,12 +112,18 @@ const AdminLayout = () => {
     }
 
     if (userData) {
-      const parsedUser = JSON.parse(userData);
-      setUser(parsedUser);
+      try {
+        const parsedUser = safeParse(userData);
+        setUser(parsedUser);
 
-      // Secondary safety check: Redirect 'user' role out of admin layout
-      if (parsedUser.role_id === ROLES.USER) {
-        navigate("/dashboard");
+        // Secondary safety check: Redirect 'user' role out of admin layout
+        if (parsedUser.role_id === ROLES.USER) {
+          navigate("/consultations/ai");
+        }
+      } catch (err) {
+        console.error("Admin layout auth parsing error:", err);
+        localStorage.removeItem("user");
+        navigate("/login");
       }
     }
   }, [navigate]);
@@ -850,7 +857,7 @@ const AdminLayout = () => {
         headerAction={
           <button
             onClick={() => navigate("/new-check")}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-2xl font-bold shadow-lg shadow-primary/20 group hover:brightness-110 active:scale-95 transition-all duration-300"
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-2xl font-bold   group hover:brightness-110 active:scale-95 transition-all duration-300"
           >
             <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
               <svg
@@ -875,7 +882,7 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-6 bg-surface-container-low border-b border-outline-variant/30 sticky top-0 z-10 shadow-sm shadow-surface/5">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-6 bg-surface-container-low border-b border-outline-variant/30 sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Mobile Menu Button */}
             <button
@@ -961,7 +968,7 @@ const AdminLayout = () => {
                   {user.email.charAt(0).toUpperCase()}
                 </div>
                 {/* Status indicator */}
-                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-surface-container rounded-full shadow-sm"></div>
+                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-surface-container rounded-full "></div>
               </Link>
             </div>
           </div>

@@ -205,7 +205,7 @@ const Roles = () => {
                             key={cat}
                             onClick={() => { setCategoryFilter(cat); setCurrentPage(1); }}
                             className={`flex-1 md:flex-none px-6 py-2 text-xs font-bold rounded-lg transition-all capitalize ${categoryFilter === cat
-                                ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
+                                ? 'bg-primary text-on-primary  '
                                 : 'text-surface-on-variant hover:bg-surface-variant/30'
                                 }`}
                         >

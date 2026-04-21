@@ -174,8 +174,28 @@ const Dashboard = () => {
       </div>
 
       {/* ── Statistics Cards ─────────────────────────────────────────────────── */}
-      {stats.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+        {/* Health Activity Chart (Mock) */}
+        <div className="lg:col-span-1 bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent p-5 flex flex-col justify-between overflow-hidden relative group">
+          <div className="relative z-10">
+            <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest mb-1">Health Pulse</p>
+            <h3 className="text-xl font-bold text-surface-on tracking-tight">Active</h3>
+          </div>
+          {/* Mock Pulse Graph */}
+          <div className="mt-4 h-24 flex items-end gap-1 relative z-10">
+            {[40, 70, 45, 90, 65, 80, 50, 85, 60, 95, 70, 75].map((h, i) => (
+              <div 
+                key={i} 
+                style={{ height: `${h}%` }} 
+                className="flex-1 bg-primary/20 rounded-full group-hover:bg-primary/40 transition-all duration-500"
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 bg-medical-grid opacity-20 pointer-events-none" />
+        </div>
+
+        {/* Real Stats */}
+        <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5">
           {isLoading
             ? [1, 2, 3].map((i) => (
                 <div
@@ -194,36 +214,34 @@ const Dashboard = () => {
             : stats.map((stat) => (
                 <div
                   key={stat.id}
-                  className="group relative bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent p-5 
-                           transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/20 
+                  className="group relative bg-surface-container rounded-3xl border border-outline-variant/30 dark:border-transparent p-6 
+                           transition-all duration-300 hover:border-primary/20
                            active:scale-[0.98] overflow-hidden"
                 >
-                  <div className="flex items-center gap-4 relative z-10">
+                  <div className="flex items-center gap-5 relative z-10">
                     <div
-                      className={`${stat.iconBg} ${stat.iconColor} p-3 rounded-xl transition-transform duration-300 group-hover:scale-110`}
+                      className={`${stat.iconBg} ${stat.iconColor} p-4 rounded-2xl transition-transform duration-500 group-hover:rotate-6 shadow-inner`}
                     >
                       {stat.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-wider mb-0.5">
+                      <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-[0.2em] mb-1">
                         {stat.title}
                       </p>
-                      <h3 className="text-2xl font-bold text-surface-on tracking-tight">
+                      <h3 className="text-3xl font-bold text-surface-on tracking-tighter">
                         {stat.value}
                       </h3>
                     </div>
                   </div>
-                  {/* Decorative background element inspired by SharePage icons */}
-                  <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors duration-500" />
                 </div>
               ))}
         </div>
-      )}
+      </div>
 
       {/* ── Main Layout ──────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Recent Activity */}
-        <div className="lg:col-span-2 bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent shadow-sm overflow-hidden flex flex-col">
+        <div className="lg:col-span-2 bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent overflow-hidden flex flex-col">
           <div className="px-5 py-3 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
             <h2 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
               Recent Activity
@@ -288,7 +306,7 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Actions Container */}
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 dark:border-transparent overflow-hidden flex flex-col">
           <div className="px-5 py-3 border-b border-outline-variant/20 bg-surface-container-low">
             <h2 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
               Quick Actions
@@ -301,10 +319,10 @@ const Dashboard = () => {
                   className={`flex items-center gap-3 p-3 rounded-xl border border-outline-variant/20 transition-all duration-300
                                ${
                                  action.variant === "primary"
-                                   ? "bg-primary/5 hover:bg-primary/10 hover:border-primary/30 text-primary"
+                                   ? "bg-primary/5 hover:border-primary/30 text-primary"
                                    : "bg-surface-variant/10 hover:bg-surface-variant/30 text-surface-on"
                                } 
-                               hover:shadow-md group-active:scale-[0.98]`}
+                               group-active:scale-[0.98]`}
                 >
                   <div
                     className={`p-2 rounded-lg ${

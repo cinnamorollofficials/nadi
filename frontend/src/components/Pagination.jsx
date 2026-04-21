@@ -64,7 +64,7 @@ const Pagination = ({
               id="limit"
               value={itemsPerPage}
               onChange={(e) => onLimitChange(Number(e.target.value))}
-              className="text-xs border border-outline rounded p-1 focus:ring-2 focus:ring-primary/50 focus:outline-none bg-surface-container-high text-surface-on transition-all shadow-sm"
+              className="text-xs border border-outline rounded p-1 focus:ring-2 focus:ring-primary/50 focus:outline-none bg-surface-container-high text-surface-on transition-all"
             >
               {[10, 20, 50, 100].map((limit) => (
                 <option key={limit} value={limit}>
@@ -81,7 +81,7 @@ const Pagination = ({
           variant="outline"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2.5 py-1.5 text-xs h-7 flex items-center shadow-sm border-outline-variant/50 hover:bg-surface-variant/20"
+          className="px-2.5 py-1.5 text-xs h-7 flex items-center border-outline-variant/50 hover:bg-surface-variant/20"
         >
           <svg
             className="w-3.5 h-3.5 mr-1"
@@ -114,7 +114,7 @@ const Pagination = ({
                 onClick={() => onPageChange(page)}
                 className={`w-7 h-7 text-xs font-medium rounded transition-all duration-200 ${
                   currentPage === page
-                    ? "bg-primary text-on-primary shadow-md transform scale-105"
+                    ? "bg-primary text-on-primary transform scale-105"
                     : "text-surface-on-variant hover:bg-primary-container/20 hover:text-primary border border-transparent"
                 }`}
               >
@@ -128,7 +128,7 @@ const Pagination = ({
           variant="outline"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-2.5 py-1.5 text-xs h-7 flex items-center shadow-sm border-outline-variant/50 hover:bg-surface-variant/20"
+          className="px-2.5 py-1.5 text-xs h-7 flex items-center border-outline-variant/50 hover:bg-surface-variant/20"
         >
           Next
           <svg

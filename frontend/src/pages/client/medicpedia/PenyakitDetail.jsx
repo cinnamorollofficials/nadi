@@ -153,8 +153,8 @@ const PenyakitDetail = () => {
       {/* ── Hero Header ── */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-primary/60 dark:from-slate-950 dark:via-slate-900 dark:to-primary/30">
         {/* Decorative blobs */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full  -mr-32 -mt-32 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full  pointer-events-none" />
 
         <div className="relative z-10 container mx-auto px-6 py-14 md:py-20">
           {/* Breadcrumb */}
@@ -205,7 +205,7 @@ const PenyakitDetail = () => {
               <img
                 src={data.image}
                 alt={data.name}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-2 border-white/20 shadow-xl flex-shrink-0"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-2 border-white/20  flex-shrink-0"
                 onError={(e) => (e.target.style.display = "none")}
               />
             ) : (
@@ -232,7 +232,7 @@ const PenyakitDetail = () => {
                 </span>
                 <Link
                   to={`/new-check?topic=${encodeURIComponent(data.name)}`}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105 shadow-lg shadow-emerald-500/20 md:hidden"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105  shadow-emerald-500/20 md:hidden"
                 >
                   Tanya AI
                 </Link>
@@ -245,7 +245,7 @@ const PenyakitDetail = () => {
       {/* ── Content Layout ── */}
       <div className="container mx-auto px-6 py-6 md:py-10 flex flex-col md:flex-row gap-8 items-start">
         {/* ── Mobile Sticky Shortcuts ── */}
-        <div className="md:hidden sticky top-20 z-20 bg-zinc-50/95 dark:bg-[#0f1117]/95 backdrop-blur-xl p-2 rounded-2xl flex items-center gap-4 border border-zinc-200/50 dark:border-white/10 shadow-sm shadow-black/5 w-full">
+        <div className="md:hidden sticky top-20 z-20 bg-zinc-50/95 dark:bg-[#0f1117]/95 backdrop- p-2 rounded-2xl flex items-center gap-4 border border-zinc-200/50 dark:border-white/10  shadow-black/5 w-full">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar">
             {availableSections.map(({ key, label }) => (
               <button
@@ -253,8 +253,8 @@ const PenyakitDetail = () => {
                 onClick={() => scrollTo(key)}
                 className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                   activeSection === key
-                    ? "bg-primary text-white shadow-md shadow-primary/20 scale-105"
-                    : "bg-white dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 shadow-sm hover:bg-zinc-100 dark:hover:bg-slate-700"
+                    ? "bg-primary text-white   scale-105"
+                    : "bg-white dark:bg-slate-800/80 text-slate-600 dark:text-slate-300  hover:bg-zinc-100 dark:hover:bg-slate-700"
                 }`}
               >
                 {label}
@@ -309,7 +309,7 @@ const PenyakitDetail = () => {
 
           {/* ── CTA — Cek Gejala ── */}
           <div className="bg-gradient-to-br from-primary to-teal-600 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20  pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
               <div className="flex-1">
                 <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-2">
@@ -325,7 +325,7 @@ const PenyakitDetail = () => {
               </div>
               <Link
                 to="/"
-                className="flex-shrink-0 flex items-center gap-2 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-sm hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10 whitespace-nowrap"
+                className="flex-shrink-0 flex items-center gap-2 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-sm hover:scale-105 active:scale-95 transition-all  shadow-black/10 whitespace-nowrap"
               >
                 <svg
                   className="w-4 h-4"
@@ -390,7 +390,7 @@ const PenyakitDetail = () => {
 
         {/* ── Desktop Right Sidebar (Sticky) ── */}
         <div className="hidden md:block w-72 flex-shrink-0 sticky top-24">
-          <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl p-6 rounded-3xl border border-zinc-200/50 dark:border-white/10 shadow-sm">
+          <div className="bg-white/80 dark:bg-slate-800/60 backdrop- p-6 rounded-3xl border border-zinc-200/50 dark:border-white/10 ">
             <h3 className="font-bold text-lg mb-4 text-slate-900 dark:text-white">
               Daftar Isi
             </h3>
@@ -406,7 +406,7 @@ const PenyakitDetail = () => {
                     onClick={() => scrollTo(key)}
                     className={`relative text-left pl-7 pr-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                       isActive
-                        ? "text-primary bg-primary/10 shadow-sm shadow-primary/5"
+                        ? "text-primary bg-primary/10  "
                         : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-slate-700/50"
                     }`}
                   >
@@ -425,7 +425,7 @@ const PenyakitDetail = () => {
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
               <Link
                 to={`/new-check?topic=${encodeURIComponent(data.name)}`}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold  shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -440,7 +440,7 @@ const PenyakitDetail = () => {
       <div className="md:hidden fixed bottom-6 right-4 z-50">
         <Link
           to={`/new-check?topic=${encodeURIComponent(data.name)}`}
-          className="flex items-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white pl-4 pr-5 h-14 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all font-bold text-sm"
+          className="flex items-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white pl-4 pr-5 h-14 rounded-full  hover:scale-105 active:scale-95 transition-all font-bold text-sm"
         >
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />

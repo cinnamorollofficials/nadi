@@ -60,16 +60,17 @@ const Sidebar = ({
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] lg:hidden transition-opacity duration-300"
+          className="fixed inset-0 bg-black/40 z-[60] lg:hidden transition-opacity duration-300"
           onClick={onCloseMobile}
         />
       )}
 
       <aside
-        className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out 
-          ${isActuallyCollapsed ? "w-[56px]" : "w-56"} 
+        className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] 
+          ${isActuallyCollapsed ? "w-[64px]" : "w-72"} 
           fixed inset-y-0 left-0 z-[70] lg:relative lg:translate-x-0
-          ${mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full lg:translate-x-0"}
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          bg-white dark:bg-navy-950 border-r border-outline-variant/30
         `}
         style={{ overflow: (isActuallyCollapsed && !mobileOpen) ? "visible" : "hidden" }}
       >
@@ -192,7 +193,7 @@ const Sidebar = ({
                         to={href || "#"}
                         className={`flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
                           active
-                            ? "bg-primary text-on-primary shadow-md"
+                            ? "bg-primary text-on-primary"
                             : item.highlight
                             ? "bg-primary/10 text-primary border border-primary/20"
                             : item.emergency
@@ -204,11 +205,11 @@ const Sidebar = ({
                       </Link>
 
                       {/* Floating Menu / Tooltip */}
-                      <div className="absolute left-full top-0 ml-2 invisible opacity-0 -translate-x-2 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-200 z-50">
+                      <div className="absolute left-full top-0 ml-3 invisible opacity-0 -translate-x-4 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-500 z-50">
                         {hasSubItems ? (
-                          <div className="w-52 bg-surface-container-highest/90 backdrop-blur-xl rounded-2xl p-2 shadow-2xl border border-outline-variant/30 overflow-hidden">
-                            <div className="px-3 py-2 border-b border-outline-variant/10 mb-1">
-                              <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                          <div className="w-56 bg-white dark:bg-slate-900 rounded-[1.5rem] p-2 border border-outline-variant/30 overflow-hidden">
+                            <div className="px-4 py-3 border-b border-outline-variant/10 mb-1">
+                              <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-[0.2em]">
                                 {item.label}
                               </p>
                             </div>
@@ -221,7 +222,7 @@ const Sidebar = ({
                                       to={sub.path}
                                       className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 group/sub ${
                                         subActive
-                                          ? "bg-primary text-on-primary shadow-sm"
+                                          ? "bg-primary text-on-primary"
                                           : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                                       }`}
                                     >
@@ -238,7 +239,7 @@ const Sidebar = ({
                             </ul>
                           </div>
                         ) : (
-                          <span className="px-3 py-1.5 rounded-xl bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 whitespace-nowrap block">
+                          <span className="px-3 py-1.5 rounded-xl bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 whitespace-nowrap block">
                             {item.label}
                           </span>
                         )}
@@ -255,7 +256,7 @@ const Sidebar = ({
                           onClick={() => toggleSection(item.label)}
                           className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-300 group ${
                             active
-                              ? "bg-primary text-on-primary shadow-md"
+                              ? "bg-primary text-on-primary"
                               : item.highlight
                               ? "bg-primary/10 text-primary border border-primary/20"
                               : item.emergency
@@ -298,7 +299,7 @@ const Sidebar = ({
                                     to={sub.path}
                                     className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 group ${
                                       subActive
-                                        ? "bg-primary text-on-primary shadow-md"
+                                        ? "bg-primary text-on-primary"
                                         : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                                     }`}
                                   >
@@ -320,7 +321,7 @@ const Sidebar = ({
                         to={item.path}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
                           active
-                            ? "bg-primary text-on-primary shadow-md"
+                            ? "bg-primary text-on-primary"
                             : item.highlight
                             ? "bg-primary/10 text-primary border border-primary/20"
                             : item.emergency
@@ -372,7 +373,7 @@ const Sidebar = ({
               </span>
             )}
             {isActuallyCollapsed && (
-              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
                 {profileTransition.label}
               </span>
             )}
@@ -404,7 +405,7 @@ const Sidebar = ({
             )}
 
             {isActuallyCollapsed && (
-              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
                 {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
               </span>
             )}
@@ -437,7 +438,7 @@ const Sidebar = ({
           )}
 
           {isActuallyCollapsed && (
-            <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold shadow-xl border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
+            <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
               Logout
             </span>
           )}

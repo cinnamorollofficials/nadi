@@ -72,7 +72,7 @@ const RowActionsDropdown = ({ actions, row }) => {
             right: pos.right,
             zIndex: 9999,
           }}
-          className="min-w-[140px] bg-surface-container rounded-md3-md shadow-lg border border-outline-variant/30 py-1 animate-fade-in-up"
+          className="min-w-[140px] bg-surface-container border border-outline-variant/30 py-1"
         >
           {actions.map((action, i) => (
             <button
@@ -140,7 +140,7 @@ const Table = ({
               <tr key={row} className="border-b border-outline-variant/30">
                 {allColumns.map((col, index) => (
                   <td key={index} className="px-4 py-2.5">
-                    <div className="h-3.5 bg-surface-variant/30 rounded animate-pulse"></div>
+                    <div className="h-3.5 bg-surface-variant/30 rounded"></div>
                   </td>
                 ))}
               </tr>

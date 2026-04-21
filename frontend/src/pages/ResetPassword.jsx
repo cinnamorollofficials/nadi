@@ -68,8 +68,8 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
         <div className="w-full max-w-sm relative z-10">
           <div className="bg-surface-container rounded-2xl overflow-hidden">
@@ -92,8 +92,8 @@ const ResetPassword = () => {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
         <div className="w-full max-w-sm relative z-10">
           <div className="bg-surface-container rounded-2xl overflow-hidden">
@@ -102,7 +102,7 @@ const ResetPassword = () => {
               <div className="text-center mb-8">
                 <Link to="/" className="group transition-transform active:scale-95 inline-block">
                   {logo ? (
-                    <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                    <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4  group-hover:bg-primary/5 transition-all">
                       <img
                         src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                         alt="Logo"
@@ -139,7 +139,7 @@ const ResetPassword = () => {
               <div className="space-y-4">
                 <Link
                   to="/forgot-password"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full bg-primary text-on-primary text-sm font-bold   transition-all hover:brightness-110 active:scale-[0.98]"
                 >
                   Request New Reset Link
                 </Link>
@@ -162,8 +162,8 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
       <div className="w-full max-w-sm relative z-10">
         {/* Main Card */}
@@ -173,7 +173,7 @@ const ResetPassword = () => {
             <div className="text-center mb-8">
               <Link to="/" className="group transition-transform active:scale-95 inline-block">
                 {logo ? (
-                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm group-hover:bg-primary/5 transition-all">
+                  <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4  group-hover:bg-primary/5 transition-all">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"
@@ -228,7 +228,7 @@ const ResetPassword = () => {
               <button
                 type="submit"
                 disabled={resetPasswordMutation.isPending}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 mt-2 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 mt-2 rounded-full bg-primary text-on-primary text-sm font-bold   transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {resetPasswordMutation.isPending ? (
                   <>

@@ -23,8 +23,8 @@ const MedicpediaHome = () => {
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400 rounded-full blur-3xl animate-blob" />
-          <div className="absolute bottom-0 right-10 w-96 h-96 bg-primary rounded-full blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-10 left-10 w-72 h-72 bg-teal-400/10 rounded-full" />
+          <div className="absolute bottom-0 right-10 w-96 h-96 bg-primary/10 rounded-full" />
         </div>
         
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-16 text-center w-full">
@@ -44,7 +44,7 @@ const MedicpediaHome = () => {
         <div className="grid md:grid-cols-2 gap-8">
           {/* Penyakit A-Z Card */}
           <Link to="/medicpedia/penyakit" className="group">
-            <Card className="p-8 h-full border-none shadow-2xl shadow-primary/5 group-hover:shadow-primary/20 transition-all duration-500 overflow-hidden relative">
+            <Card className="p-8 h-full border border-slate-200 dark:border-white/10 shadow-none transition-all duration-500 overflow-hidden relative">
               <div className="relative z-10">
                 <h2 className="text-3xl font-black text-surface-on mb-4 group-hover:text-red-600 transition-colors">
                   Penyakit A-Z
@@ -78,7 +78,7 @@ const MedicpediaHome = () => {
 
           {/* Nutrisi A-Z Card */}
           <Link to="/medicpedia/nutrisi" className="group">
-            <Card className="p-8 h-full border-none shadow-2xl shadow-secondary/5 group-hover:shadow-secondary/20 transition-all duration-500 overflow-hidden relative">
+            <Card className="p-8 h-full border border-slate-200 dark:border-white/10 shadow-none transition-all duration-500 overflow-hidden relative">
               <div className="relative z-10">
                 <h2 className="text-3xl font-black text-surface-on mb-4 group-hover:text-green-600 transition-colors">
                   Nutrisi A-Z

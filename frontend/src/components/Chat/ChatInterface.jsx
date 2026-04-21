@@ -103,7 +103,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                 } gap-3`}
               >
                 <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden ${
-                  msg.role === "user" ? "bg-primary text-on-primary shadow-lg shadow-primary/20" : "bg-secondary text-on-secondary shadow-lg shadow-secondary/20 p-2"
+                  msg.role === "user" ? "bg-primary text-on-primary" : "bg-secondary text-on-secondary p-2"
                 }`}>
                   {msg.role === "user" ? (
                     <User size={20} />
@@ -114,7 +114,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                   )}
                 </div>
                 
-                <div className={`p-4 rounded-3xl shadow-sm ${
+                <div className={`p-4 rounded-3xl ${
                   msg.role === "user" 
                     ? "bg-primary text-on-primary rounded-tr-none" 
                     : "bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/20"
@@ -181,12 +181,12 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
             type="text"
             placeholder="Ketik pesan Anda di sini..."
             disabled={isTyping}
-            className="w-full bg-surface-container-highest text-surface-on pl-6 pr-16 py-5 rounded-3xl border border-outline-variant/50 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm disabled:opacity-50 text-base"
+            className="w-full bg-surface-container-highest text-surface-on pl-6 pr-16 py-5 rounded-3xl border border-outline-variant/50 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all disabled:opacity-50 text-base"
           />
           <button
             type="submit"
             disabled={isTyping}
-            className="absolute right-2 bottom-2 w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:bg-surface-variant disabled:shadow-none"
+            className="absolute right-2 bottom-2 w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
           >
             {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
           </button>

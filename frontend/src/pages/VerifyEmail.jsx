@@ -64,11 +64,11 @@ const VerifyEmail = () => {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
         <div className="w-full max-w-md relative z-10">
-          <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+          <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden">
             <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
               <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
                 Email Verification
@@ -84,7 +84,7 @@ const VerifyEmail = () => {
             <div className="p-8">
               <div className="text-center mb-8">
                 {logo ? (
-                  <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 shadow-sm">
+                  <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 ">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"
@@ -133,11 +133,11 @@ const VerifyEmail = () => {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
         <div className="w-full max-w-md relative z-10">
-          <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+          <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden">
             <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
               <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
                 Email Verification
@@ -153,7 +153,7 @@ const VerifyEmail = () => {
             <div className="p-8">
               <div className="text-center mb-8">
                 {logo ? (
-                  <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 shadow-sm">
+                  <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 ">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"
@@ -211,7 +211,7 @@ const VerifyEmail = () => {
                   <div className="pt-4 flex flex-col gap-3">
                     <Link
                       to="/register"
-                      className="w-full py-3 px-6 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
+                      className="w-full py-3 px-6 rounded-full bg-primary text-on-primary text-sm font-bold   transition-all hover:brightness-110 active:scale-[0.98]"
                     >
                       Register New Account
                     </Link>
@@ -235,12 +235,12 @@ const VerifyEmail = () => {
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decorative elements */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[120px]" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full [120px]" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full [120px]" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Main Card */}
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+        <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden">
           {/* Card Header */}
           <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low flex items-center justify-between">
             <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
@@ -264,7 +264,7 @@ const VerifyEmail = () => {
             {/* Branding */}
             <div className="text-center mb-8">
               {logo ? (
-                <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 shadow-sm">
+                <div className="w-14 h-14 mx-auto rounded-2xl border border-outline-variant/40 bg-surface-container-high p-2 mb-4 ">
                   <img
                     src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                     alt="Logo"
@@ -331,7 +331,7 @@ const VerifyEmail = () => {
                   <div className="pt-4">
                     <Link
                       to="/login"
-                      className="w-full inline-block py-3 px-6 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98]"
+                      className="w-full inline-block py-3 px-6 rounded-full bg-primary text-on-primary text-sm font-bold   transition-all hover:brightness-110 active:scale-[0.98]"
                     >
                       Go to Sign In
                     </Link>

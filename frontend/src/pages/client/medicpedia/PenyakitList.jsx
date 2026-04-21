@@ -98,8 +98,8 @@ const PenyakitList = () => {
       >
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl animate-blob" />
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-400 rounded-full blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full  animate-blob" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-400 rounded-full  animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
@@ -119,7 +119,7 @@ const PenyakitList = () => {
               placeholder="Cari nama penyakit..."
               value={searchInput}
               onChange={handleSearchChange}
-              className="w-full py-4 pl-14 pr-12 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium shadow-2xl focus:outline-none focus:ring-2 focus:ring-primary-300 transition"
+              className="w-full py-4 pl-14 pr-12 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-primary-300 transition"
             />
             <svg
               className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant"
@@ -161,7 +161,7 @@ const PenyakitList = () => {
       </div>
 
       {/* ── Alphabet Filter ── */}
-      <div className="sticky top-0 z-20 bg-surface/95 backdrop-blur border-b border-outline-variant/30 shadow-sm">
+      <div className="sticky top-0 z-20 bg-surface/95  border-b border-outline-variant/30 ">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex flex-wrap gap-1.5 justify-center">
             {/* "Semua" button */}
@@ -170,7 +170,7 @@ const PenyakitList = () => {
               onClick={handleClearAll}
               className={`px-3 h-8 rounded-lg text-xs font-bold transition-all duration-200 ${
                 !activeLetter && !debouncedSearch
-                  ? "bg-primary text-white shadow-md scale-105"
+                  ? "bg-primary text-white  scale-105"
                   : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
               }`}
             >
@@ -183,7 +183,7 @@ const PenyakitList = () => {
                 onClick={() => handleLetterClick(letter)}
                 className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 ${
                   activeLetter === letter
-                    ? "bg-primary text-white shadow-md scale-110"
+                    ? "bg-primary text-white  scale-110"
                     : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                 }`}
               >
@@ -285,7 +285,7 @@ const PenyakitList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/penyakit/${item.slug}`}
-                className="group relative bg-surface-variant/10 border border-outline-variant/20 rounded-2xl p-5 hover:border-primary/30 hover:bg-primary/5 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 flex items-center gap-4"
+                className="group relative bg-surface-variant/10 border border-outline-variant/20 rounded-2xl p-5 hover:border-primary/30 hover:bg-primary/5 hover: hover: transition-all duration-300 flex items-center gap-4"
               >
                 {/* Avatar letter */}
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
@@ -348,7 +348,7 @@ const PenyakitList = () => {
                     onClick={() => setCurrentPage(page)}
                     className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
                       currentPage === page
-                        ? "bg-primary text-white shadow-md"
+                        ? "bg-primary text-white "
                         : "bg-surface-variant/30 hover:bg-surface-variant/50 text-surface-on-variant"
                     }`}
                   >

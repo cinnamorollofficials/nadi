@@ -89,8 +89,8 @@ const NutrisiList = () => {
       >
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
-          <div className="absolute top-10 right-10 w-80 h-80 bg-emerald-300 rounded-full blur-3xl animate-blob" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-10 right-10 w-80 h-80 bg-emerald-300 rounded-full  animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full  animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
@@ -111,7 +111,7 @@ const NutrisiList = () => {
                 setSearchTerm(e.target.value);
                 setActiveLetter("");
               }}
-              className="w-full py-4 pl-14 pr-6 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium shadow-2xl focus:outline-none focus:ring-2 focus:ring-emerald-300 transition"
+              className="w-full py-4 pl-14 pr-6 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-emerald-300 transition"
             />
             <svg
               className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant"
@@ -154,7 +154,7 @@ const NutrisiList = () => {
       </div>
 
       {/* Alphabet Filter */}
-      <div className="sticky top-0 z-20 bg-surface/90 backdrop-blur border-b border-outline-variant/30 shadow-sm">
+      <div className="sticky top-0 z-20 bg-surface/90  border-b border-outline-variant/30 ">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex flex-wrap gap-1.5 justify-center">
             {ALPHABET.map((letter) => (
@@ -165,7 +165,7 @@ const NutrisiList = () => {
                 className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200
                                     ${
                                       activeLetter === letter
-                                        ? "bg-emerald-600 text-white shadow-md scale-110"
+                                        ? "bg-emerald-600 text-white  scale-110"
                                         : "bg-surface-variant/40 text-surface-on-variant hover:bg-emerald-500/10 hover:text-emerald-600"
                                     }`}
               >
@@ -218,7 +218,7 @@ const NutrisiList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/nutrisi/${item.slug}`}
-                className="group relative rounded-2xl overflow-hidden border border-outline-variant/20 hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300"
+                className="group relative rounded-2xl overflow-hidden border border-outline-variant/20 hover:border-emerald-500/30 hover: hover:shadow-emerald-500/10 transition-all duration-300"
               >
                 {/* Gradient top strip */}
                 <div
@@ -290,7 +290,7 @@ const NutrisiList = () => {
                     onClick={() => setCurrentPage(page)}
                     className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
                       currentPage === page
-                        ? "bg-emerald-600 text-white shadow-md"
+                        ? "bg-emerald-600 text-white "
                         : "bg-surface-variant/30 hover:bg-emerald-500/10 hover:text-emerald-600 text-surface-on-variant"
                     }`}
                   >

@@ -5,26 +5,26 @@
 @tailwind utilities;
 
 :root {
-    /* Light Theme - Refined Health + AI (Teal & Rose) */
-    --md-sys-color-primary: 13 148 136; /* Teal-600 */
+    /* Light Theme - Refined Clinical Health (Deeper Teal) */
+    --md-sys-color-primary: 11 110 102; /* Deeper Teal for professional clinical feel */
     --md-sys-color-on-primary: 255 255 255;
     --md-sys-color-primary-container: 204 251 241;
-    --md-sys-color-on-primary-container: 19 78 74;
+    --md-sys-color-on-primary-container: 10 65 60;
 
     --md-sys-color-secondary-container: 255 228 230; /* Rose-100 */
-    --md-sys-color-on-secondary-container: 136 19 55; /* Rose-900 */
+    --md-sys-color-on-secondary-container: 159 18 57; /* Deeper Rose */
 
-    --md-sys-color-surface: 241 245 249; /* Slate-100 - significantly more muted */
+    --md-sys-color-surface: 248 250 252; /* Slate-50 - cleaner look */
     --md-sys-color-on-surface: 15 23 42;
-    --md-sys-color-surface-variant: 226 232 240; /* Slate-200 */
+    --md-sys-color-surface-variant: 241 245 249; /* Slate-100 */
     --md-sys-color-on-surface-variant: 71 85 105;
     --md-sys-color-surface-container-low: 255 255 255;
-    --md-sys-color-surface-container: 248 250 252; /* Slate-50 */
+    --md-sys-color-surface-container: 252 253 253;
     --md-sys-color-surface-container-high: 241 245 249;
-    --md-sys-color-surface-container-highest: 226 232 240;
+    --md-sys-color-surface-container-highest: 231 235 239;
 
     --md-sys-color-outline: 148 163 184;
-    --md-sys-color-outline-variant: 203 213 225;
+    --md-sys-color-outline-variant: 226 232 240;
 
     --md-sys-color-error: 225 29 72;
     --md-sys-color-on-error: 255 255 255;
@@ -32,8 +32,8 @@
     --md-sys-color-on-error-container: 136 19 55;
 
     /* Design-specific Humanist Accents */
-    --color-nadi-red: 244 63 94; /* Rose-500 */
-    --color-accent-red: 244 63 94; /* Rose-500 */
+    --color-nadi-red: 225 29 72; /* More serious Rose-600 */
+    --color-accent-red: 225 29 72;
 }
 
 /* Dark Theme - Premium Professional AI (Deep Slate & Teal) */
@@ -259,48 +259,56 @@ html.dark,
     .rounded-4xl { border-radius: 2rem; }
     .rounded-5xl { border-radius: 3rem; }
     
-    .shadow-glow-red {
-        box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+    .shadow-none {
+        box-shadow: none;
     }
 
     .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .dark .glass-card {
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .bg-medical-grid {
+        background-image: 
+            linear-gradient(rgba(13, 148, 136, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(13, 148, 136, 0.02) 1px, transparent 1px);
+        background-size: 32px 32px;
+    }
+
+    .dark .bg-medical-grid {
+        background-image: 
+            linear-gradient(rgba(45, 212, 191, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(45, 212, 191, 0.015) 1px, transparent 1px);
     }
 
     /* Custom Animations */
+    @keyframes breathing {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.02); opacity: 1; }
+    }
+    .animate-breathing {
+        animation: breathing 12s ease-in-out infinite;
+    }
+
+    @keyframes fluid-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+    .animate-fluid-float {
+        animation: fluid-float 15s ease-in-out infinite;
+    }
+
     @keyframes bounce-slow {
-        0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
+        0%, 100% { transform: translateY(-3%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
         50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
     }
     .animate-bounce-slow {
         animation: bounce-slow 5s infinite;
     }
 
-    @keyframes mesh-gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    .animate-mesh {
-        background-size: 200% 200%;
-        animation: mesh-gradient 10s ease infinite;
-    }
-
-    @keyframes blob {
-        0% { transform: translate(0px, 0px) scale(1); }
-        33% { transform: translate(30px, -50px) scale(1.1); }
-        66% { transform: translate(-20px, 20px) scale(0.9); }
-        100% { transform: translate(0px, 0px) scale(1); }
-    }
-    .animate-blob {
-        animation: blob 7s infinite;
-    }
-    .animation-delay-2000 {
-        animation-delay: 2s;
-    }
-    .animation-delay-4000 {
-        animation-delay: 4s;
-    }
 }

@@ -130,8 +130,8 @@ const NutrisiDetail = () => {
       >
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-300 rounded-full blur-3xl animate-blob" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-300 rounded-full blur-3xl animate-blob animation-delay-2000" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-300 rounded-full  animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-300 rounded-full  animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-16">
           {/* Breadcrumb */}
@@ -162,7 +162,7 @@ const NutrisiDetail = () => {
               <img
                 src={data.image}
                 alt={data.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-white/40 dark:border-white/20 shadow-xl flex-shrink-0"
+                className="w-20 h-20 rounded-2xl object-cover border-2 border-white/40 dark:border-white/20  flex-shrink-0"
                 onError={(e) => (e.target.style.display = "none")}
               />
             )}
@@ -180,7 +180,7 @@ const NutrisiDetail = () => {
       </div>
 
       {/* Sticky Section Nav */}
-      <div className="sticky top-0 z-20 bg-surface/95 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+      <div className="sticky top-0 z-20 bg-surface/95 backdrop- border-b border-outline-variant/30 ">
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex overflow-x-auto gap-1 py-3 scrollbar-none">
             {SECTIONS.map(({ key, label, icon }) => (
@@ -191,7 +191,7 @@ const NutrisiDetail = () => {
                 className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
                                     ${
                                       activeSection === key
-                                        ? "bg-emerald-600 text-white shadow-md"
+                                        ? "bg-emerald-600 text-white "
                                         : "text-surface-on-variant hover:bg-surface-variant/40 hover:text-emerald-700"
                                     }`}
               >

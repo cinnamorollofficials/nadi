@@ -104,7 +104,7 @@ const AiConsultation = () => {
             <button
               onClick={handleNewChat}
               disabled={createChannelMutation.isPending}
-              className="mt-8 px-8 py-3 bg-primary text-on-primary rounded-2xl font-bold hover:brightness-110 transition-all shadow-lg disabled:opacity-50"
+              className="mt-8 px-8 py-3 bg-primary text-on-primary rounded-2xl font-bold hover:brightness-110 transition-all disabled:opacity-50"
             >
               {createChannelMutation.isPending ? "Memulai..." : "Mulai Chat Baru Sekarang"}
             </button>

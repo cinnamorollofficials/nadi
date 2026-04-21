@@ -36,15 +36,15 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-fade-in shadow-2xl">
+    <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 animate-fade-in">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-slate-900/60 backdrop-blur-xl transition-all duration-300"
+        className="absolute inset-0 bg-slate-900/60 transition-all duration-300"
         onClick={onClose}
       />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up flex flex-col max-h-[90vh]">
         {/* Header / Progress */}
         <div className="p-8 pb-4 border-b border-slate-100 dark:border-outline-variant/20">
           <div className="flex items-center justify-between mb-6">
@@ -78,7 +78,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
           {/* Progress Bar */}
           <div className="h-1.5 w-full bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary transition-all duration-500 ease-out shadow-glow-primary"
+              className="h-full bg-primary transition-all duration-500 ease-out"
               style={{ width: `${(step / steps.length) * 100}%` }}
             />
           </div>
@@ -96,7 +96,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
               </p>
               <textarea
                 autoFocus
-                className="w-full h-48 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl p-6 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/50 transition-all font-medium resize-none shadow-inner"
+                className="w-full h-48 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl p-6 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/50 transition-all font-medium resize-none"
                 placeholder="Contoh: Sudah 2 hari saya merasa demam dan batuk berdahak di malam hari..."
                 value={formData.symptoms}
                 onChange={(e) =>
@@ -242,7 +242,7 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
           <button
             onClick={step === steps.length ? handleAnalysis : nextStep}
             disabled={step === 1 && !formData.symptoms}
-            className={`flex-[2] py-5 rounded-2xl font-bold transition-all shadow-xl active:scale-95 ${step === 1 && !formData.symptoms ? "bg-slate-200 dark:bg-white/10 text-slate-400 cursor-not-allowed shadow-none" : "bg-primary text-white hover:bg-primary/90 shadow-primary/25"}`}
+            className={`flex-[2] py-5 rounded-2xl font-bold transition-all active:scale-[0.98] ${step === 1 && !formData.symptoms ? "bg-slate-200 dark:bg-white/10 text-slate-400 cursor-not-allowed" : "bg-primary text-white hover:bg-primary/90"}`}
           >
             {step === steps.length ? "Analisis Sekarang" : "Lanjut"}
           </button>
@@ -256,7 +256,6 @@ const SymptomCheckerModal = ({ isOpen, onClose }) => {
                 @keyframes slide-up { from { opacity: 0; transform: translateY(30px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
                 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
                 .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-                .shadow-glow-primary { box-shadow: 0 0 15px rgba(20, 184, 166, 0.4); }
             `,
         }}
       />

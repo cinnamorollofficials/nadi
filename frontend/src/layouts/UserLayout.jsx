@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
-import { safeStringify } from "../utils/json";
+import { safeStringify, safeParse } from "../utils/json";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
 import { MessageSquare } from "lucide-react";
@@ -85,7 +85,13 @@ const UserLayout = () => {
     }
 
     if (userData) {
-      setUser(JSON.parse(userData));
+      try {
+        setUser(safeParse(userData));
+      } catch (err) {
+        console.error("Layout auth parsing error:", err);
+        localStorage.removeItem("user");
+        navigate("/login");
+      }
     }
     refreshUserData();
   }, [navigate, refreshUserData]);
