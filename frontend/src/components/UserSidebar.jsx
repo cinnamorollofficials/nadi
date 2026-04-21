@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Settings, User as UserIcon, Moon, Sun, LogOut, ChevronUp, ArrowUpRight } from "lucide-react";
+import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight } from "lucide-react";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
 
-const Sidebar = ({
+const UserSidebar = ({
   sections = [],
-  title = "Admin Panel",
+  title = "Nadi AI",
   logo,
   onLogout,
   collapsed = false,
@@ -61,7 +61,6 @@ const Sidebar = ({
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      // Only close if it's actually open/expanded and not on a mobile toggle
       if (!isActuallyCollapsed && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         if (mobileOpen) {
           onCloseMobile();
@@ -127,20 +126,14 @@ const Sidebar = ({
           <button
             onClick={mobileOpen ? onCloseMobile : onToggleCollapse}
             className="hidden lg:flex p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-all duration-200 flex-shrink-0"
-            title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
-              className="w-5 h-5 transition-transform duration-300"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         )}
@@ -158,12 +151,7 @@ const Sidebar = ({
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <input
@@ -177,7 +165,6 @@ const Sidebar = ({
           {headerAction && <div className="animate-fade-in">{headerAction}</div>}
         </div>
       )}
-
 
       {/* Navigation */}
       <nav className={`flex-1 ${isActuallyCollapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>
@@ -201,13 +188,9 @@ const Sidebar = ({
                 .map((item) => {
                   const active = isChildActive(item);
                   const hasSubItems = !!item.subItems;
-                  const isExpanded = expandedSections[item.label];
 
                 if (isActuallyCollapsed) {
-                  // Icon-only mode: floating submenu or tooltip on hover
-                  const href = item.subItems
-                    ? item.subItems[0]?.path
-                    : item.path;
+                  const href = item.subItems ? item.subItems[0]?.path : item.path;
                   return (
                     <li key={item.id || item.path || item.label} className="relative group/sidebar-item">
                       <Link
@@ -221,7 +204,6 @@ const Sidebar = ({
                         {item.icon}
                       </Link>
 
-                      {/* Floating Menu / Tooltip */}
                       <div className="absolute left-full top-0 ml-3 invisible opacity-0 -translate-x-4 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-500 z-50">
                         {hasSubItems ? (
                           <div className="w-56 bg-white dark:bg-navy-900 rounded-2xl p-2 border border-outline-variant/20 shadow-2xl overflow-hidden">
@@ -281,58 +263,41 @@ const Sidebar = ({
                             <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
                               {item.icon}
                             </div>
-                            <span className="text-sm font-medium whitespace-nowrap">
-                              {item.label}
-                            </span>
+                            <span className="text-sm font-medium whitespace-nowrap">{item.label}</span>
                           </div>
                           <svg
-                            className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+                            className={`w-4 h-4 flex-shrink-0 transition-transform duration-300 ${expandedSections[item.label] ? "rotate-180" : ""}`}
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </button>
-                        <div
-                          className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "max-h-64 mt-1" : "max-h-0"}`}
-                        >
+                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedSections[item.label] ? "max-h-64 mt-1" : "max-h-0"}`}>
                           <ul className="space-y-0.5 ml-4 pl-2 border-l border-outline-variant/20">
                             {item.subItems.map((sub) => {
                               const subActive = sub.path ? isActive(sub.path) : false;
                               const content = (
                                 <>
-                                  <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                                    {sub.icon}
-                                  </div>
-                                  <span className="text-xs font-medium whitespace-nowrap">
-                                    {sub.label}
-                                  </span>
+                                  <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{sub.icon}</div>
+                                  <span className="text-xs font-medium whitespace-nowrap">{sub.label}</span>
                                 </>
                               );
-
                               return (
                                 <li key={sub.label}>
                                   {sub.path ? (
                                     <Link
                                       to={sub.path}
                                       className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
-                                        ${subActive 
-                                          ? "bg-primary/10 text-primary font-semibold" 
-                                          : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
+                                        ${subActive ? "bg-primary/10 text-primary font-semibold" : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
                                     >
                                       {content}
                                     </Link>
                                   ) : (
                                     <button
                                       onClick={sub.onClick}
-                                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
-                                        text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on ${sub.className || ""}`}
+                                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on ${sub.className || ""}`}
                                     >
                                       {content}
                                     </button>
@@ -344,43 +309,32 @@ const Sidebar = ({
                         </div>
                       </div>
                     ) : (
-                        <Link
-                          to={item.path}
-                          className={`flex items-center gap-3 px-3 py-1 rounded-xl transition-all duration-300 group ${
-                            active
-                              ? "bg-surface-variant/50 text-surface-on font-semibold"
-                              : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
-                          }`}
-                        >
-                          {item.icon && (
-                            <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                              {item.icon}
-                            </div>
-                          )}
-                          <span className="text-sm font-medium whitespace-nowrap truncate flex-1">
-                            {item.label}
-                          </span>
-
-                          {/* Item Actions (Ellipsis Menu) */}
-                          {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
-                            <div 
-                              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <Dropdown
-                                trigger={
-                                  <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                    </svg>
-                                  </button>
-                                }
-                                actions={item.actions}
-                                align="right"
-                              />
-                            </div>
-                          )}
-                        </Link>
+                      <Link
+                        to={item.path}
+                        className={`flex items-center gap-3 px-3 py-1 rounded-xl transition-all duration-300 group ${
+                          active
+                            ? "bg-surface-variant/50 text-surface-on font-semibold"
+                            : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
+                        }`}
+                      >
+                        {item.icon && <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{item.icon}</div>}
+                        <span className="text-sm font-medium whitespace-nowrap truncate flex-1">{item.label}</span>
+                        {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                            <Dropdown
+                              trigger={
+                                <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                  </svg>
+                                </button>
+                              }
+                              actions={item.actions}
+                              align="right"
+                            />
+                          </div>
+                        )}
+                      </Link>
                     )}
                   </li>
                 );
@@ -394,11 +348,7 @@ const Sidebar = ({
       <div className="p-3 border-t border-outline-variant/10 space-y-1">
         {usage && !isActuallyCollapsed && (
           <div className="px-3 py-2">
-            <UsageLimit 
-              used={usage.used} 
-              limit={usage.limit} 
-              percent={usage.percent} 
-            />
+            <UsageLimit used={usage.used} limit={usage.limit} percent={usage.percent} />
           </div>
         )}
 
@@ -410,9 +360,7 @@ const Sidebar = ({
           <button
             onClick={() => toggleSection("Settings")}
             className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group
-              ${expandedSections["Settings"] 
-                ? "bg-primary/10 text-primary font-semibold" 
-                : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
+              ${expandedSections["Settings"] ? "bg-primary/10 text-primary font-semibold" : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
           >
             {!isActuallyCollapsed && (
               <div className="flex items-center gap-3">
@@ -428,33 +376,21 @@ const Sidebar = ({
                 <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />
               </div>
             )}
-            
-            {/* Tooltip for collapsed mode is handled by the floating menu now */}
           </button>
 
-          {/* Floating Settings Menu */}
           <div className={`absolute bottom-full left-0 pt-4 w-full lg:min-w-[240px] z-[100] transition-all duration-300 origin-bottom
-            ${expandedSections["Settings"] 
-              ? "opacity-100 translate-y-0 pointer-events-auto" 
-              : "opacity-0 translate-y-4 pointer-events-none"}`}
+            ${expandedSections["Settings"] ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"}`}
           >
             <div className="glass-card shadow-2xl rounded-2xl border border-outline-variant/20 p-1.5 overflow-hidden mb-2">
-              {/* Upgrade to PRO Card */}
               <div className="p-3 mb-2 rounded-2xl bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent border border-purple-500/10 relative overflow-hidden group/upgrade">
-                {/* Background Grid Pattern */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-medical-grid" />
-                
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-2">
                     <h4 className="text-sm font-bold text-surface-on flex items-center gap-1.5">
-                      Upgrade to 
-                      <span className="bg-black text-white text-[10px] px-1.5 py-0.5 rounded-md tracking-wider font-extrabold uppercase">PRO</span>
+                      Upgrade to <span className="bg-black text-white text-[10px] px-1.5 py-0.5 rounded-md tracking-wider font-extrabold uppercase">PRO</span>
                     </h4>
                   </div>
-                  <p className="text-[11px] text-surface-on-variant leading-relaxed mb-3 opacity-70 font-medium">
-                    Upgrade for image uploads, smarter AI, and more Pro Search.
-                  </p>
-                  
+                  <p className="text-[11px] text-surface-on-variant leading-relaxed mb-3 opacity-70 font-medium">Upgrade for image uploads, smarter AI, and more Pro Search.</p>
                   <button className="w-full bg-white dark:bg-white/10 py-2.5 px-4 rounded-xl flex items-center justify-between text-[12px] font-bold text-surface-on shadow-sm border border-black/5 hover:bg-slate-50 transition-all">
                     <span>Learn More</span>
                     <ArrowUpRight size={14} className="opacity-50" />
@@ -463,12 +399,9 @@ const Sidebar = ({
               </div>
 
               <div className="px-3 py-2 border-b border-outline-variant/10 mb-1">
-                <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
-                  Account Setting
-                </p>
+                <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Account Setting</p>
               </div>
               <ul className="space-y-0.5">
-                {/* Profile */}
                 {profileTransition && (
                   <li>
                     <Link
@@ -481,32 +414,18 @@ const Sidebar = ({
                     </Link>
                   </li>
                 )}
-                
-                {/* Theme Toggle */}
                 {onToggleTheme && (
                   <li>
                     <button
-                      onClick={(e) => {
-                        onToggleTheme(e);
-                        // Optional: keep menu open or close it
-                      }}
+                      onClick={(e) => onToggleTheme(e)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-surface-on-variant hover:bg-surface-variant/5 hover:text-surface-on"
                     >
-                      {theme === "dark" ? (
-                        <Sun size={18} />
-                      ) : (
-                        <Moon size={18} />
-                      )}
-                      <span className="text-xs font-semibold">
-                        {theme === "dark" ? "Light Mode" : "Dark Mode"}
-                      </span>
+                      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                      <span className="text-xs font-semibold">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
                     </button>
                   </li>
                 )}
-
                 <div className="my-1 border-t border-outline-variant/10" />
-
-                {/* Logout */}
                 <li>
                   <button
                     onClick={onLogout}
@@ -526,26 +445,8 @@ const Sidebar = ({
   );
 };
 
-Sidebar.propTypes = {
-  sections: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string,
-      items: PropTypes.arrayOf(
-        PropTypes.shape({
-          path: PropTypes.string,
-          label: PropTypes.string.isRequired,
-          icon: PropTypes.node.isRequired,
-          subItems: PropTypes.arrayOf(
-            PropTypes.shape({
-              path: PropTypes.string.isRequired,
-              label: PropTypes.string.isRequired,
-              icon: PropTypes.node.isRequired,
-            }),
-          ),
-        }),
-      ).isRequired,
-    }),
-  ),
+UserSidebar.propTypes = {
+  sections: PropTypes.array,
   title: PropTypes.string,
   logo: PropTypes.string,
   onLogout: PropTypes.func.isRequired,
@@ -555,11 +456,11 @@ Sidebar.propTypes = {
   onCloseMobile: PropTypes.func,
   onSearch: PropTypes.func,
   headerAction: PropTypes.node,
-  usage: PropTypes.shape({
-    used: PropTypes.number,
-    limit: PropTypes.number,
-    percent: PropTypes.number,
-  }),
+  theme: PropTypes.string,
+  onToggleTheme: PropTypes.func,
+  profileTransition: PropTypes.object,
+  usage: PropTypes.object,
+  showToggle: PropTypes.bool,
 };
 
-export default Sidebar;
+export default UserSidebar;

@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useNavigate, Outlet, useLocation, Link } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import AdminSidebar from "../components/AdminSidebar";
 import { getHealthStatus, getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import { useSettings } from "../context/SettingsContext";
@@ -17,55 +17,7 @@ const AdminLayout = () => {
   const [user, setUser] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const historyItems = [
-    {
-      id: 1,
-      label: "Demam Panas Lebih dari 3 Hari",
-      path: "/new-check?id=1",
-    },
-    {
-      id: 2,
-      label: "Sakit Kepala Sebelah Kiri",
-      path: "/new-check?id=2",
-      icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-          />
-        </svg>
-      ),
-    },
-    {
-      id: 3,
-      label: "Nyeri Punggung Bawah",
-      path: "/new-check?id=3",
-      icon: (
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-          />
-        </svg>
-      ),
-    },
-  ];
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -175,7 +127,6 @@ const AdminLayout = () => {
   // Navigation Configuration
   const navigationSections = [
     {
-      label: "Main",
       items: [
         {
           path: "/admin",
@@ -780,17 +731,9 @@ const AdminLayout = () => {
   ];
 
   const filteredNavigation = useMemo(() => {
-    const filteredHistory = historyItems.filter((item) =>
-      item.label.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-
-    const historySection = {
-      label: "Recent Conversations",
-      items: filteredHistory,
-    };
 
     if (!user || user.role_id === ROLES.SUPERADMIN) {
-      return [historySection, ...navigationSections];
+      return navigationSections;
     }
 
     const checkPermission = (item) => {
@@ -826,8 +769,8 @@ const AdminLayout = () => {
       }))
       .filter((section) => section.items.length > 0);
 
-    return [historySection, ...baseSections];
-  }, [user, searchQuery]);
+    return baseSections;
+  }, [user]);
 
   if (!user) {
     return (
@@ -842,47 +785,21 @@ const AdminLayout = () => {
   return (
     <div className="flex h-screen bg-surface overflow-hidden">
       {/* Sidebar Navigation */}
-      <Sidebar
+      <AdminSidebar
         sections={filteredNavigation}
         title={app_name}
         logo={logo}
         onLogout={handleLogout}
-        theme={theme}
-        onToggleTheme={toggleTheme}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
-        onSearch={setSearchQuery}
-        headerAction={
-          <button
-            onClick={() => navigate("/new-check")}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-primary text-on-primary rounded-2xl font-bold   group hover:brightness-110 active:scale-95 transition-all duration-300"
-          >
-            <div className="w-5 h-5 rounded-lg bg-white/20 flex items-center justify-center group-hover:rotate-90 transition-transform duration-500">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={3}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </div>
-            <span className="text-[13px] tracking-tight">New Conversation</span>
-          </button>
-        }
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-6 bg-surface-container-low border-b border-outline-variant/30 sticky top-0 z-10">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-outline-variant/30 sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Mobile Menu Button */}
             <button

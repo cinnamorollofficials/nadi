@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate, Outlet, useLocation, Link } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import UserSidebar from "../components/UserSidebar";
 import { getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import {
@@ -278,23 +278,19 @@ const UserLayout = () => {
 
   return (
     <div className="flex h-screen bg-surface overflow-hidden">
-      <Sidebar
-        sections={filteredNavigation}
+      <UserSidebar
+        sections={navigationSections}
         title={app_name}
         logo={logo}
         onLogout={handleLogout}
         theme={theme}
         onToggleTheme={toggleTheme}
-        profileTransition={{
-          label: "Profile Saya",
-          path: "/profile",
-          icon: <UserIcon size={18} />
-        }}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onSearch={setSearchQuery}
+        profileTransition={{ path: "/profile", label: "Profile" }}
         usage={user?.usage}
       />
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
