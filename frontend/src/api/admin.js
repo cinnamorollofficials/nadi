@@ -113,3 +113,19 @@ export const exportAdmin = async (format = 'excel') => {
         responseType: 'blob',
     });
 };
+
+// AI Usage
+export const getAiUsageStats = async () => {
+    const response = await apiClient.get('/ai/usage/stats');
+    return response.data;
+};
+
+export const getAiUsageDaily = async (days = 30) => {
+    const response = await apiClient.get(`/ai/usage/daily?days=${days}`);
+    return response.data;
+};
+
+export const getAiUsageTopUsers = async (limit = 10) => {
+    const response = await apiClient.get(`/ai/usage/top-users?limit=${limit}`);
+    return response.data;
+};

@@ -20,6 +20,7 @@ type ChatService interface {
 type chatService struct {
 	chatRepo      repository.ChatRepository
 	userRepo      defaultRepo.UserRepository
+	aiUsageRepo   repository.AiUsageRepository
 	geminiService GeminiService
 	encryptor     *crypto.Encryptor
 }
@@ -27,12 +28,14 @@ type chatService struct {
 func NewChatService(
 	chatRepo repository.ChatRepository, 
 	userRepo defaultRepo.UserRepository, 
+	aiUsageRepo repository.AiUsageRepository,
 	geminiService GeminiService,
 	encryptor *crypto.Encryptor,
 ) ChatService {
 	return &chatService{
 		chatRepo:      chatRepo,
 		userRepo:      userRepo,
+		aiUsageRepo:   aiUsageRepo,
 		geminiService: geminiService,
 		encryptor:     encryptor,
 	}
@@ -106,7 +109,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 
 	// 3. Generate AI Response using Gemini (Streaming)
 	var fullResponse strings.Builder
-	err = s.geminiService.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, func(chunk string) {
+	usage, err := s.geminiService.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, func(chunk string) {
 		fullResponse.WriteString(chunk)
 		onChunk(chunk) // Callback to pass chunk to the handler (WebSocket)
 	})
@@ -139,6 +142,19 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	// 6. Increment User Usage
 	user.CurrentUsage++
 	s.userRepo.Update(ctx, user)
+
+	// 7. Save AI Usage Log
+	if usage != nil {
+		cost := (float64(usage.PromptTokenCount) * 0.0000001) + (float64(usage.CandidatesTokenCount) * 0.0000004)
+		s.aiUsageRepo.Create(ctx, &entity.AiUsageLog{
+			UserID:           channel.UserID,
+			PromptTokens:     int(usage.PromptTokenCount),
+			CandidatesTokens: int(usage.CandidatesTokenCount),
+			TotalTokens:      int(usage.TotalTokenCount),
+			Model:            "gemini-2.5-flash",
+			Cost:             cost,
+		})
+	}
 
 	return nil
 }

@@ -15,7 +15,7 @@ import (
 )
 
 type GeminiService interface {
-	GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) error
+	GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) (*genai.UsageMetadata, error)
 }
 
 type geminiService struct {
@@ -30,10 +30,10 @@ func NewGeminiService(config *config.Config, chatRepo repository.ChatRepository)
 	}
 }
 
-func (s *geminiService) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) error {
+func (s *geminiService) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) (*genai.UsageMetadata, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(s.config.Gemini.APIKey))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer client.Close()
 
@@ -105,14 +105,16 @@ MODERASI & ETIKA:
 	defer cancel()
 
 	iter := chat.SendMessageStream(geminiCtx, genai.Text(userMessage))
+	var lastResp *genai.GenerateContentResponse
 	for {
 		resp, err := iter.Next()
 		if err == iterator.Done {
 			break
 		}
 		if err != nil {
-			return err
+			return nil, err
 		}
+		lastResp = resp
 
 		if len(resp.Candidates) > 0 {
 			for _, part := range resp.Candidates[0].Content.Parts {
@@ -123,7 +125,11 @@ MODERASI & ETIKA:
 		}
 	}
 
-	return nil
+	if lastResp != nil {
+		return lastResp.UsageMetadata, nil
+	}
+
+	return nil, nil
 }
 
 func (s *geminiService) getRelevantContext(ctx context.Context, query string) string {

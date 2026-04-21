@@ -620,6 +620,26 @@ const AdminLayout = () => {
           ],
         },
         {
+          path: "/admin/ai-usage",
+          label: "AI Usage",
+          permission: PERMS.SYSTEM_STAT,
+          icon: (
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+          ),
+        },
+        {
           label: "Logs",
           icon: (
             <svg
@@ -799,7 +819,7 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-outline-variant/30 sticky top-0 z-10">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-10 border-b border-outline-variant/30 sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Mobile Menu Button */}
             <button
@@ -892,8 +912,8 @@ const AdminLayout = () => {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="max-w-6xl mx-auto animate-fade-in-up pb-10">
+        <main className="flex-1 overflow-y-auto custom-scrollbar px-4 lg:px-10 py-6 lg:py-8">
+          <div className="max-w-screen-2xl mx-auto animate-fade-in-up pb-10">
             <Outlet />
           </div>
         </main>

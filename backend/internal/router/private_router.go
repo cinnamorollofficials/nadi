@@ -30,6 +30,7 @@ func (r *Router) setupPrivateRoutes(
 	medicpedianutrisiHandler customHandler.MedicpediaNutrisiHandler,
 	faqHandler customHandler.FaqHandler,
 	chatHandler customHandler.ChatHandler,
+	aiHandler handler.AiHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -230,5 +231,14 @@ func (r *Router) setupPrivateRoutes(
 		apiKeys.POST("", permGuard.Check("apikey:create"), apiKeyHandler.Create)
 		apiKeys.GET("", permGuard.Check("apikey:view"), apiKeyHandler.GetAll)
 		apiKeys.DELETE("/:id", permGuard.Check("apikey:delete"), apiKeyHandler.Delete)
+	}
+
+	// AI Usage monitoring
+	aiUsage := v1.Group("/ai/usage")
+	aiUsage.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
+	{
+		aiUsage.GET("/stats", permGuard.Check("system:stat"), aiHandler.GetStats)
+		aiUsage.GET("/daily", permGuard.Check("system:stat"), aiHandler.GetDailyUsage)
+		aiUsage.GET("/top-users", permGuard.Check("system:stat"), aiHandler.GetTopUsers)
 	}
 }
