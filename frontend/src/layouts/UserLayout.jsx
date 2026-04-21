@@ -9,6 +9,7 @@ import {
   History as HistoryIcon,
   Activity,
   User as UserIcon,
+  Plus,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
@@ -243,17 +244,17 @@ const UserLayout = () => {
 
     return [
       {
-        label: "AI Services",
         items: [
           {
-            label: "AI Consultation",
+            label: "Mulai Konsultasi Baru",
             path: "/consultations/ai",
+            icon: <Plus size={18} />,
             highlight: true,
           },
         ],
       },
       {
-        label: "Recent AI Chats",
+        label: "Konsultasi Terbaru",
         items: aiHistoryItems,
       },
     ];

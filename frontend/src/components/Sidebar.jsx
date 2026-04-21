@@ -196,10 +196,12 @@ const Sidebar = ({
               </div>
             )}
             <ul className={`space-y-0.5 ${collapsed ? "px-2" : "px-3"}`}>
-              {section.items.map((item) => {
-                const active = isChildActive(item);
-                const hasSubItems = !!item.subItems;
-                const isExpanded = expandedSections[item.label];
+              {section.items
+                .filter(item => !isActuallyCollapsed || item.highlight)
+                .map((item) => {
+                  const active = isChildActive(item);
+                  const hasSubItems = !!item.subItems;
+                  const isExpanded = expandedSections[item.label];
 
                 if (isActuallyCollapsed) {
                   // Icon-only mode: floating submenu or tooltip on hover
@@ -346,7 +348,7 @@ const Sidebar = ({
                           to={item.path}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
                             active
-                              ? "bg-primary/10 text-primary font-semibold"
+                              ? "bg-surface-variant/50 text-surface-on font-semibold"
                               : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                           }`}
                         >
@@ -402,8 +404,8 @@ const Sidebar = ({
 
         <div 
           className="relative group/settings"
-          onMouseEnter={() => !isActuallyCollapsed && setExpandedSections(prev => ({ ...prev, "Settings": true }))}
-          onMouseLeave={() => !isActuallyCollapsed && setExpandedSections(prev => ({ ...prev, "Settings": false }))}
+          onMouseEnter={() => setExpandedSections(prev => ({ ...prev, "Settings": true }))}
+          onMouseLeave={() => setExpandedSections(prev => ({ ...prev, "Settings": false }))}
         >
           <button
             onClick={() => toggleSection("Settings")}
