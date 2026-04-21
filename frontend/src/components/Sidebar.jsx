@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
+import Dropdown from "./Dropdown";
 
 const Sidebar = ({
   sections = [],
@@ -19,6 +20,7 @@ const Sidebar = ({
   onToggleTheme,
   profileTransition,
   usage,
+  showToggle = true,
 }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
@@ -79,47 +81,51 @@ const Sidebar = ({
         className={`h-12 flex items-center flex-shrink-0 ${isActuallyCollapsed ? "justify-center px-2" : "justify-between px-3"}`}
       >
         <div className="flex items-center gap-2 overflow-hidden">
-          <div
-            className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/10 flex items-center justify-center p-0.5`}
-          >
-            {logo ? (
-              <img
-                src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
-                alt="Logo"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.target.className = "hidden";
-                }}
-              />
-            ) : (
-              <LottieLogo className="w-full h-full" />
-            )}
-          </div>
+          {!isActuallyCollapsed && (
+            <div
+              className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/10 flex items-center justify-center p-0.5`}
+            >
+              {logo ? (
+                <img
+                  src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
+                  alt="Logo"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.target.className = "hidden";
+                  }}
+                />
+              ) : (
+                <LottieLogo className="w-full h-full" />
+              )}
+            </div>
+          )}
           {!isActuallyCollapsed && (
             <h2 className="text-sm font-semibold text-surface-on truncate">
               {title}
             </h2>
           )}
         </div>
-        <button
-          onClick={mobileOpen ? onCloseMobile : onToggleCollapse}
-          className="p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-all duration-200 flex-shrink-0"
-          title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          <svg
-            className={`w-4 h-4 transition-transform duration-300 ${isActuallyCollapsed ? "rotate-180" : ""}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        {showToggle && (
+          <button
+            onClick={mobileOpen ? onCloseMobile : onToggleCollapse}
+            className="hidden lg:flex p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-all duration-200 flex-shrink-0"
+            title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
-          </svg>
-        </button>
+            <svg
+              className="w-4 h-4 transition-transform duration-300"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        )}
       </div>
 
       {/* Search & Action Section */}
@@ -337,6 +343,26 @@ const Sidebar = ({
                         <span className="font-medium text-sm whitespace-nowrap truncate flex-1">
                           {item.label}
                         </span>
+
+                        {/* Item Actions (Ellipsis Menu) */}
+                        {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
+                          <div 
+                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Dropdown
+                              trigger={
+                                <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                  </svg>
+                                </button>
+                              }
+                              actions={item.actions}
+                              align="right"
+                            />
+                          </div>
+                        )}
                       </Link>
                     )}
                   </li>

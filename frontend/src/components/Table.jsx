@@ -1,111 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import Dropdown from "./Dropdown";
 
-// Kebab menu dropdown for a single row
-const RowActionsDropdown = ({ actions, row }) => {
-  const [open, setOpen] = useState(false);
-  const [pos, setPos] = useState({ top: 0, right: 0 });
-  const btnRef = useRef(null);
-  const dropRef = useRef(null);
-
-  const openMenu = () => {
-    const rect = btnRef.current.getBoundingClientRect();
-    setPos({
-      top: rect.bottom + window.scrollY + 4,
-      right: window.innerWidth - rect.right,
-    });
-    setOpen(true);
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    const close = (e) => {
-      if (
-        dropRef.current &&
-        !dropRef.current.contains(e.target) &&
-        btnRef.current &&
-        !btnRef.current.contains(e.target)
-      ) {
-        setOpen(false);
-      }
-    };
-    const reposition = () => {
-      if (btnRef.current) {
-        const rect = btnRef.current.getBoundingClientRect();
-        setPos({
-          top: rect.bottom + window.scrollY + 4,
-          right: window.innerWidth - rect.right,
-        });
-      }
-    };
-    document.addEventListener("mousedown", close);
-    window.addEventListener("scroll", reposition, true);
-    window.addEventListener("resize", reposition);
-    return () => {
-      document.removeEventListener("mousedown", close);
-      window.removeEventListener("scroll", reposition, true);
-      window.removeEventListener("resize", reposition);
-    };
-  }, [open]);
-
-  return (
-    <div className="flex justify-center">
-      <button
-        ref={btnRef}
-        onClick={openMenu}
-        className="p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-colors duration-150"
-        title="Actions"
-      >
-        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-          <circle cx="12" cy="5" r="1.5" />
-          <circle cx="12" cy="12" r="1.5" />
-          <circle cx="12" cy="19" r="1.5" />
-        </svg>
-      </button>
-
-      {open && (
-        <div
-          ref={dropRef}
-          style={{
-            position: "fixed",
-            top: pos.top,
-            right: pos.right,
-            zIndex: 9999,
-          }}
-          className="min-w-[140px] bg-surface-container border border-outline-variant/30 py-1"
-        >
-          {actions.map((action, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setOpen(false);
-                action.onClick(row);
-              }}
-              className={`w-full text-left px-4 py-2 text-sm transition-colors duration-150 hover:bg-surface-variant/30 flex items-center gap-2 ${action.className || "text-surface-on"}`}
-            >
-              {action.icon && (
-                <span className="w-4 h-4 flex-shrink-0">{action.icon}</span>
-              )}
-              {action.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-RowActionsDropdown.propTypes = {
-  actions: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string.isRequired,
-      onClick: PropTypes.func.isRequired,
-      className: PropTypes.string,
-      icon: PropTypes.node,
-    }),
-  ).isRequired,
-  row: PropTypes.object.isRequired,
-};
 
 const Table = ({
   columns,
@@ -193,7 +89,27 @@ const Table = ({
               ))}
               {actions && actions.length > 0 && (
                 <td className="px-4 py-2 text-xs whitespace-nowrap">
-                  <RowActionsDropdown actions={actions} row={row} />
+                  <div className="flex justify-center">
+                    <Dropdown
+                      trigger={
+                        <button
+                          className="p-1.5 rounded-full hover:bg-surface-variant/40 text-surface-on-variant transition-colors duration-150"
+                          title="Actions"
+                        >
+                          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="5" r="1.5" />
+                            <circle cx="12" cy="12" r="1.5" />
+                            <circle cx="12" cy="19" r="1.5" />
+                          </svg>
+                        </button>
+                      }
+                      actions={actions.map((a) => ({
+                        ...a,
+                        onClick: () => a.onClick(row),
+                      }))}
+                      align="right"
+                    />
+                  </div>
                 </td>
               )}
             </tr>

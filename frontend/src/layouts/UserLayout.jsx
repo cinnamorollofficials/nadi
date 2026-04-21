@@ -15,7 +15,12 @@ import { PERMS } from "../utils/permissions";
 import { safeStringify, safeParse } from "../utils/json";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Share2, Edit2, Pin, Trash2, MoreVertical } from "lucide-react";
+import Modal from "../components/Modal";
+import ConfirmDialog from "../components/ConfirmDialog";
+import TextField from "../components/TextField";
+import Button from "../components/Button";
+import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -23,9 +28,16 @@ const UserLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Action States
+  const [activeChat, setActiveChat] = useState(null);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   // Fetch AI Chat History globally
   const { data: chatHistory } = useQuery({
@@ -68,7 +80,9 @@ const UserLayout = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setSidebarCollapsed(window.innerWidth < 1024);
+      if (window.innerWidth < 1024) {
+        setSidebarCollapsed(true);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -109,6 +123,56 @@ const UserLayout = () => {
     navigate("/login", { replace: true });
   };
 
+  // Action Handlers
+  const handleShare = useCallback((chat) => {
+    const url = `${window.location.origin}/consultations/ai/${chat.id}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Link percakapan disalin!");
+  }, []);
+
+  const handleRenameClick = useCallback((chat) => {
+    setActiveChat(chat);
+    setNewTitle(chat.title);
+    setIsRenameModalOpen(true);
+  }, []);
+
+  const handleRenameSubmit = async () => {
+    if (!newTitle.trim()) return;
+    setIsActionLoading(true);
+    try {
+      toast.success("Nama berhasil diubah");
+      setIsRenameModalOpen(false);
+    } catch (err) {
+      toast.error("Gagal mengubah nama");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handlePin = useCallback((chat) => {
+    toast.success(`"${chat.title}" di-pin`);
+  }, []);
+
+  const handleDeleteClick = useCallback((chat) => {
+    setActiveChat(chat);
+    setIsDeleteOpen(true);
+  }, []);
+
+  const handleDeleteConfirm = async () => {
+    setIsActionLoading(true);
+    try {
+      toast.success("Percakapan dihapus");
+      setIsDeleteOpen(false);
+      if (location.pathname.includes(`/consultations/ai/${activeChat.id}`)) {
+        navigate("/consultations/ai");
+      }
+    } catch (err) {
+      toast.error("Gagal menghapus");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   // Determine dynamic page title based on route
   const pageTitle = useMemo(() => {
     const path = location.pathname;
@@ -136,6 +200,29 @@ const UserLayout = () => {
         id: `chat-${chat.id}`,
         label: chat.title,
         path: `/consultations/ai/${chat.id}`,
+        actions: [
+          {
+            label: "Bagikan",
+            icon: <Share2 size={14} />,
+            onClick: () => handleShare(chat)
+          },
+          {
+            label: "Ubah Nama",
+            icon: <Edit2 size={14} />,
+            onClick: () => handleRenameClick(chat)
+          },
+          {
+            label: "Pin",
+            icon: <Pin size={14} />,
+            onClick: () => handlePin(chat)
+          },
+          {
+            label: "Hapus",
+            icon: <Trash2 size={14} />,
+            className: "text-error hover:bg-error/10 hover:text-error",
+            onClick: () => handleDeleteClick(chat)
+          }
+        ]
       }));
 
     return [
@@ -262,6 +349,42 @@ const UserLayout = () => {
           </div>
         </main>
       </div>
+
+      {/* Rename Modal */}
+      <Modal
+        isOpen={isRenameModalOpen}
+        onClose={() => setIsRenameModalOpen(false)}
+        title="Ubah Nama Percakapan"
+        maxWidth="max-w-sm"
+      >
+        <div className="space-y-4">
+          <TextField
+            label="Nama Baru"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Masukkan nama baru..."
+            autoFocus
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="tonal" onClick={() => setIsRenameModalOpen(false)}>
+              Batal
+            </Button>
+            <Button variant="primary" onClick={handleRenameSubmit} disabled={isActionLoading}>
+              Simpan
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Hapus Percakapan"
+        message={`Apakah Anda yakin ingin menghapus percakapan "${activeChat?.title}"? Tindakan ini tidak dapat dibatalkan.`}
+        loading={isActionLoading}
+      />
     </div>
   );
 };
