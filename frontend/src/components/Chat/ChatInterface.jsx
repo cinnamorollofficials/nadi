@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, AlertCircle, Loader2 } from "lucide-react";
+import { Send, User, Bot, AlertCircle, Loader2, ArrowUp } from "lucide-react";
 import { useSettings } from "../../context/SettingsContext";
 import LottieLogo from "../LottieLogo";
 
@@ -173,23 +173,28 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
       </div>
     </div>
 
-      {/* Input Area */}
       <div className="p-4 lg:p-6 bg-transparent">
-        <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto">
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Ketik pesan Anda di sini..."
-            disabled={isTyping}
-            className="w-full bg-surface-container-highest text-surface-on pl-6 pr-16 py-5 rounded-3xl border border-outline-variant/50 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all disabled:opacity-50 text-base"
-          />
-          <button
-            type="submit"
-            disabled={isTyping}
-            className="absolute right-2 bottom-2 w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
-          >
-            {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
-          </button>
+        <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto flex items-center">
+          <div className="relative w-full">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Ask something.."
+              disabled={isTyping}
+              className="w-full bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border-none outline-none focus:ring-2 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
+            />
+            <button
+              type="submit"
+              disabled={isTyping}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
+            >
+              {isTyping ? (
+                <Loader2 className="animate-spin" size={18} />
+              ) : (
+                <ArrowUp size={20} className="stroke-[3px]" />
+              )}
+            </button>
+          </div>
         </form>
         <p className="text-[10px] text-surface-on-variant mt-3 text-center opacity-40">
           Nadi AI memberikan informasi kesehatan umum. Selalu konsultasikan dengan dokter untuk keadaan darurat.
