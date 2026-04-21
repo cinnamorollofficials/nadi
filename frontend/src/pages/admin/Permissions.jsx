@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import TextField from '../../components/TextField';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Table from '../../components/Table';
@@ -9,9 +9,10 @@ import Button from '../../components/Button';
 import PermissionFormModal from '../../components/PermissionFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DataDetailModal from '../../components/DataDetailModal';
-import { getPermissions, createPermission, updatePermission, deletePermission, exportPermissions } from '../../api/admin';
+import { getPermissions, createPermission, updatePermission, deletePermission, exportPermissions, syncCache } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
+import { toast } from 'react-hot-toast';
 
 const Permissions = () => {
     const { hasPermission } = usePermission();
@@ -25,6 +26,7 @@ const Permissions = () => {
     const [selectedPermission, setSelectedPermission] = useState(null);
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const queryClient = useQueryClient();
 
@@ -37,7 +39,7 @@ const Permissions = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['permissions', currentPage, itemsPerPage],
         queryFn: () => getPermissions(currentPage, itemsPerPage),
     });
@@ -94,8 +96,22 @@ const Permissions = () => {
             link.remove();
         } catch (err) {
             console.error('Export failed:', err);
+            toast.error('Export failed');
         } finally {
             setIsExporting(false);
+        }
+    };
+
+    const handleSyncCache = async () => {
+        setIsRefreshing(true);
+        try {
+            await syncCache('permissions');
+            toast.success('Permission cache refreshed successfully');
+            refetch();
+        } catch (error) {
+            toast.error(`Failed to refresh cache: ${error.message}`);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -151,6 +167,15 @@ const Permissions = () => {
                 <div className="flex gap-2">
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
                         <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                            <button
+                                onClick={handleSyncCache}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isRefreshing}
+                                title="Refresh Cache"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                            <div className="w-px h-4 bg-outline-variant/30 self-center mx-1" />
                             <button
                                 onClick={() => handleExport('excel')}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

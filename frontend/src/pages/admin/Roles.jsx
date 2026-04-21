@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import TextField from '../../components/TextField';
 import toast from 'react-hot-toast';
 import Table from '../../components/Table';
@@ -10,7 +10,7 @@ import Button from '../../components/Button';
 import RoleFormModal from '../../components/RoleFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DataDetailModal from '../../components/DataDetailModal';
-import { getRoles, createRole, updateRole, deleteRole, exportRoles } from '../../api/admin';
+import { getRoles, createRole, updateRole, deleteRole, exportRoles, syncCache } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
 
@@ -29,6 +29,7 @@ const Roles = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState(null);
     const [isExporting, setIsExporting] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Debounce search term
     useEffect(() => {
@@ -39,7 +40,7 @@ const Roles = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['roles', currentPage, itemsPerPage, categoryFilter],
         queryFn: () => getRoles(currentPage, itemsPerPage, '', categoryFilter === 'all' ? '' : categoryFilter),
     });
@@ -128,6 +129,19 @@ const Roles = () => {
         }
     };
 
+    const handleSyncCache = async () => {
+        setIsRefreshing(true);
+        try {
+            await syncCache('roles');
+            toast.success('Role cache refreshed successfully');
+            refetch();
+        } catch (error) {
+            toast.error(`Failed to refresh cache: ${error.message}`);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     const columns = [
         { header: 'Name', accessor: 'name' },
         {
@@ -173,6 +187,15 @@ const Roles = () => {
                 <div className="flex gap-2">
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
                         <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                            <button
+                                onClick={handleSyncCache}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isRefreshing}
+                                title="Refresh Cache"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                            <div className="w-px h-4 bg-outline-variant/30 self-center mx-1" />
                             <button
                                 onClick={() => handleExport('excel')}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

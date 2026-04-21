@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,7 @@ import (
 
 type CacheHandler interface {
 	ClearAll(c *gin.Context)
+	RefreshModule(c *gin.Context)
 	GetStatus(c *gin.Context)
 }
 
@@ -31,6 +33,24 @@ func (h *cacheHandler) ClearAll(c *gin.Context) {
 
 	logger.SystemLogger.Info().Msg("Cache cleared successfully")
 	response.Success(c, http.StatusOK, "Cache cleared successfully", nil)
+}
+
+func (h *cacheHandler) RefreshModule(c *gin.Context) {
+	module := c.Param("module")
+	if module == "" {
+		response.Error(c, http.StatusBadRequest, "Module name is required")
+		return
+	}
+
+	pattern := fmt.Sprintf("%s:*", module)
+	if err := h.cache.DeletePattern(c.Request.Context(), pattern); err != nil {
+		logger.SystemLogger.Error().Err(err).Str("module", module).Msg("Failed to refresh module cache")
+		response.Error(c, http.StatusInternalServerError, fmt.Sprintf("Failed to refresh %s cache", module))
+		return
+	}
+
+	logger.SystemLogger.Info().Str("module", module).Msg("Module cache refreshed successfully")
+	response.Success(c, http.StatusOK, fmt.Sprintf("%s cache refreshed successfully", module), nil)
 }
 
 func (h *cacheHandler) GetStatus(c *gin.Context) {

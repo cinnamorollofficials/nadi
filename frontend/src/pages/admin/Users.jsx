@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import TextField from '../../components/TextField';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Table from '../../components/Table';
@@ -9,15 +9,17 @@ import Button from '../../components/Button';
 import UserFormModal from '../../components/UserFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DataDetailModal from '../../components/DataDetailModal';
-import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers } from '../../api/admin';
+import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers, syncCache } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
+import { toast } from 'react-hot-toast';
 
 const Users = () => {
     const { hasPermission } = usePermission();
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -37,7 +39,7 @@ const Users = () => {
 
     const queryClient = useQueryClient();
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['users', currentPage, itemsPerPage, debouncedSearch],
         queryFn: () => getUsers(currentPage, itemsPerPage, debouncedSearch),
     });
@@ -109,18 +111,35 @@ const Users = () => {
         setIsExporting(true);
         try {
             const response = await exportUsers(format);
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const blob = new Blob([response.data], {
+                type: format === 'excel' 
+                    ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+                    : 'text/csv'
+            });
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            const filename = format === 'csv' ? 'users.csv' : 'users.xlsx';
-            link.setAttribute('download', filename);
+            link.setAttribute('download', `users-${new Date().toISOString().split('T')[0]}.${format === 'excel' ? 'xlsx' : 'csv'}`);
             document.body.appendChild(link);
             link.click();
             link.remove();
-        } catch (err) {
-            console.error('Export failed:', err);
+        } catch (error) {
+            toast.error(`Failed to export users: ${error.message}`);
         } finally {
             setIsExporting(false);
+        }
+    };
+
+    const handleSyncCache = async () => {
+        setIsRefreshing(true);
+        try {
+            await syncCache('users');
+            toast.success('User cache refreshed successfully');
+            refetch(); // Refresh current page data
+        } catch (error) {
+            toast.error(`Failed to refresh cache: ${error.message}`);
+        } finally {
+            setIsRefreshing(false);
         }
     };
 
@@ -179,6 +198,15 @@ const Users = () => {
                 <div className="flex gap-2">
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
                         <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                            <button
+                                onClick={handleSyncCache}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isRefreshing}
+                                title="Refresh Cache"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                            <div className="w-px h-4 bg-outline-variant/30 self-center mx-1" />
                             <button
                                 onClick={() => handleExport('excel')}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

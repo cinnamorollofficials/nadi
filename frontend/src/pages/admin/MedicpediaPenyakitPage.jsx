@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
@@ -12,6 +12,7 @@ import WysiwygEditor from '../../components/WysiwygEditor';
 import ImageUpload from '../../components/ImageUpload';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
+import { syncCache } from '../../api/admin';
 import { 
     getAllMedicpediaPenyakits, 
     createMedicpediaPenyakit, 
@@ -33,6 +34,7 @@ const MedicpediaPenyakitPage = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
     const [formData, setFormData] = useState({
@@ -189,6 +191,19 @@ const MedicpediaPenyakitPage = () => {
         }
     };
 
+    const handleSyncCache = async () => {
+        setIsRefreshing(true);
+        try {
+            await syncCache('medicpedia_penyakit');
+            toast.success('Disease cache refreshed successfully');
+            setRefreshTrigger((t) => t + 1);
+        } catch (error) {
+            toast.error(`Failed to refresh cache: ${error.message}`);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     const handleDetail = (item) => {
         setSelectedItem(item);
         setIsDetailOpen(true);
@@ -210,6 +225,15 @@ const MedicpediaPenyakitPage = () => {
                 <div className="flex gap-2">
                     {can(PERMS.SYSTEM_EXPORT) && (
                         <div className="flex bg-surface-variant/20 p-1 rounded-lg shrink-0">
+                            <button
+                                onClick={handleSyncCache}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isRefreshing}
+                                title="Refresh Cache"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                            <div className="w-px h-4 bg-outline-variant/30 self-center mx-1" />
                             <button
                                 onClick={() => handleExport('excel')}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
