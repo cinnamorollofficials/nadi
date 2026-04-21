@@ -39,6 +39,7 @@ import MedicpediaNutrisiPage from "./pages/admin/MedicpediaNutrisiPage";
 import FaqPage from "./pages/admin/FaqPage";
 import RedisServicePage from "./pages/admin/RedisServicePage";
 import KafkaServicePage from "./pages/admin/KafkaServicePage";
+import AiUsage from "./pages/admin/AiUsage";
 // [GENERATOR_INSERT_IMPORT]
 
 // Client / reader pages
@@ -338,6 +339,14 @@ function App() {
                 element={
                   <PermissionGuard permission={PERMS.SERVICE_VIEW_KAFKA}>
                     <KafkaServicePage />
+                  </PermissionGuard>
+                }
+              />
+              <Route
+                path="ai-usage"
+                element={
+                  <PermissionGuard permission={PERMS.SYSTEM_STAT}>
+                    <AiUsage />
                   </PermissionGuard>
                 }
               />

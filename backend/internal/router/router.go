@@ -89,6 +89,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	medicpedianutrisiRepo := customRepository.NewMedicpediaNutrisiRepository(db)
 	faqRepo := customRepository.NewFaqRepository(db)
 	chatRepo := customRepository.NewChatRepository(db)
+	aiUsageRepo := customRepository.NewAiUsageRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
 	// Initialize Encryptor
@@ -121,7 +122,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
 	faqService := customService.NewFaqService(faqRepo, r.cache)
 	geminiService := customService.NewGeminiService(r.config, chatRepo)
-	chatService := customService.NewChatService(chatRepo, userRepo, geminiService, encryptor)
+	chatService := customService.NewChatService(chatRepo, userRepo, aiUsageRepo, geminiService, encryptor)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -145,6 +146,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	medicpedianutrisiHandler := customHandler.NewMedicpediaNutrisiHandler(medicpedianutrisiService)
 	faqHandler := customHandler.NewFaqHandler(faqService)
 	chatHandler := customHandler.NewChatHandler(chatService)
+	aiHandler := handler.NewAiHandler(aiUsageRepo)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -164,6 +166,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 			medicpedianutrisiHandler,
 			faqHandler,
 			chatHandler,
+			aiHandler,
 			// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}

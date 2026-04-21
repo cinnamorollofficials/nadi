@@ -43,6 +43,7 @@ func main() {
 		&customEntity.Faq{},
 		&customEntity.ChatChannel{},
 		&customEntity.ChatMessage{},
+		&customEntity.AiUsageLog{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 
