@@ -103,21 +103,21 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                 } gap-3`}
               >
                 <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
-                  msg.role === "user" ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5"
+                  msg.role === "user" ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
                 }`}>
                   {msg.role === "user" ? (
                     <User size={20} />
                   ) : logo ? (
-                    <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain brightness-0 invert" />
+                    <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain dark:brightness-0 dark:invert opacity-80" />
                   ) : (
                     <Bot size={20} />
                   )}
                 </div>
                 
-                <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed ${
+                <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
                   msg.role === "user" 
                     ? "bg-primary text-white rounded-tr-none" 
-                    : "bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/30"
+                    : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
                 }`}>
                   <MarkdownRenderer content={msg.content} />
                 </div>
@@ -135,7 +135,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                 <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden p-0.5">
                   <LottieLogo className="w-9 h-9" />
                 </div>
-                <div className="p-4 bg-surface-container-high text-surface-on rounded-3xl rounded-tl-none flex items-center gap-1 border border-outline-variant/20">
+                <div className="p-4 bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-3xl rounded-tl-none flex items-center gap-1 border border-outline-variant/60 dark:border-outline-variant/20 shadow-sm">
                   <motion.span
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1 }}
@@ -181,7 +181,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
               type="text"
               placeholder="Ask something.."
               disabled={isTyping}
-              className="w-full bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border-none outline-none focus:ring-2 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
+              className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
             />
             <button
               type="submit"

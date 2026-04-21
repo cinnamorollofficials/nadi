@@ -346,7 +346,7 @@ const Sidebar = ({
                     ) : (
                         <Link
                           to={item.path}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
+                          className={`flex items-center gap-3 px-3 py-1 rounded-xl transition-all duration-300 group ${
                             active
                               ? "bg-surface-variant/50 text-surface-on font-semibold"
                               : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
