@@ -210,6 +210,7 @@ func (r *Router) setupPrivateRoutes(
 	cache.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		cache.DELETE("/clear", permGuard.Check("service:manage_redis"), cacheHandler.ClearAll)
+		cache.POST("/refresh/:module", permGuard.Check("service:manage_redis"), cacheHandler.RefreshModule)
 		cache.GET("/status", permGuard.Check("service:view_redis"), cacheHandler.GetStatus)
 	}
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export const useChat = (channelId) => {
+export const useChat = (channelId, { onMessageDone } = {}) => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [error, setError] = useState(null);
@@ -50,6 +50,7 @@ export const useChat = (channelId) => {
           }
           return updated;
         });
+        onMessageDone?.();
       } else if (data.type === 'error') {
         const rawError = data.content?.toLowerCase() || '';
         let errorMsg = "Terjadi kendala pada Nadi AI. Silakan coba beberapa saat lagi.";

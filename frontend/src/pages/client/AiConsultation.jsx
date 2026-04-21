@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../api/client";
 import ChatInterface from "../../components/Chat/ChatInterface";
 import { useChat } from "../../hooks/useChat";
@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 const AiConsultation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [activeChannelId, setActiveChannelId] = useState(id);
 
   // Create New Channel Mutation
@@ -19,14 +20,20 @@ const AiConsultation = () => {
       return response.data.data;
     },
     onSuccess: (newChannel) => {
-      // Invalidate the global sidebar query
-      apiClient.defaults.headers.common['X-Need-Refresh'] = Date.now(); // Optional trigger
+      queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       navigate(`/consultations/ai/${newChannel.id}`);
     },
   });
 
   // Messaging Hook
-  const { messages, setMessages, sendMessage, isTyping, error } = useChat(activeChannelId);
+  const { messages, setMessages, sendMessage, isTyping, error } = useChat(activeChannelId, {
+    onMessageDone: () => {
+      // Refresh sidebar to get the new summarized title after the first exchange
+      if (messages.length <= 2) {
+        queryClient.invalidateQueries({ queryKey: ["chat-history"] });
+      }
+    }
+  });
 
   // Load existing messages when channel changes
   useEffect(() => {
@@ -104,7 +111,7 @@ const AiConsultation = () => {
             <button
               onClick={handleNewChat}
               disabled={createChannelMutation.isPending}
-              className="mt-8 px-8 py-3 bg-primary text-on-primary rounded-2xl font-bold hover:brightness-110 transition-all shadow-lg disabled:opacity-50"
+              className="mt-8 px-8 py-3 bg-primary text-on-primary rounded-2xl font-bold hover:brightness-110 transition-all disabled:opacity-50"
             >
               {createChannelMutation.isPending ? "Memulai..." : "Mulai Chat Baru Sekarang"}
             </button>

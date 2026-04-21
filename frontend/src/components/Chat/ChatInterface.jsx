@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, User, Bot, AlertCircle, Loader2 } from "lucide-react";
+import { Send, User, Bot, AlertCircle, Loader2, ArrowUp } from "lucide-react";
 import { useSettings } from "../../context/SettingsContext";
 import LottieLogo from "../LottieLogo";
 
@@ -65,7 +65,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
-        <div className="max-w-4xl mx-auto p-4 lg:p-6 space-y-6">
+        <div className="max-w-4xl mx-auto p-4 lg:p-8 space-y-10">
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
             <motion.div
@@ -102,22 +102,22 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                   msg.role === "user" ? "flex-row-reverse" : "flex-row"
                 } gap-3`}
               >
-                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden ${
-                  msg.role === "user" ? "bg-primary text-on-primary shadow-lg shadow-primary/20" : "bg-secondary text-on-secondary shadow-lg shadow-secondary/20 p-2"
+                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
+                  msg.role === "user" ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
                 }`}>
                   {msg.role === "user" ? (
                     <User size={20} />
                   ) : logo ? (
-                    <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain brightness-0 invert" />
+                    <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain dark:brightness-0 dark:invert opacity-80" />
                   ) : (
                     <Bot size={20} />
                   )}
                 </div>
                 
-                <div className={`p-4 rounded-3xl shadow-sm ${
+                <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
                   msg.role === "user" 
-                    ? "bg-primary text-on-primary rounded-tr-none" 
-                    : "bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/20"
+                    ? "bg-primary text-white rounded-tr-none" 
+                    : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
                 }`}>
                   <MarkdownRenderer content={msg.content} />
                 </div>
@@ -135,7 +135,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                 <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden p-0.5">
                   <LottieLogo className="w-9 h-9" />
                 </div>
-                <div className="p-4 bg-surface-container-high text-surface-on rounded-3xl rounded-tl-none flex items-center gap-1 border border-outline-variant/20">
+                <div className="p-4 bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-3xl rounded-tl-none flex items-center gap-1 border border-outline-variant/60 dark:border-outline-variant/20 shadow-sm">
                   <motion.span
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1 }}
@@ -173,23 +173,28 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
       </div>
     </div>
 
-      {/* Input Area */}
       <div className="p-4 lg:p-6 bg-transparent">
-        <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto">
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Ketik pesan Anda di sini..."
-            disabled={isTyping}
-            className="w-full bg-surface-container-highest text-surface-on pl-6 pr-16 py-5 rounded-3xl border border-outline-variant/50 outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all shadow-sm disabled:opacity-50 text-base"
-          />
-          <button
-            type="submit"
-            disabled={isTyping}
-            className="absolute right-2 bottom-2 w-12 h-12 bg-primary text-on-primary rounded-2xl flex items-center justify-center hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/25 disabled:bg-surface-variant disabled:shadow-none"
-          >
-            {isTyping ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
-          </button>
+        <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto flex items-center">
+          <div className="relative w-full">
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Ask something.."
+              disabled={isTyping}
+              className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
+            />
+            <button
+              type="submit"
+              disabled={isTyping}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
+            >
+              {isTyping ? (
+                <Loader2 className="animate-spin" size={18} />
+              ) : (
+                <ArrowUp size={20} className="stroke-[3px]" />
+              )}
+            </button>
+          </div>
         </form>
         <p className="text-[10px] text-surface-on-variant mt-3 text-center opacity-40">
           Nadi AI memberikan informasi kesehatan umum. Selalu konsultasikan dengan dokter untuk keadaan darurat.

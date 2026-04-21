@@ -26,12 +26,12 @@ const UsageLimit = ({ used = 400, limit = 10000, percent = 4 }) => {
           initial={{ width: 0 }}
           animate={{ width: `${percent}%` }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className={`absolute top-0 left-0 h-full ${barColor} shadow-[0_0_8px_rgba(0,0,0,0.2)]`}
+          className={`absolute top-0 left-0 h-full ${barColor}`}
         />
       </div>
 
       {percent >= 100 && (
-        <p className="text-[9px] text-rose-500 mt-1.5 leading-tight font-medium animate-pulse">
+        <p className="text-[9px] text-rose-500 mt-1.5 leading-tight font-medium">
           Limit tercapai. Reset besok hari.
         </p>
       )}

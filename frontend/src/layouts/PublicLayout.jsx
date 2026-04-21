@@ -23,7 +23,7 @@ const PublicLayout = () => {
     <div className="min-h-screen flex flex-col bg-zinc-100 dark:bg-slate-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-white focus:rounded-xl focus:font-bold focus:shadow-2xl transition-all"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-white focus:rounded-xl focus:font-bold focus: transition-all"
       >
         Lanjut ke konten utama
       </a>
@@ -31,7 +31,7 @@ const PublicLayout = () => {
       {/* ── Mobile Sidebar Overlay ── */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -40,7 +40,7 @@ const PublicLayout = () => {
       <aside
         className={`fixed top-0 left-0 h-full w-72 z-50 flex flex-col md:hidden
           bg-zinc-50 dark:bg-slate-900 border-r border-zinc-200 dark:border-white/5
-          shadow-2xl shadow-black/20 transition-transform duration-300 ease-in-out
+          transition-transform duration-300 ease-in-out
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* Sidebar Header */}
@@ -132,7 +132,7 @@ const PublicLayout = () => {
             to="/register"
             onClick={() => setMobileOpen(false)}
           >
-            <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-95">
+            <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl   transition-all hover:scale-[1.02] active:scale-95">
               Daftar Sekarang
             </Button>
           </Link>
@@ -140,13 +140,13 @@ const PublicLayout = () => {
       </aside>
 
       {/* ── Header / Navigation ── */}
-      <header className="sticky top-0 z-30 bg-zinc-100/90 dark:bg-slate-950/90 backdrop-blur-xl border-b border-zinc-200 dark:border-white/5">
+      <header className="sticky top-0 z-30 bg-zinc-100/90 dark:bg-slate-950/90 border-b border-zinc-200 dark:border-white/5">
         <nav className="container mx-auto px-6 h-20 flex items-center justify-between">
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             {logo && (
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20 transition-all group-hover:scale-110 group-hover:border-primary/40 shadow-lg shadow-primary/5">
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20 transition-all group-hover:scale-110 group-hover:border-primary/40  ">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -202,7 +202,7 @@ const PublicLayout = () => {
               Masuk
             </Link>
             <Link to="/register">
-              <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+              <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl   transition-all hover:scale-105 active:scale-95">
                 Daftar Sekarang
               </Button>
             </Link>

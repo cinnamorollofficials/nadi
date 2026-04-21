@@ -39,9 +39,9 @@ const TwoFAResetConfirmPage = () => {
   if (isConfirmed) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-green-500/5 blur-[120px]" />
+        <div className="absolute top-0 left-0 w-full h-full bg-green-500/5 [120px]" />
         <div className="w-full max-w-sm relative z-10">
-          <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden text-center">
+          <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden text-center">
             <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low">
               <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
                 Success
@@ -75,7 +75,7 @@ const TwoFAResetConfirmPage = () => {
               <div className="pt-4">
                 <button
                   onClick={() => navigate("/login")}
-                  className="w-full py-3 rounded-full bg-primary text-on-primary text-sm font-bold shadow-md shadow-primary/20 hover:brightness-110 active:scale-[0.98] transition-all"
+                  className="w-full py-3 rounded-full bg-primary text-on-primary text-sm font-bold   hover:brightness-110 active:scale-[0.98] transition-all"
                 >
                   Continue to Login
                 </button>
@@ -89,14 +89,14 @@ const TwoFAResetConfirmPage = () => {
 
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-full bg-primary/5 blur-[120px]" />
+      <div className="absolute top-0 left-0 w-full h-full bg-primary/5 [120px]" />
       <div className="w-full max-w-sm relative z-10">
-        <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-xl overflow-hidden">
+        <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden">
           <div className="p-6">
             {/* Branding */}
             <div className="text-center mb-8">
               {logo ? (
-                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 shadow-sm">
+                <div className="w-14 h-14 mx-auto rounded-xl border border-outline-variant/40 bg-surface-container-high p-2.5 mb-4 ">
                   <img
                     src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                     alt="Logo"
@@ -137,7 +137,7 @@ const TwoFAResetConfirmPage = () => {
                 <button
                   onClick={handleConfirm}
                   disabled={confirmMutation.isPending || !token}
-                  className="w-full h-12 rounded-full bg-primary text-on-primary font-bold shadow-md shadow-primary/20 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 rounded-full bg-primary text-on-primary font-bold   hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {confirmMutation.isPending ? (
                     <span className="flex items-center justify-center gap-2">

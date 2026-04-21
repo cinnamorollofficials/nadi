@@ -105,7 +105,7 @@ const ImageUpload = ({ label, value, onChange, error: propError, required = fals
                             <button
                                 type="button"
                                 onClick={triggerBrowse}
-                                className="px-4 py-2 bg-white text-black text-xs font-bold rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all"
+                                className="px-4 py-2 bg-white text-black text-xs font-bold rounded-lg  hover:scale-105 active:scale-95 transition-all"
                             >
                                 Change Image
                             </button>
@@ -130,7 +130,7 @@ const ImageUpload = ({ label, value, onChange, error: propError, required = fals
 
                 {/* Uploading Overlay */}
                 {isUploading && (
-                    <div className="absolute inset-0 bg-surface/80 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center px-8 text-center">
+                    <div className="absolute inset-0 bg-surface/80 backdrop-[2px] z-10 flex flex-col items-center justify-center px-8 text-center">
                         <div className="w-full max-w-[120px] mb-3">
                             <div className="h-1 bg-surface-variant rounded-full overflow-hidden">
                                 <div 

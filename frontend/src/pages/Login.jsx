@@ -113,15 +113,14 @@ const Login = () => {
         <img
           src="/Users/hadigunawan/.gemini/antigravity/brain/e1d60941-6366-4919-bff9-48eb95d732d0/medical_ai_login_bg_1775549021496.png"
           alt="Medical AI Branding"
-          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-110 animate-pulse-slow"
+          className="absolute inset-0 w-full h-full object-cover opacity-60 scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent" />
+        <div className="absolute inset-0 bg-slate-900/60" />
 
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-3 mb-6 shadow-2xl">
+              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 p-3 mb-6">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -130,7 +129,7 @@ const Login = () => {
                 />
               </div>
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary mb-6 border border-white/10 shadow-2xl">
+              <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 border border-white/10">
                 <svg
                   className="w-10 h-10"
                   fill="none"
@@ -170,16 +169,14 @@ const Login = () => {
       </div>
 
       {/* RIGHT PANEL - Form Side */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-white dark:bg-slate-950/20">
-        <div className="lg:hidden absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] animate-pulse" />
-        <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-slate-50 dark:bg-slate-950/20">
 
         <div className="w-full max-w-sm relative">
-          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 dark:border-transparent shadow-2xl overflow-hidden p-8">
-            <div className="flex justify-center mb-8">
+          <div className="bg-white dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-white/10 overflow-hidden p-8">
+            <div className="flex justify-center mb-8 lg:hidden">
               <Link to="/" className="group transition-transform active:scale-95">
                 {logo ? (
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 p-2.5 border border-primary/20 shadow-lg shadow-primary/5 group-hover:bg-primary/20 transition-all">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 p-2.5 border border-primary/20 group-hover:bg-primary/20 transition-all">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt={app_name}
@@ -263,7 +260,7 @@ const Login = () => {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
                 </div>
-                <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-white dark:bg-slate-900 px-2">
+                <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant px-2">
                   Or continue with
                 </div>
               </div>

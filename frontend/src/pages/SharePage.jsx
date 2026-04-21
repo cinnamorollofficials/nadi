@@ -576,7 +576,7 @@ const SharePage = () => {
             <main className="flex-1 flex items-center justify-center p-4">
                 <div className="w-full max-w-sm">
                     {/* Card */}
-                    <div className="bg-surface-container rounded-2xl border border-outline-variant/30 shadow-lg overflow-hidden">
+                    <div className="bg-surface-container rounded-2xl border border-outline-variant/30  overflow-hidden">
                         {/* Card header */}
                         <div className="px-5 py-4 border-b border-outline-variant/20 bg-surface-container-low">
                             <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">

@@ -40,7 +40,7 @@ const KafkaServicePage = () => {
 
             <div className="grid md:grid-cols-1 gap-8">
                 {/* Status Card */}
-                <Card className="p-8 border-none bg-surface-container-low backdrop-blur-xl ring-1 ring-outline-variant/20 shadow-2xl relative overflow-hidden group">
+                <Card className="p-8 border-none bg-surface-container-low backdrop- ring-1 ring-outline-variant/20  relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <svg className="w-48 h-48" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>

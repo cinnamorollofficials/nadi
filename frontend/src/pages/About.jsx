@@ -82,8 +82,8 @@ const About = () => {
       <section className="relative overflow-hidden pt-24 pb-32">
         {/* Background blobs */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/15 dark:bg-primary/10 rounded-full blur-[140px] -translate-x-1/2 -translate-y-1/2" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3" />
+          <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/15 dark:bg-primary/10 rounded-full [140px] -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full [120px] translate-x-1/3 translate-y-1/3" />
         </div>
 
         <div className="container mx-auto px-6 relative z-10 max-w-5xl">
@@ -109,7 +109,7 @@ const About = () => {
 
           <div className="flex flex-wrap gap-4">
             <Link to="/register">
-              <Button className="bg-primary text-white hover:bg-primary-600 px-8 py-4 text-sm font-bold rounded-2xl shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+              <Button className="bg-primary text-white hover:bg-primary-600 px-8 py-4 text-sm font-bold rounded-2xl   transition-all hover:scale-105 active:scale-95">
                 Mulai Gratis
               </Button>
             </Link>
@@ -181,7 +181,7 @@ const About = () => {
                 </div>
 
                 {/* Floating badge */}
-                <div className="absolute -top-4 -right-4 bg-white dark:bg-navy-900 border border-slate-200 dark:border-outline-variant/30 rounded-2xl px-4 py-3 shadow-xl shadow-black/5">
+                <div className="absolute -top-4 -right-4 bg-white dark:bg-navy-900 border border-slate-200 dark:border-outline-variant/30 rounded-2xl px-4 py-3  shadow-black/5">
                   <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1">Respons AI</div>
                   <div className="text-2xl font-bold text-primary">&lt; 3 detik</div>
                 </div>
@@ -247,7 +247,7 @@ const About = () => {
             ].map((item) => (
               <div
                 key={item.step}
-                className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 group hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 group hover:border-primary/30 hover: hover: transition-all duration-300"
               >
                 <div className="flex items-start justify-between mb-6">
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
@@ -327,11 +327,11 @@ const About = () => {
             {team.map((member) => (
               <div
                 key={member.name}
-                className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 text-center group hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-[2rem] p-8 text-center group hover:border-primary/20 hover: hover: transition-all duration-300"
               >
                 <div className="relative w-24 h-24 mx-auto mb-6 group">
                   <div className="absolute inset-0 bg-primary/20 rounded-[2rem] rotate-6 group-hover:rotate-12 transition-transform duration-500" />
-                  <div className="relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-white dark:border-slate-800 shadow-xl">
+                  <div className="relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-white dark:border-slate-800 ">
                     <img
                       src={member.image}
                       alt={member.name}
@@ -357,7 +357,7 @@ const About = () => {
       {/* ── CTA ── */}
       <section className="py-32">
         <div className="container mx-auto px-6">
-          <div className="bg-primary rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-2xl shadow-primary/20">
+          <div className="bg-primary rounded-[3rem] p-12 md:p-20 relative overflow-hidden  ">
             {/* Decorative lines */}
             <div className="absolute inset-0 opacity-10 pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -379,7 +379,7 @@ const About = () => {
               </div>
               <div className="lg:w-2/5 flex flex-col sm:flex-row lg:flex-col gap-4 w-full">
                 <Link to="/register" className="flex-1">
-                  <button className="w-full bg-white text-primary font-bold px-8 py-5 rounded-2xl uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/10">
+                  <button className="w-full bg-white text-primary font-bold px-8 py-5 rounded-2xl uppercase tracking-widest text-sm hover:scale-105 active:scale-95 transition-all  shadow-black/10">
                     Daftar Sekarang — Gratis
                   </button>
                 </Link>

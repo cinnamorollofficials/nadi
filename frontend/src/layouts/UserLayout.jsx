@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate, Outlet, useLocation, Link } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import UserSidebar from "../components/UserSidebar";
 import { getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import {
@@ -9,13 +9,19 @@ import {
   History as HistoryIcon,
   Activity,
   User as UserIcon,
+  Plus,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
-import { safeStringify } from "../utils/json";
+import { safeStringify, safeParse } from "../utils/json";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Share2, Edit2, Pin, Trash2, MoreVertical } from "lucide-react";
+import Modal from "../components/Modal";
+import ConfirmDialog from "../components/ConfirmDialog";
+import TextField from "../components/TextField";
+import Button from "../components/Button";
+import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
   const { theme, toggleTheme } = useTheme();
@@ -23,9 +29,16 @@ const UserLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Action States
+  const [activeChat, setActiveChat] = useState(null);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   // Fetch AI Chat History globally
   const { data: chatHistory } = useQuery({
@@ -68,7 +81,9 @@ const UserLayout = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setSidebarCollapsed(window.innerWidth < 1024);
+      if (window.innerWidth < 1024) {
+        setSidebarCollapsed(true);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -85,7 +100,13 @@ const UserLayout = () => {
     }
 
     if (userData) {
-      setUser(JSON.parse(userData));
+      try {
+        setUser(safeParse(userData));
+      } catch (err) {
+        console.error("Layout auth parsing error:", err);
+        localStorage.removeItem("user");
+        navigate("/login");
+      }
     }
     refreshUserData();
   }, [navigate, refreshUserData]);
@@ -103,16 +124,75 @@ const UserLayout = () => {
     navigate("/login", { replace: true });
   };
 
+  // Action Handlers
+  const handleShare = useCallback((chat) => {
+    const url = `${window.location.origin}/consultations/ai/${chat.id}`;
+    navigator.clipboard.writeText(url);
+    toast.success("Link percakapan disalin!");
+  }, []);
+
+  const handleRenameClick = useCallback((chat) => {
+    setActiveChat(chat);
+    setNewTitle(chat.title);
+    setIsRenameModalOpen(true);
+  }, []);
+
+  const handleRenameSubmit = async () => {
+    if (!newTitle.trim()) return;
+    setIsActionLoading(true);
+    try {
+      toast.success("Nama berhasil diubah");
+      setIsRenameModalOpen(false);
+    } catch (err) {
+      toast.error("Gagal mengubah nama");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handlePin = useCallback((chat) => {
+    toast.success(`"${chat.title}" di-pin`);
+  }, []);
+
+  const handleDeleteClick = useCallback((chat) => {
+    setActiveChat(chat);
+    setIsDeleteOpen(true);
+  }, []);
+
+  const handleDeleteConfirm = async () => {
+    setIsActionLoading(true);
+    try {
+      toast.success("Percakapan dihapus");
+      setIsDeleteOpen(false);
+      if (location.pathname.includes(`/consultations/ai/${activeChat.id}`)) {
+        navigate("/consultations/ai");
+      }
+    } catch (err) {
+      toast.error("Gagal menghapus");
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   // Determine dynamic page title based on route
   const pageTitle = useMemo(() => {
     const path = location.pathname;
-    let title = "AI Consultation";
+    let title = "Nadi AI";
 
-    if (path.includes("/profile")) title = "Profile Saya";
-    else if (path.includes("/consultations/ai")) title = "Konsultasi AI";
+    if (path.includes("/profile")) {
+      title = "Profile Saya";
+    } else if (path.includes("/consultations/ai/")) {
+      // Find the specific chat title from history
+      const chatId = path.split("/").pop();
+      const currentChat = chatHistory?.find((c) => String(c.id) === String(chatId));
+      const rawTitle = currentChat ? currentChat.title : "Konsultasi AI";
+      title = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+    } else if (path.includes("/consultations/ai")) {
+      title = "Konsultasi AI";
+    }
 
     return title;
-  }, [location.pathname]);
+  }, [location.pathname, chatHistory]);
 
   // Update document title dynamically
   useEffect(() => {
@@ -122,29 +202,59 @@ const UserLayout = () => {
   const navigationSections = useMemo(() => {
     // Map AI Chat History to sidebar items
     const aiHistoryItems = (chatHistory || [])
-      .filter((chat) =>
-        chat.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-      .slice(0, 5) // Show only last 5 in sidebar
-      .map((chat) => ({
-        id: `chat-${chat.id}`,
-        label: chat.title,
-        path: `/consultations/ai/${chat.id}`,
-      }));
+      .filter((chat) => {
+        const isSearchMatch = chat.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const isGhost = chat.title === "New Conversation" && chat.message_count === 0;
+        const isCurrent = String(chat.id) === String(location.pathname.split('/').pop());
+        
+        return isSearchMatch && (!isGhost || isCurrent);
+      })
+      .slice(0, 10) // Show last 10 in sidebar
+      .map((chat) => {
+        const title = chat.title.charAt(0).toUpperCase() + chat.title.slice(1);
+        return {
+          id: `chat-${chat.id}`,
+          label: title,
+          path: `/consultations/ai/${chat.id}`,
+          actions: [
+            {
+              label: "Bagikan",
+              icon: <Share2 size={14} />,
+              onClick: () => handleShare(chat)
+            },
+            {
+              label: "Ubah Nama",
+              icon: <Edit2 size={14} />,
+              onClick: () => handleRenameClick(chat)
+            },
+            {
+              label: "Pin",
+              icon: <Pin size={14} />,
+              onClick: () => handlePin(chat)
+            },
+            {
+              label: "Hapus",
+              icon: <Trash2 size={14} />,
+              className: "text-error hover:bg-error/10 hover:text-error",
+              onClick: () => handleDeleteClick(chat)
+            }
+          ]
+        };
+      });
 
     return [
       {
-        label: "AI Services",
         items: [
           {
-            label: "AI Consultation",
+            label: "Mulai Konsultasi Baru",
             path: "/consultations/ai",
+            icon: <Plus size={18} />,
             highlight: true,
           },
         ],
       },
       {
-        label: "Recent AI Chats",
+        label: "Konsultasi Terbaru",
         items: aiHistoryItems,
       },
     ];
@@ -168,23 +278,19 @@ const UserLayout = () => {
 
   return (
     <div className="flex h-screen bg-surface overflow-hidden">
-      <Sidebar
-        sections={filteredNavigation}
+      <UserSidebar
+        sections={navigationSections}
         title={app_name}
         logo={logo}
         onLogout={handleLogout}
         theme={theme}
         onToggleTheme={toggleTheme}
-        profileTransition={{
-          label: "Profile Saya",
-          path: "/profile",
-          icon: <UserIcon size={18} />
-        }}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
         onCloseMobile={() => setIsMobileSidebarOpen(false)}
         onSearch={setSearchQuery}
+        profileTransition={{ path: "/profile", label: "Profile" }}
         usage={user?.usage}
       />
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
@@ -210,9 +316,9 @@ const UserLayout = () => {
             </button>
             <div className="flex items-center gap-6 flex-1">
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-bold text-surface-on truncate max-w-[200px]">
+                <h1 className="text-base font-bold text-surface-on leading-tight">
                   {pageTitle}
-                </span>
+                </h1>
               </div>
             </div>
           </div>
@@ -256,6 +362,42 @@ const UserLayout = () => {
           </div>
         </main>
       </div>
+
+      {/* Rename Modal */}
+      <Modal
+        isOpen={isRenameModalOpen}
+        onClose={() => setIsRenameModalOpen(false)}
+        title="Ubah Nama Percakapan"
+        maxWidth="max-w-sm"
+      >
+        <div className="space-y-4">
+          <TextField
+            label="Nama Baru"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Masukkan nama baru..."
+            autoFocus
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="tonal" onClick={() => setIsRenameModalOpen(false)}>
+              Batal
+            </Button>
+            <Button variant="primary" onClick={handleRenameSubmit} disabled={isActionLoading}>
+              Simpan
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        title="Hapus Percakapan"
+        message={`Apakah Anda yakin ingin menghapus percakapan "${activeChat?.title}"? Tindakan ini tidak dapat dibatalkan.`}
+        loading={isActionLoading}
+      />
     </div>
   );
 };

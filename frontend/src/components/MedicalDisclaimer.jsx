@@ -25,12 +25,12 @@ const MedicalDisclaimer = ({ onAccept }) => {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-fade-in">
             {/* Backdrop */}
             <div 
-                className="absolute inset-0 bg-slate-900/40 dark:bg-slate-900/60 backdrop-blur-md"
+                className="absolute inset-0 bg-slate-900/40 dark:bg-slate-900/60 backdrop-"
                 onClick={() => setIsVisible(false)}
             />
 
             {/* Modal Container */}
-            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0B1221] rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up">
+            <div className="relative w-full max-w-2xl bg-white dark:bg-[#0B1221] rounded-[2.5rem]  border border-slate-200 dark:border-outline-variant/20 overflow-hidden animate-slide-up">
                 {/* Close Button */}
                 <button 
                     onClick={() => setIsVisible(false)}
@@ -82,7 +82,7 @@ const MedicalDisclaimer = ({ onAccept }) => {
                     {/* Action */}
                     <button 
                         onClick={handleAccept}
-                        className="w-full bg-slate-950 text-white dark:bg-white dark:text-[#0B1221] font-bold py-5 rounded-[1.25rem] hover:opacity-90 transition-all active:scale-[0.98] shadow-xl shadow-black/10 dark:shadow-black/20 text-lg"
+                        className="w-full bg-slate-950 text-white dark:bg-white dark:text-[#0B1221] font-bold py-5 rounded-[1.25rem] hover:opacity-90 transition-all active:scale-[0.98]  shadow-black/10 dark:shadow-black/20 text-lg"
                     >
                         Saya Mengerti & Setuju
                     </button>

@@ -30,6 +30,7 @@ import PublicLayout from "./layouts/PublicLayout";
 import MedicpediaHome from "./pages/client/medicpedia/MedicpediaHome";
 import { PERMS } from "./utils/permissions";
 import { ROLES } from "./utils/constants";
+import { safeParse } from "./utils/json";
 
 // Admin pages
 import BlogPostPage from "./pages/admin/BlogPostPage";
@@ -59,69 +60,83 @@ function PermissionGuard({ permission, children }) {
   const userData = localStorage.getItem("user");
   if (!userData) return <Navigate to="/login" replace />;
 
-  const user = JSON.parse(userData);
-  const mask = BigInt(user.permissions_mask || 0n);
+  try {
+    const user = safeParse(userData);
+    const mask = BigInt(user.permissions_mask || 0n);
 
-  const checkPermission = (p) => {
-    if (Array.isArray(p)) return p.some((perm) => (mask & perm) !== 0n);
-    return (mask & p) !== 0n;
-  };
+    const checkPermission = (p) => {
+      if (Array.isArray(p)) return p.some((perm) => (mask & perm) !== 0n);
+      return (mask & p) !== 0n;
+    };
 
-  const hasPermission = checkPermission(permission);
+    const hasPermission = checkPermission(permission);
 
-  if (user.role_id === ROLES.SUPERADMIN || hasPermission) {
-    return children;
+    if (user.role_id === ROLES.SUPERADMIN || hasPermission) {
+      return children;
+    }
+
+    setTimeout(
+      () => toast.error("You don't have permission to access that page."),
+      0,
+    );
+    return <Navigate to="/consultations/ai" replace />;
+  } catch (error) {
+    console.error("Auth redirection error:", error);
+    localStorage.removeItem("user");
+    return <Navigate to="/login" replace />;
   }
-
-  setTimeout(
-    () => toast.error("You don't have permission to access that page."),
-    0,
-  );
-  return <Navigate to="/consultations/ai" replace />;
 }
 
 function RoleBasedLayout() {
   const userData = localStorage.getItem("user");
   if (!userData) return <Navigate to="/login" replace />;
-  const user = JSON.parse(userData);
-
-  if (user.role_id === ROLES.USER) {
-    return <UserLayout />;
+  
+  try {
+    const user = safeParse(userData);
+    if (user.role_id === ROLES.USER) {
+      return <UserLayout />;
+    }
+    return <AdminLayout />;
+  } catch (error) {
+    localStorage.removeItem("user");
+    return <Navigate to="/login" replace />;
   }
-
-  return <AdminLayout />;
 }
 
 function RoleBasedDashboard() {
   const userData = localStorage.getItem("user");
   if (!userData) return <Navigate to="/login" replace />;
-  const user = JSON.parse(userData);
-
-  if (user.role_id === ROLES.USER) {
-    return <Navigate to="/consultations/ai" replace />;
+  
+  try {
+    const user = safeParse(userData);
+    if (user.role_id === ROLES.USER) {
+      return <Navigate to="/consultations/ai" replace />;
+    }
+    return <Dashboard />;
+  } catch (error) {
+    localStorage.removeItem("user");
+    return <Navigate to="/login" replace />;
   }
-
-  return <Dashboard />;
 }
 
-/**
- * A guard component that prevents users with the 'user' role (role_id 3)
- * from accessing administrative routes.
- */
 function AdminGuard({ children }) {
   const userData = localStorage.getItem("user");
   if (!userData) return <Navigate to="/login" replace />;
-  const user = JSON.parse(userData);
-
-  if (user.role_id === ROLES.USER) {
-    setTimeout(
-      () => toast.error("Role 'User' is not allowed to access administration."),
-      0,
-    );
-    return <Navigate to="/consultations/ai" replace />;
+  
+  try {
+    const user = safeParse(userData);
+    if (user.role_id === ROLES.USER) {
+      setTimeout(
+        () => toast.error("Role 'User' is not allowed to access administration."),
+        0,
+      );
+      return <Navigate to="/consultations/ai" replace />;
+    }
+    return children || <Outlet />;
+  } catch (error) {
+    localStorage.removeItem("user");
+    return <Navigate to="/login" replace />;
   }
-
-  return children || <Outlet />;
 }
 
 function App() {
@@ -132,45 +147,38 @@ function App() {
       <ThemeProvider>
         <Toaster position="top-right" />
         <Routes>
-          {/* Public Routes with Shared Layout */}
-          <Route element={<PublicLayout />}>
-            <Route path="/" element={<Landing />} />
-            <Route path="/medicpedia" element={<MedicpediaHome />} />
-            <Route path="/medicpedia/penyakit" element={<PenyakitList />} />
-            <Route
-              path="/medicpedia/penyakit/:slug"
-              element={<PenyakitDetail />}
-            />
-            <Route path="/medicpedia/nutrisi" element={<NutrisiList />} />
-            <Route
-              path="/medicpedia/nutrisi/:slug"
-              element={<NutrisiDetail />}
-            />
-            <Route path="/faq" element={<PublicFaqPage />} />
-            <Route path="/terms" element={<TermsConditions />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/about" element={<About />} />
-          </Route>
-
-          {/* Public standalone pages (No shared layout) */}
+          {/* Auth Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/2fa-challenge" element={<TwoFAChallengePage />} />
-          <Route
-            path="/twofa/reset-request"
-            element={<TwoFAResetRequestPage />}
-          />
-          <Route
-            path="/twofa/reset-confirm"
-            element={<TwoFAResetConfirmPage />}
-          />
+          <Route path="/2fa-reset-request" element={<TwoFAResetRequestPage />} />
+          <Route path="/2fa-reset-confirm" element={<TwoFAResetConfirmPage />} />
+
+          {/* Standalone Route for Auth Checks (Priority) */}
+          <Route path="/" element={localStorage.getItem("token") ? <Navigate to="/consultations/ai" replace /> : <PublicLayout />}>
+            <Route index element={<Landing />} />
+            <Route path="medicpedia" element={<MedicpediaHome />} />
+            <Route path="medicpedia/penyakit" element={<PenyakitList />} />
+            <Route
+              path="medicpedia/penyakit/:slug"
+              element={<PenyakitDetail />}
+            />
+            <Route path="medicpedia/nutrisi" element={<NutrisiList />} />
+            <Route
+              path="medicpedia/nutrisi/:slug"
+              element={<NutrisiDetail />}
+            />
+            <Route path="faq" element={<PublicFaqPage />} />
+            <Route path="terms" element={<TermsConditions />} />
+            <Route path="privacy" element={<PrivacyPolicy />} />
+            <Route path="about" element={<About />} />
+          </Route>
 
           {/* Dynamic Layout based on Role (Logged-in only) */}
           <Route path="/" element={<RoleBasedLayout />}>
-            <Route index element={<Navigate to="/consultations/ai" replace />} />
             <Route path="consultations/ai" element={<AiConsultation />} />
             <Route path="consultations/ai/:id" element={<AiConsultation />} />
             <Route path="profile" element={<ProfilePage />} />

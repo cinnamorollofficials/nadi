@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Search, RefreshCw } from 'lucide-react';
+import TextField from '../../components/TextField';
 import toast from 'react-hot-toast';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
@@ -8,7 +10,7 @@ import Button from '../../components/Button';
 import RoleFormModal from '../../components/RoleFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DataDetailModal from '../../components/DataDetailModal';
-import { getRoles, createRole, updateRole, deleteRole, exportRoles } from '../../api/admin';
+import { getRoles, createRole, updateRole, deleteRole, exportRoles, syncCache } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
 
@@ -27,6 +29,7 @@ const Roles = () => {
     const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
     const [selectedRole, setSelectedRole] = useState(null);
     const [isExporting, setIsExporting] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // Debounce search term
     useEffect(() => {
@@ -37,7 +40,7 @@ const Roles = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['roles', currentPage, itemsPerPage, categoryFilter],
         queryFn: () => getRoles(currentPage, itemsPerPage, '', categoryFilter === 'all' ? '' : categoryFilter),
     });
@@ -126,6 +129,19 @@ const Roles = () => {
         }
     };
 
+    const handleSyncCache = async () => {
+        setIsRefreshing(true);
+        try {
+            await syncCache('roles');
+            toast.success('Role cache refreshed successfully');
+            refetch();
+        } catch (error) {
+            toast.error(`Failed to refresh cache: ${error.message}`);
+        } finally {
+            setIsRefreshing(false);
+        }
+    };
+
     const columns = [
         { header: 'Name', accessor: 'name' },
         {
@@ -172,6 +188,15 @@ const Roles = () => {
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
                         <div className="flex bg-surface-variant/20 p-1 rounded-lg">
                             <button
+                                onClick={handleSyncCache}
+                                className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
+                                disabled={isRefreshing}
+                                title="Refresh Cache"
+                            >
+                                <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            </button>
+                            <div className="w-px h-4 bg-outline-variant/30 self-center mx-1" />
+                            <button
                                 onClick={() => handleExport('excel')}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
                                 disabled={isExporting}
@@ -205,7 +230,7 @@ const Roles = () => {
                             key={cat}
                             onClick={() => { setCategoryFilter(cat); setCurrentPage(1); }}
                             className={`flex-1 md:flex-none px-6 py-2 text-xs font-bold rounded-lg transition-all capitalize ${categoryFilter === cat
-                                ? 'bg-primary text-on-primary shadow-lg shadow-primary/20'
+                                ? 'bg-primary text-on-primary  '
                                 : 'text-surface-on-variant hover:bg-surface-variant/30'
                                 }`}
                         >
@@ -215,12 +240,12 @@ const Roles = () => {
                 </div>
 
                 <div className="relative w-full md:max-w-xs">
-                    <input
-                        type="text"
+                    <TextField
+                        name="search"
                         placeholder="Search roles..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="text-field"
+                        leftIcon={<Search size={18} />}
                     />
                 </div>
             </div>

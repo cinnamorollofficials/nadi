@@ -63,7 +63,7 @@ const RedisServicePage = () => {
 
             <div className="grid md:grid-cols-2 gap-8">
                 {/* Status Card */}
-                <Card className="p-8 border-none bg-surface-container-low backdrop-blur-xl ring-1 ring-outline-variant/20 shadow-2xl relative overflow-hidden group">
+                <Card className="p-8 border-none bg-surface-container-low backdrop- ring-1 ring-outline-variant/20  relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
                         <svg className="w-32 h-32" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2L2 7v10l10 5 10-5V7L12 2z"/>
@@ -104,7 +104,7 @@ const RedisServicePage = () => {
                 </Card>
 
                 {/* Actions Card */}
-                <Card className="p-8 border-none bg-surface-container-low backdrop-blur-xl ring-1 ring-outline-variant/20 shadow-2xl relative overflow-hidden group">
+                <Card className="p-8 border-none bg-surface-container-low backdrop- ring-1 ring-outline-variant/20  relative overflow-hidden group">
                     <div className="relative z-10 space-y-6 h-full flex flex-col">
                         <div>
                             <h3 className="text-sm font-bold uppercase tracking-widest text-surface-on-variant opacity-60 mb-4">Maintenance Actions</h3>
@@ -117,7 +117,7 @@ const RedisServicePage = () => {
                             {hasPermission(PERMS.SERVICE_MANAGE_REDIS) && (
                                 <>
                                     <Button 
-                                        className="w-full bg-red-600 hover:bg-red-500 text-white rounded-2xl py-4 font-bold shadow-lg shadow-red-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                                        className="w-full bg-red-600 hover:bg-red-500 text-white rounded-2xl py-4 font-bold  shadow-red-900/40 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
                                         onClick={handleFlush}
                                         isLoading={flushMutation.isPending}
                                         disabled={!isOnline}

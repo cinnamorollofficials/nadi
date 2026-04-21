@@ -166,7 +166,7 @@ const Register = () => {
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md p-3 mb-6 shadow-2xl">
+              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop- p-3 mb-6 ">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -175,7 +175,7 @@ const Register = () => {
                 />
               </div>
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-primary/20 backdrop-blur-md flex items-center justify-center text-primary mb-6 border border-white/10 shadow-2xl shadow-primary/20">
+              <div className="w-16 h-16 rounded-2xl bg-primary/20 backdrop- flex items-center justify-center text-primary mb-6 border border-white/10  ">
                 <svg
                   className="w-8 h-8"
                   fill="none"
@@ -224,15 +224,15 @@ const Register = () => {
 
       {/* RIGHT PANEL - Form Side */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-white dark:bg-slate-950/20">
-        <div className="lg:hidden absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full blur-[130px] animate-pulse" />
-        <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full blur-[130px] animate-pulse delay-700" />
+        <div className="lg:hidden absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full [130px] animate-pulse" />
+        <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full [130px] animate-pulse delay-700" />
 
         <div className="w-full max-w-md relative">
-          <div className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl border border-outline-variant/30 dark:border-transparent shadow-2xl overflow-hidden p-8">
+          <div className="bg-white/80 dark:bg-white/5 backdrop- rounded-3xl border border-outline-variant/30 dark:border-transparent  overflow-hidden p-8">
             <div className="flex justify-center mb-8">
               <Link to="/" className="group transition-transform active:scale-95">
                 {logo ? (
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 p-2.5 border border-primary/20 shadow-lg shadow-primary/5 group-hover:bg-primary/20 transition-all">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 p-2.5 border border-primary/20   group-hover:bg-primary/20 transition-all">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"
@@ -281,7 +281,7 @@ const Register = () => {
                 <div className="pt-6">
                   <button
                     onClick={() => navigate("/login")}
-                    className="w-full py-3 px-8 rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 hover:brightness-110 transition-all font-bold"
+                    className="w-full py-3 px-8 rounded-full bg-primary text-white text-sm font-bold   hover:brightness-110 transition-all font-bold"
                   >
                     Return to Sign In
                   </button>
@@ -385,7 +385,7 @@ const Register = () => {
                   <button
                     type="submit"
                     disabled={registerMutation.isPending || isRegistrationClosed}
-                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold shadow-primary/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-4 px-6 mt-4 rounded-2xl bg-primary text-white text-sm font-bold  transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {registerMutation.isPending
                       ? "Creating Account…"
