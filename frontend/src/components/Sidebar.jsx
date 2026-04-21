@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Settings, User as UserIcon, Moon, Sun, LogOut, ChevronUp, ArrowUpRight } from "lucide-react";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
@@ -86,22 +87,21 @@ const Sidebar = ({
 
       <aside
         ref={sidebarRef}
-        className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] 
-          ${isActuallyCollapsed ? "w-[64px]" : "w-72"} 
+        className={`flex-shrink-0 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] 
+          ${isActuallyCollapsed ? "w-[72px]" : "w-[280px]"} 
           fixed inset-y-0 left-0 z-[70] lg:relative lg:translate-x-0
-          ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-          bg-white dark:bg-navy-950 border-r border-outline-variant/30
-        `}
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"} 
+          glass-sidebar shadow-xl lg:shadow-none`}
         style={{ overflow: (isActuallyCollapsed && !mobileOpen) ? "visible" : "hidden" }}
       >
       {/* Header with toggle button */}
       <div
-        className={`h-12 flex items-center flex-shrink-0 ${isActuallyCollapsed ? "justify-center px-2" : "justify-between px-3"}`}
+        className={`h-16 flex items-center flex-shrink-0 ${isActuallyCollapsed ? "justify-center px-2" : "justify-between px-5"}`}
       >
-        <div className="flex items-center gap-2 overflow-hidden">
+        <div className="flex items-center gap-3 overflow-hidden">
           {!isActuallyCollapsed && (
             <div
-              className={`flex-shrink-0 transition-all duration-300 ${isActuallyCollapsed ? "w-8 h-8" : "w-7 h-7"} rounded-md border border-outline-variant/30 overflow-hidden bg-surface-variant/10 flex items-center justify-center p-0.5`}
+              className={`flex-shrink-0 transition-all duration-300 w-8 h-8 rounded-xl border border-outline-variant/30 overflow-hidden bg-surface-variant/10 flex items-center justify-center p-0.5`}
             >
               {logo ? (
                 <img
@@ -118,7 +118,7 @@ const Sidebar = ({
             </div>
           )}
           {!isActuallyCollapsed && (
-            <h2 className="text-sm font-semibold text-surface-on truncate">
+            <h2 className="text-sm font-bold text-surface-on truncate tracking-tight">
               {title}
             </h2>
           )}
@@ -130,7 +130,7 @@ const Sidebar = ({
             title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
-              className="w-6 h-6 transition-transform duration-300"
+              className="w-5 h-5 transition-transform duration-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -148,7 +148,7 @@ const Sidebar = ({
 
       {/* Search & Action Section */}
       {!isActuallyCollapsed && (onSearch || headerAction) && (
-        <div className="px-3 pb-2 pt-1 border-b border-outline-variant/10 space-y-3">
+        <div className="px-4 pb-4 pt-1 space-y-3">
           {onSearch && (
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -169,8 +169,8 @@ const Sidebar = ({
               <input
                 type="text"
                 onChange={(e) => onSearch(e.target.value)}
-                placeholder="Search history..."
-                className="w-full pl-9 pr-3 py-2 text-[11px] font-bold uppercase tracking-wider bg-surface-container-highest/50 border border-outline-variant/30 rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/50 transition-all placeholder:text-[10px] placeholder:tracking-widest"
+                placeholder="Search..."
+                className="w-full pl-9 pr-3 py-2 text-[12px] font-medium bg-surface-container-highest/30 border border-outline-variant/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
               />
             </div>
           )}
@@ -182,17 +182,12 @@ const Sidebar = ({
       {/* Navigation */}
       <nav className={`flex-1 ${isActuallyCollapsed ? "overflow-visible" : "overflow-y-auto overflow-x-hidden"} py-2 custom-scrollbar`}>
         {sections.map((section, idx) => (
-          <div key={idx} className="mb-4">
+          <div key={idx} className="mb-6">
             {section.label && !isActuallyCollapsed && (
-              <div className="px-4 py-2">
-                <h3 className="text-xs font-bold text-surface-on tracking-tight">
+              <div className="px-6 py-2">
+                <h3 className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
                   {section.label}
                 </h3>
-                {section.subtitle && (
-                  <p className="text-[10px] text-surface-on-variant opacity-70 mt-0.5">
-                    {section.subtitle}
-                  </p>
-                )}
               </div>
             )}
             {section.label && collapsed && (
@@ -200,7 +195,7 @@ const Sidebar = ({
                 <div className="border-t border-outline-variant/30" />
               </div>
             )}
-            <ul className={`space-y-1 ${collapsed ? "px-1.5" : "px-2"}`}>
+            <ul className={`space-y-0.5 ${collapsed ? "px-2" : "px-3"}`}>
               {section.items.map((item) => {
                 const active = isChildActive(item);
                 const hasSubItems = !!item.subItems;
@@ -215,14 +210,10 @@ const Sidebar = ({
                     <li key={item.id || item.path || item.label} className="relative group/sidebar-item">
                       <Link
                         to={href || "#"}
-                        className={`flex items-center justify-center w-full p-2 rounded-xl transition-all duration-200 ${
+                        className={`flex items-center justify-center w-full p-3 rounded-xl transition-all duration-200 ${
                           active
-                            ? "bg-primary text-on-primary"
-                            : item.highlight
-                            ? "bg-primary/10 text-primary border border-primary/20"
-                            : item.emergency
-                            ? "bg-error/10 text-error border border-error/20"
-                            : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                            ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
+                            : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                         }`}
                       >
                         {item.icon}
@@ -231,7 +222,7 @@ const Sidebar = ({
                       {/* Floating Menu / Tooltip */}
                       <div className="absolute left-full top-0 ml-3 invisible opacity-0 -translate-x-4 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-500 z-50">
                         {hasSubItems ? (
-                          <div className="w-56 bg-white dark:bg-slate-900 rounded-[1.5rem] p-2 border border-outline-variant/30 overflow-hidden">
+                          <div className="w-56 bg-white dark:bg-navy-900 rounded-2xl p-2 border border-outline-variant/20 shadow-2xl overflow-hidden">
                             <div className="px-4 py-3 border-b border-outline-variant/10 mb-1">
                               <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-[0.2em]">
                                 {item.label}
@@ -246,14 +237,14 @@ const Sidebar = ({
                                       to={sub.path}
                                       className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 group/sub ${
                                         subActive
-                                          ? "bg-primary text-on-primary"
-                                          : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                                          ? "bg-primary/10 text-primary font-semibold"
+                                          : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                                       }`}
                                     >
                                       <div className="scale-90 group-hover/sub:scale-110 transition-transform">
                                         {sub.icon}
                                       </div>
-                                      <span className="text-xs font-bold whitespace-nowrap">
+                                      <span className="text-xs font-medium whitespace-nowrap">
                                         {sub.label}
                                       </span>
                                     </Link>
@@ -263,7 +254,7 @@ const Sidebar = ({
                             </ul>
                           </div>
                         ) : (
-                          <span className="px-3 py-1.5 rounded-xl bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 whitespace-nowrap block">
+                          <span className="px-3 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/20 shadow-lg whitespace-nowrap block">
                             {item.label}
                           </span>
                         )}
@@ -278,21 +269,17 @@ const Sidebar = ({
                       <div>
                         <button
                           onClick={() => toggleSection(item.label)}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-300 group ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group ${
                             active
-                              ? "bg-primary text-on-primary"
-                              : item.highlight
-                              ? "bg-primary/10 text-primary border border-primary/20"
-                              : item.emergency
-                              ? "bg-error/10 text-error border border-error/20"
-                              : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                              ? "bg-primary/10 text-primary font-semibold"
+                              : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                           }`}
                         >
                           <div className="flex items-center gap-3">
                             <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
                               {item.icon}
                             </div>
-                            <span className="font-medium text-sm whitespace-nowrap">
+                            <span className="text-sm font-medium whitespace-nowrap">
                               {item.label}
                             </span>
                           </div>
@@ -310,30 +297,44 @@ const Sidebar = ({
                             />
                           </svg>
                         </button>
-
                         <div
                           className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? "max-h-64 mt-1" : "max-h-0"}`}
                         >
-                          <ul className="space-y-1 ml-3 pl-3 border-l border-outline-variant/30">
+                          <ul className="space-y-0.5 ml-4 pl-2 border-l border-outline-variant/20">
                             {item.subItems.map((sub) => {
-                              const subActive = isActive(sub.path);
+                              const subActive = sub.path ? isActive(sub.path) : false;
+                              const content = (
+                                <>
+                                  <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
+                                    {sub.icon}
+                                  </div>
+                                  <span className="text-xs font-medium whitespace-nowrap">
+                                    {sub.label}
+                                  </span>
+                                </>
+                              );
+
                               return (
-                                <li key={sub.path}>
-                                  <Link
-                                    to={sub.path}
-                                    className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-300 group ${
-                                      subActive
-                                        ? "bg-primary text-on-primary"
-                                        : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
-                                    }`}
-                                  >
-                                    <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                                      {sub.icon}
-                                    </div>
-                                    <span className="font-medium text-sm whitespace-nowrap">
-                                      {sub.label}
-                                    </span>
-                                  </Link>
+                                <li key={sub.label}>
+                                  {sub.path ? (
+                                    <Link
+                                      to={sub.path}
+                                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
+                                        ${subActive 
+                                          ? "bg-primary/10 text-primary font-semibold" 
+                                          : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
+                                    >
+                                      {content}
+                                    </Link>
+                                  ) : (
+                                    <button
+                                      onClick={sub.onClick}
+                                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
+                                        text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on ${sub.className || ""}`}
+                                    >
+                                      {content}
+                                    </button>
+                                  )}
                                 </li>
                               );
                             })}
@@ -341,47 +342,43 @@ const Sidebar = ({
                         </div>
                       </div>
                     ) : (
-                      <Link
-                        to={item.path}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
-                          active
-                            ? "bg-primary text-on-primary"
-                            : item.highlight
-                            ? "bg-primary/10 text-primary border border-primary/20"
-                            : item.emergency
-                            ? "bg-error/10 text-error border border-error/20 hover:bg-error/20"
-                            : "text-surface-on-variant hover:bg-primary/10 hover:text-primary"
-                        }`}
-                      >
-                        {item.icon && (
-                          <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-                            {item.icon}
-                          </div>
-                        )}
-                        <span className="font-medium text-sm whitespace-nowrap truncate flex-1">
-                          {item.label}
-                        </span>
+                        <Link
+                          to={item.path}
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 group ${
+                            active
+                              ? "bg-primary/10 text-primary font-semibold"
+                              : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
+                          }`}
+                        >
+                          {item.icon && (
+                            <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
+                              {item.icon}
+                            </div>
+                          )}
+                          <span className="text-sm font-medium whitespace-nowrap truncate flex-1">
+                            {item.label}
+                          </span>
 
-                        {/* Item Actions (Ellipsis Menu) */}
-                        {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
-                          <div 
-                            className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <Dropdown
-                              trigger={
-                                <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                  </svg>
-                                </button>
-                              }
-                              actions={item.actions}
-                              align="right"
-                            />
-                          </div>
-                        )}
-                      </Link>
+                          {/* Item Actions (Ellipsis Menu) */}
+                          {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
+                            <div 
+                              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <Dropdown
+                                trigger={
+                                  <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                    </svg>
+                                  </button>
+                                }
+                                actions={item.actions}
+                                align="right"
+                              />
+                            </div>
+                          )}
+                        </Link>
                     )}
                   </li>
                 );
@@ -391,102 +388,136 @@ const Sidebar = ({
         ))}
       </nav>
 
-      {/* Bottom Actions */}
-      <div className={`mt-auto p-2 border-t border-outline-variant/30 bg-surface-container-low transition-all duration-300`}>
-        {!isActuallyCollapsed && (
-          <UsageLimit 
-            used={usage?.used ?? 0} 
-            limit={usage?.limit ?? 20} 
-            percent={usage?.percent ?? 0} 
-          />
-        )}
-
-        {profileTransition && (
-          <Link
-            to={profileTransition.path}
-            className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${
-              isActuallyCollapsed ? "justify-center w-full" : "w-full"
-            } ${location.pathname === profileTransition.path ? "bg-primary/10 text-primary" : ""}`}
-          >
-            <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-              {profileTransition.icon}
-            </div>
-            {!isActuallyCollapsed && (
-              <span className="font-medium text-xs whitespace-nowrap">
-                {profileTransition.label}
-              </span>
-            )}
-            {isActuallyCollapsed && (
-              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
-                {profileTransition.label}
-              </span>
-            )}
-          </Link>
-        )}
-
-        {onToggleTheme && (
-          <button
-            onClick={onToggleTheme}
-            className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-primary/10 hover:text-primary transition-all duration-300 ${
-              isActuallyCollapsed ? "justify-center w-full" : "w-full"
-            }`}
-          >
-            <div className="transition-transform duration-300 group-hover:rotate-12 flex-shrink-0">
-              {theme === "dark" ? (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                </svg>
-              )}
-            </div>
-            {!isActuallyCollapsed && (
-              <span className="font-medium text-xs whitespace-nowrap lowercase first-letter:uppercase">
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
-              </span>
-            )}
-
-            {isActuallyCollapsed && (
-              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
-                {theme === "dark" ? "Switch to Light" : "Switch to Dark"}
-              </span>
-            )}
-          </button>
-        )}
-
-        <button
-          onClick={onLogout}
-          className={`group relative flex items-center gap-2 px-3 py-2 rounded-full text-surface-on-variant hover:bg-error/10 hover:text-error transition-all duration-300 ${
-            isActuallyCollapsed ? "justify-center w-full" : "w-full"
-          }`}
-        >
-          <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
+      {/* Bottom Actions: Consolidated Settings */}
+      <div className="p-3 border-t border-outline-variant/10 space-y-1">
+        {usage && !isActuallyCollapsed && (
+          <div className="px-3 py-2">
+            <UsageLimit 
+              used={usage.used} 
+              limit={usage.limit} 
+              percent={usage.percent} 
+            />
           </div>
-          {!isActuallyCollapsed && (
-            <span className="font-medium text-xs whitespace-nowrap">Logout</span>
-          )}
+        )}
 
-          {isActuallyCollapsed && (
-            <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-surface-container-highest text-surface-on text-[11px] font-bold border border-outline-variant/30 pointer-events-none invisible opacity-0 -translate-x-2 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 z-50 whitespace-nowrap">
-              Logout
-            </span>
-          )}
-        </button>
+        <div 
+          className="relative group/settings"
+          onMouseEnter={() => !isActuallyCollapsed && setExpandedSections(prev => ({ ...prev, "Settings": true }))}
+          onMouseLeave={() => !isActuallyCollapsed && setExpandedSections(prev => ({ ...prev, "Settings": false }))}
+        >
+          <button
+            onClick={() => toggleSection("Settings")}
+            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 group
+              ${expandedSections["Settings"] 
+                ? "bg-primary/10 text-primary font-semibold" 
+                : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"}`}
+          >
+            {!isActuallyCollapsed && (
+              <div className="flex items-center gap-3">
+                <div className="transition-transform duration-300 group-hover:scale-110">
+                  <Settings size={20} />
+                </div>
+                <span className="text-sm font-medium whitespace-nowrap">Settings</span>
+              </div>
+            )}
+            
+            {isActuallyCollapsed && (
+              <div className="flex justify-center w-full">
+                <Settings size={20} className="transition-transform duration-300 group-hover:scale-110" />
+              </div>
+            )}
+            
+            {/* Tooltip for collapsed mode is handled by the floating menu now */}
+          </button>
+
+          {/* Floating Settings Menu */}
+          <div className={`absolute bottom-full left-0 pt-4 w-full lg:min-w-[240px] z-[100] transition-all duration-300 origin-bottom
+            ${expandedSections["Settings"] 
+              ? "opacity-100 translate-y-0 pointer-events-auto" 
+              : "opacity-0 translate-y-4 pointer-events-none"}`}
+          >
+            <div className="glass-card shadow-2xl rounded-2xl border border-outline-variant/20 p-1.5 overflow-hidden mb-2">
+              {/* Upgrade to PRO Card */}
+              <div className="p-3 mb-2 rounded-2xl bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent border border-purple-500/10 relative overflow-hidden group/upgrade">
+                {/* Background Grid Pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-medical-grid" />
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="text-sm font-bold text-surface-on flex items-center gap-1.5">
+                      Upgrade to 
+                      <span className="bg-black text-white text-[10px] px-1.5 py-0.5 rounded-md tracking-wider font-extrabold uppercase">PRO</span>
+                    </h4>
+                  </div>
+                  <p className="text-[11px] text-surface-on-variant leading-relaxed mb-3 opacity-70 font-medium">
+                    Upgrade for image uploads, smarter AI, and more Pro Search.
+                  </p>
+                  
+                  <button className="w-full bg-white dark:bg-white/10 py-2.5 px-4 rounded-xl flex items-center justify-between text-[12px] font-bold text-surface-on shadow-sm border border-black/5 hover:bg-slate-50 transition-all">
+                    <span>Learn More</span>
+                    <ArrowUpRight size={14} className="opacity-50" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="px-3 py-2 border-b border-outline-variant/10 mb-1">
+                <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">
+                  Account Setting
+                </p>
+              </div>
+              <ul className="space-y-0.5">
+                {/* Profile */}
+                {profileTransition && (
+                  <li>
+                    <Link
+                      to={profileTransition.path}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-surface-on-variant hover:bg-surface-variant/5 hover:text-surface-on"
+                      onClick={() => setExpandedSections(prev => ({ ...prev, "Settings": false }))}
+                    >
+                      <UserIcon size={18} />
+                      <span className="text-xs font-semibold">Account Profile</span>
+                    </Link>
+                  </li>
+                )}
+                
+                {/* Theme Toggle */}
+                {onToggleTheme && (
+                  <li>
+                    <button
+                      onClick={(e) => {
+                        onToggleTheme(e);
+                        // Optional: keep menu open or close it
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-surface-on-variant hover:bg-surface-variant/5 hover:text-surface-on"
+                    >
+                      {theme === "dark" ? (
+                        <Sun size={18} />
+                      ) : (
+                        <Moon size={18} />
+                      )}
+                      <span className="text-xs font-semibold">
+                        {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                      </span>
+                    </button>
+                  </li>
+                )}
+
+                <div className="my-1 border-t border-outline-variant/10" />
+
+                {/* Logout */}
+                <li>
+                  <button
+                    onClick={onLogout}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-error hover:bg-error/10 font-bold"
+                  >
+                    <LogOut size={18} />
+                    <span className="text-xs">Sign Out</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
       </aside>
     </>

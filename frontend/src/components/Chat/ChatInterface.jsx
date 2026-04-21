@@ -65,7 +65,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
-        <div className="max-w-4xl mx-auto p-4 lg:p-6 space-y-6">
+        <div className="max-w-4xl mx-auto p-4 lg:p-8 space-y-10">
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
             <motion.div
@@ -102,8 +102,8 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                   msg.role === "user" ? "flex-row-reverse" : "flex-row"
                 } gap-3`}
               >
-                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden ${
-                  msg.role === "user" ? "bg-primary text-on-primary" : "bg-secondary text-on-secondary p-2"
+                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
+                  msg.role === "user" ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5"
                 }`}>
                   {msg.role === "user" ? (
                     <User size={20} />
@@ -114,10 +114,10 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
                   )}
                 </div>
                 
-                <div className={`p-4 rounded-3xl ${
+                <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed ${
                   msg.role === "user" 
-                    ? "bg-primary text-on-primary rounded-tr-none" 
-                    : "bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/20"
+                    ? "bg-primary text-white rounded-tr-none" 
+                    : "bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/30"
                 }`}>
                   <MarkdownRenderer content={msg.content} />
                 </div>

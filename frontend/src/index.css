@@ -5,34 +5,34 @@
 @tailwind utilities;
 
 :root {
-    /* Light Theme - Refined Clinical Health (Deeper Teal) */
-    --md-sys-color-primary: 11 110 102; /* Deeper Teal for professional clinical feel */
+    /* Modern Zen Theme - Calm Clinical Health */
+    --md-sys-color-primary: 24 135 128; /* Softer, balanced clinical teal */
     --md-sys-color-on-primary: 255 255 255;
-    --md-sys-color-primary-container: 204 251 241;
-    --md-sys-color-on-primary-container: 10 65 60;
+    --md-sys-color-primary-container: 224 250 248;
+    --md-sys-color-on-primary-container: 15 75 70;
 
-    --md-sys-color-secondary-container: 255 228 230; /* Rose-100 */
-    --md-sys-color-on-secondary-container: 159 18 57; /* Deeper Rose */
+    --md-sys-color-secondary-container: 255 241 242; /* Rose-50 */
+    --md-sys-color-on-secondary-container: 190 18 60; /* Rose-700 */
 
-    --md-sys-color-surface: 248 250 252; /* Slate-50 - cleaner look */
-    --md-sys-color-on-surface: 15 23 42;
-    --md-sys-color-surface-variant: 241 245 249; /* Slate-100 */
+    --md-sys-color-surface: 250 251 253; /* Near-white slate tint */
+    --md-sys-color-on-surface: 30 41 59;
+    --md-sys-color-surface-variant: 241 245 249;
     --md-sys-color-on-surface-variant: 71 85 105;
     --md-sys-color-surface-container-low: 255 255 255;
-    --md-sys-color-surface-container: 252 253 253;
-    --md-sys-color-surface-container-high: 241 245 249;
-    --md-sys-color-surface-container-highest: 231 235 239;
+    --md-sys-color-surface-container: 251 252 254;
+    --md-sys-color-surface-container-high: 244 247 250;
+    --md-sys-color-surface-container-highest: 235 240 245;
 
-    --md-sys-color-outline: 148 163 184;
+    --md-sys-color-outline: 203 213 225;
     --md-sys-color-outline-variant: 226 232 240;
 
     --md-sys-color-error: 225 29 72;
     --md-sys-color-on-error: 255 255 255;
-    --md-sys-color-error-container: 255 228 230;
-    --md-sys-color-on-error-container: 136 19 55;
+    --md-sys-color-error-container: 255 241 242;
+    --md-sys-color-on-error-container: 159 18 57;
 
     /* Design-specific Humanist Accents */
-    --color-nadi-red: 225 29 72; /* More serious Rose-600 */
+    --color-nadi-red: 225 29 72;
     --color-accent-red: 225 29 72;
 }
 
@@ -264,8 +264,15 @@ html.dark,
     }
 
     .glass-card {
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(12px);
+    }
+
+    .glass-sidebar {
+        background: rgba(var(--md-sys-color-surface-container-low) / 0.85);
+        backdrop-filter: blur(16px);
+        border-right: 1px solid rgba(var(--md-sys-color-outline-variant) / 0.3);
     }
 
     .dark .glass-card {
