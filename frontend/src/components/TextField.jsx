@@ -12,17 +12,20 @@ const TextField = ({
     helperText,
     required = false,
     disabled = false,
-    className = '',
+    leftIcon,
+    className = "",
 }) => {
     const [showPassword, setShowPassword] = useState(false);
-    const isPassword = type === 'password';
-    const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+    const isPassword = type === "password";
+    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
     const inputClasses = `
-    text-field pr-12
-    ${error ? 'text-field-error' : ''}
+    text-field
+    ${leftIcon ? "pl-11" : "px-4"}
+    ${isPassword ? "pr-12" : "px-4"}
+    ${error ? "text-field-error" : ""}
     ${className}
-  `.trim().replace(/\s+/g, ' ');
+  `.trim().replace(/\s+/g, " ");
 
     return (
         <div className="w-full">
@@ -33,6 +36,11 @@ const TextField = ({
                 </label>
             )}
             <div className="relative">
+                {leftIcon && (
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-surface-on-variant pointer-events-none">
+                        {leftIcon}
+                    </div>
+                )}
                 <input
                     id={name}
                     type={inputType}
@@ -83,6 +91,7 @@ TextField.propTypes = {
     helperText: PropTypes.string,
     required: PropTypes.bool,
     disabled: PropTypes.bool,
+    leftIcon: PropTypes.node,
     className: PropTypes.string,
 };
 

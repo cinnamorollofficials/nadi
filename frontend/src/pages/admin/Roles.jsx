@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Search } from 'lucide-react';
+import TextField from '../../components/TextField';
 import toast from 'react-hot-toast';
 import Table from '../../components/Table';
 import Pagination from '../../components/Pagination';
@@ -215,12 +217,12 @@ const Roles = () => {
                 </div>
 
                 <div className="relative w-full md:max-w-xs">
-                    <input
-                        type="text"
+                    <TextField
+                        name="search"
                         placeholder="Search roles..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="text-field"
+                        leftIcon={<Search size={18} />}
                     />
                 </div>
             </div>
