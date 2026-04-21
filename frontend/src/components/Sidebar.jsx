@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import LottieLogo from "./LottieLogo";
@@ -22,6 +22,7 @@ const Sidebar = ({
   usage,
   showToggle = true,
 }) => {
+  const sidebarRef = useRef(null);
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
   const isActuallyCollapsed = collapsed && !mobileOpen;
@@ -57,6 +58,22 @@ const Sidebar = ({
     setExpandedSections((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      // Only close if it's actually open/expanded and not on a mobile toggle
+      if (!isActuallyCollapsed && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        if (mobileOpen) {
+          onCloseMobile();
+        } else if (!collapsed) {
+          onToggleCollapse();
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isActuallyCollapsed, sidebarRef, mobileOpen, collapsed, onCloseMobile, onToggleCollapse]);
+
   return (
     <>
       {/* Mobile Backdrop */}
@@ -68,6 +85,7 @@ const Sidebar = ({
       )}
 
       <aside
+        ref={sidebarRef}
         className={`nav-drawer flex-shrink-0 flex flex-col transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] 
           ${isActuallyCollapsed ? "w-[64px]" : "w-72"} 
           fixed inset-y-0 left-0 z-[70] lg:relative lg:translate-x-0
@@ -112,7 +130,7 @@ const Sidebar = ({
             title={mobileOpen ? "Close sidebar" : collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
-              className="w-4 h-4 transition-transform duration-300"
+              className="w-6 h-6 transition-transform duration-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

@@ -176,13 +176,22 @@ const UserLayout = () => {
   // Determine dynamic page title based on route
   const pageTitle = useMemo(() => {
     const path = location.pathname;
-    let title = "AI Consultation";
+    let title = "Nadi AI";
 
-    if (path.includes("/profile")) title = "Profile Saya";
-    else if (path.includes("/consultations/ai")) title = "Konsultasi AI";
+    if (path.includes("/profile")) {
+      title = "Profile Saya";
+    } else if (path.includes("/consultations/ai/")) {
+      // Find the specific chat title from history
+      const chatId = path.split("/").pop();
+      const currentChat = chatHistory?.find((c) => String(c.id) === String(chatId));
+      const rawTitle = currentChat ? currentChat.title : "Konsultasi AI";
+      title = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+    } else if (path.includes("/consultations/ai")) {
+      title = "Konsultasi AI";
+    }
 
     return title;
-  }, [location.pathname]);
+  }, [location.pathname, chatHistory]);
 
   // Update document title dynamically
   useEffect(() => {
@@ -192,38 +201,45 @@ const UserLayout = () => {
   const navigationSections = useMemo(() => {
     // Map AI Chat History to sidebar items
     const aiHistoryItems = (chatHistory || [])
-      .filter((chat) =>
-        chat.title.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-      .slice(0, 5) // Show only last 5 in sidebar
-      .map((chat) => ({
-        id: `chat-${chat.id}`,
-        label: chat.title,
-        path: `/consultations/ai/${chat.id}`,
-        actions: [
-          {
-            label: "Bagikan",
-            icon: <Share2 size={14} />,
-            onClick: () => handleShare(chat)
-          },
-          {
-            label: "Ubah Nama",
-            icon: <Edit2 size={14} />,
-            onClick: () => handleRenameClick(chat)
-          },
-          {
-            label: "Pin",
-            icon: <Pin size={14} />,
-            onClick: () => handlePin(chat)
-          },
-          {
-            label: "Hapus",
-            icon: <Trash2 size={14} />,
-            className: "text-error hover:bg-error/10 hover:text-error",
-            onClick: () => handleDeleteClick(chat)
-          }
-        ]
-      }));
+      .filter((chat) => {
+        const isSearchMatch = chat.title.toLowerCase().includes(searchQuery.toLowerCase());
+        const isGhost = chat.title === "New Conversation" && chat.message_count === 0;
+        const isCurrent = String(chat.id) === String(location.pathname.split('/').pop());
+        
+        return isSearchMatch && (!isGhost || isCurrent);
+      })
+      .slice(0, 10) // Show last 10 in sidebar
+      .map((chat) => {
+        const title = chat.title.charAt(0).toUpperCase() + chat.title.slice(1);
+        return {
+          id: `chat-${chat.id}`,
+          label: title,
+          path: `/consultations/ai/${chat.id}`,
+          actions: [
+            {
+              label: "Bagikan",
+              icon: <Share2 size={14} />,
+              onClick: () => handleShare(chat)
+            },
+            {
+              label: "Ubah Nama",
+              icon: <Edit2 size={14} />,
+              onClick: () => handleRenameClick(chat)
+            },
+            {
+              label: "Pin",
+              icon: <Pin size={14} />,
+              onClick: () => handlePin(chat)
+            },
+            {
+              label: "Hapus",
+              icon: <Trash2 size={14} />,
+              className: "text-error hover:bg-error/10 hover:text-error",
+              onClick: () => handleDeleteClick(chat)
+            }
+          ]
+        };
+      });
 
     return [
       {
@@ -303,9 +319,9 @@ const UserLayout = () => {
             </button>
             <div className="flex items-center gap-6 flex-1">
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-bold text-surface-on truncate max-w-[200px]">
+                <h1 className="text-base font-bold text-surface-on leading-tight">
                   {pageTitle}
-                </span>
+                </h1>
               </div>
             </div>
           </div>
