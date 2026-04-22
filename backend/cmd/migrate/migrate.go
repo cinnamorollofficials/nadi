@@ -50,7 +50,8 @@ func main() {
 		&customEntity.Faq{},
 		&customEntity.ChatChannel{},
 		&customEntity.ChatMessage{},
-		&customEntity.AiUsageLog{},
+		&entity.AiUsageLog{},
+		&entity.AiTier{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 
@@ -79,6 +80,7 @@ func main() {
 	logger.SystemLogger.Info().Msg("Running Seeders...")
 	seeder.SeedRole(db)
 	seeder.SeedSettings(db)
+	seeder.SeedAiTier(db)
 
 	logger.SystemLogger.Info().Msg("Auto-migration completed successfully!")
 }

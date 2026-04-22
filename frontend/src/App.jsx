@@ -40,6 +40,7 @@ import FaqPage from "./pages/admin/FaqPage";
 import RedisServicePage from "./pages/admin/RedisServicePage";
 import KafkaServicePage from "./pages/admin/KafkaServicePage";
 import AiUsage from "./pages/admin/AiUsage";
+import AiTiers from "./pages/admin/AiTiers";
 // [GENERATOR_INSERT_IMPORT]
 
 // Client / reader pages
@@ -347,6 +348,14 @@ function App() {
                 element={
                   <PermissionGuard permission={PERMS.SYSTEM_STAT}>
                     <AiUsage />
+                  </PermissionGuard>
+                }
+              />
+              <Route
+                path="ai-tiers"
+                element={
+                  <PermissionGuard permission={PERMS.AITIER_VIEW}>
+                    <AiTiers />
                   </PermissionGuard>
                 }
               />

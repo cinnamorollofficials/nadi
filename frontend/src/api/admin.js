@@ -81,6 +81,27 @@ export const exportPermissions = async (format = 'excel') => {
     });
 };
 
+// AI Tier API
+export const getAiTiers = async (page = 1, limit = 10, search = '') => {
+    const response = await apiClient.get(`/ai-tiers?page=${page}&limit=${limit}&search=${search}`);
+    return response.data;
+};
+
+export const createAiTier = async (data) => {
+    const response = await apiClient.post('/ai-tiers', data);
+    return response.data;
+};
+
+export const updateAiTier = async (id, data) => {
+    const response = await apiClient.put(`/ai-tiers/${id}`, data);
+    return response.data;
+};
+
+export const deleteAiTier = async (id) => {
+    const response = await apiClient.delete(`/ai-tiers/${id}`);
+    return response.data;
+};
+
 // Cache management
 export const getCacheStatus = async () => {
     const response = await apiClient.get('/cache/status');

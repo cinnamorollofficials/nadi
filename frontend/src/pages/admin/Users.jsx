@@ -169,6 +169,29 @@ const Users = () => {
                 </span>
             ),
         },
+        {
+            header: 'AI Usage (Today)',
+            render: (row) => {
+                const limit = row.usage_limit > 0 ? row.usage_limit : (row.ai_tier?.daily_limit || 20);
+                const used = row.current_usage || 0;
+                const percent = Math.min(100, Math.round((used / limit) * 100));
+                
+                return (
+                    <div className="flex flex-col gap-1 w-32">
+                        <div className="flex justify-between text-[10px] font-bold">
+                            <span className="text-secondary-600 dark:text-secondary-400">{row.ai_tier?.name || 'Basic'}</span>
+                            <span className="text-surface-on-variant">{used}/{limit}</span>
+                        </div>
+                        <div className="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+                            <div 
+                                className={`h-full transition-all duration-500 ${percent > 90 ? 'bg-error' : percent > 50 ? 'bg-warning' : 'bg-primary'}`}
+                                style={{ width: `${percent}%` }}
+                            />
+                        </div>
+                    </div>
+                );
+            }
+        }
     ];
 
     const tableActions = useMemo(() => [

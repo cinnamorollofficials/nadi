@@ -4,11 +4,14 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
+
 	"github.com/hadi-projects/go-react-starter/internal/entity"
+	defaultEntity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	"github.com/hadi-projects/go-react-starter/internal/repository"
 	defaultRepo "github.com/hadi-projects/go-react-starter/internal/repository/default"
-	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 	"github.com/hadi-projects/go-react-starter/internal/utils"
+	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 )
 
 type ChatService interface {
@@ -30,8 +33,8 @@ type chatService struct {
 }
 
 func NewChatService(
-	chatRepo repository.ChatRepository, 
-	userRepo defaultRepo.UserRepository, 
+	chatRepo repository.ChatRepository,
+	userRepo defaultRepo.UserRepository,
 	aiUsageRepo repository.AiUsageRepository,
 	geminiService GeminiService,
 	encryptor *crypto.Encryptor,
@@ -110,8 +113,23 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		return err
 	}
 
-	if user.CurrentUsage >= user.UsageLimit {
-		return fmt.Errorf("batas konsultasi harian Anda (%d/%d) telah tercapai. Silakan coba lagi besok.", user.CurrentUsage, user.UsageLimit)
+	// 1.1 Check and Reset Daily Usage
+	now := time.Now().UTC()
+	if user.UpdatedAt.Year() != now.Year() || user.UpdatedAt.YearDay() != now.YearDay() {
+		user.CurrentUsage = 0
+	}
+
+	// 1.2 Calculate Effective Limit
+	effectiveLimit := user.UsageLimit
+	if effectiveLimit <= 0 {
+		effectiveLimit = user.AiTier.DailyLimit
+	}
+	if effectiveLimit <= 0 {
+		effectiveLimit = 20 // Absolute fallback
+	}
+
+	if user.CurrentUsage >= effectiveLimit {
+		return fmt.Errorf("batas konsultasi harian Anda (%d/%d) telah tercapai. Silakan coba lagi besok.", user.CurrentUsage, effectiveLimit)
 	}
 
 	// 2. Save User Message to DB (Encrypted)
@@ -164,7 +182,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 	// 7. Save AI Usage Log
 	if usage != nil {
 		cost := (float64(usage.PromptTokenCount) * 0.0000001) + (float64(usage.CandidatesTokenCount) * 0.0000004)
-		s.aiUsageRepo.Create(ctx, &entity.AiUsageLog{
+		s.aiUsageRepo.Create(ctx, &defaultEntity.AiUsageLog{
 			UserID:           channel.UserID,
 			PromptTokens:     int(usage.PromptTokenCount),
 			CandidatesTokens: int(usage.CandidatesTokenCount),

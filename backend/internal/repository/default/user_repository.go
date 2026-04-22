@@ -49,7 +49,8 @@ func (r *userRepository) FindAll(ctx context.Context, pagination *dto.Pagination
 
 	offset := (pagination.GetPage() - 1) * pagination.GetLimit()
 	err := query.Order("id DESC").
-		Preload("Role.Permissions"). // Fix N+1: Preload both Role and Permissions
+		Preload("Role.Permissions").
+		Preload("AiTier").
 		Limit(pagination.GetLimit()).
 		Offset(offset).
 		Find(&users).Error
@@ -59,7 +60,7 @@ func (r *userRepository) FindAll(ctx context.Context, pagination *dto.Pagination
 
 func (r *userRepository) FindByID(ctx context.Context, id uint) (*entity.User, error) {
 	var user entity.User
-	err := r.db.WithContext(ctx).Preload("Role.Permissions").First(&user, id).Error
+	err := r.db.WithContext(ctx).Preload("Role.Permissions").Preload("AiTier").First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +69,7 @@ func (r *userRepository) FindByID(ctx context.Context, id uint) (*entity.User, e
 
 func (r *userRepository) FindByEmail(ctx context.Context, email string) (*entity.User, error) {
 	var user entity.User
-	err := r.db.WithContext(ctx).Preload("Role.Permissions").Where("email = ?", email).First(&user).Error
+	err := r.db.WithContext(ctx).Preload("Role.Permissions").Preload("AiTier").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func (r *userRepository) Delete(ctx context.Context, id uint) error {
 
 func (r *userRepository) FindByGoogleID(ctx context.Context, googleID string) (*entity.User, error) {
 	var user entity.User
-	err := r.db.WithContext(ctx).Preload("Role.Permissions").Where("google_id = ?", googleID).First(&user).Error
+	err := r.db.WithContext(ctx).Preload("Role.Permissions").Preload("AiTier").Where("google_id = ?", googleID).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

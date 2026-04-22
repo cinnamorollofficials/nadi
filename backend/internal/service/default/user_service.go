@@ -276,11 +276,38 @@ func (s *userService) GetMe(ctx context.Context, userID uint) (*dto.AuthUserResp
 		Status:          user.Status,
 		TwoFAEnabled:    user.TwoFAEnabled,
 		Usage: &dto.UsageInfo{
-			Limit:   user.UsageLimit,
-			Used:    user.CurrentUsage,
+			Limit: func() int {
+				limit := user.UsageLimit
+				if limit <= 0 {
+					limit = user.AiTier.DailyLimit
+				}
+				if limit <= 0 {
+					limit = 20
+				}
+				return limit
+			}(),
+			Used: func() int {
+				now := time.Now().UTC()
+				if user.UpdatedAt.Year() != now.Year() || user.UpdatedAt.YearDay() != now.YearDay() {
+					return 0
+				}
+				return user.CurrentUsage
+			}(),
 			Percent: func() int {
-				if user.UsageLimit > 0 {
-					return int(float64(user.CurrentUsage) / float64(user.UsageLimit) * 100)
+				limit := user.UsageLimit
+				if limit <= 0 {
+					limit = user.AiTier.DailyLimit
+				}
+				if limit <= 0 {
+					limit = 20
+				}
+				used := user.CurrentUsage
+				now := time.Now().UTC()
+				if user.UpdatedAt.Year() != now.Year() || user.UpdatedAt.YearDay() != now.YearDay() {
+					used = 0
+				}
+				if limit > 0 {
+					return int(float64(used) / float64(limit) * 100)
 				}
 				return 0
 			}(),

@@ -83,5 +83,10 @@ export const PERMS = {
   SYSTEM_GEN: 1n << 56n,
   SYSTEM_EXPORT: 1n << 57n,
   SYSTEM_PROFILE: 1n << 58n,
+  // 61-64: AI Tier
+  AITIER_VIEW: 1n << 60n,
+  AITIER_CREATE: 1n << 61n,
+  AITIER_EDIT: 1n << 62n,
+  AITIER_DELETE: 1n << 63n,
   ANY: 1n << 59n,
 };
