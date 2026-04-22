@@ -17,18 +17,26 @@ const Dropdown = ({
     e.preventDefault();
     e.stopPropagation();
     const rect = btnRef.current.getBoundingClientRect();
-    const scrollY = window.scrollY;
     
-    const newPos = {
-      top: rect.bottom + scrollY + 4,
-    };
-
-    if (align === "right") {
-      newPos.right = window.innerWidth - rect.right;
-      newPos.left = "auto";
+    let newPos = {};
+    if (align === "right-side") {
+      newPos = {
+        top: rect.top,
+        left: rect.right + 12,
+        right: "auto"
+      };
+    } else if (align === "right") {
+      newPos = {
+        top: rect.bottom + 4,
+        right: window.innerWidth - rect.right,
+        left: "auto"
+      };
     } else {
-      newPos.left = rect.left;
-      newPos.right = "auto";
+      newPos = {
+        top: rect.bottom + 4,
+        left: rect.left,
+        right: "auto"
+      };
     }
 
     setPos(newPos);
@@ -53,14 +61,25 @@ const Dropdown = ({
     const reposition = () => {
       if (btnRef.current) {
         const rect = btnRef.current.getBoundingClientRect();
-        const scrollY = window.scrollY;
-        const newPos = { top: rect.bottom + scrollY + 4 };
-        if (align === "right") {
-          newPos.right = window.innerWidth - rect.right;
-          newPos.left = "auto";
+        let newPos = {};
+        if (align === "right-side") {
+          newPos = {
+            top: rect.top,
+            left: rect.right + 12,
+            right: "auto"
+          };
+        } else if (align === "right") {
+          newPos = {
+            top: rect.bottom + 4,
+            right: window.innerWidth - rect.right,
+            left: "auto"
+          };
         } else {
-          newPos.left = rect.left;
-          newPos.right = "auto";
+          newPos = {
+            top: rect.bottom + 4,
+            left: rect.left,
+            right: "auto"
+          };
         }
         setPos(newPos);
       }
@@ -90,9 +109,9 @@ const Dropdown = ({
             top: pos.top,
             left: pos.left,
             right: pos.right,
-            zIndex: 9999,
+            zIndex: 999999,
           }}
-          className="min-w-[160px] bg-white dark:bg-navy-900 border border-outline-variant/30 rounded-2xl shadow-xl py-1.5 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
+          className="min-w-[180px] bg-white dark:bg-navy-900 border border-outline-variant/30 rounded-2xl shadow-2xl py-2 animate-in fade-in zoom-in-95 slide-in-from-left-2 duration-200 overflow-hidden"
         >
           {actions.map((action, i) => (
             <button
@@ -104,7 +123,7 @@ const Dropdown = ({
                 onOpenChange?.(false);
                 action.onClick();
               }}
-              className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all duration-200 hover:bg-primary/10 flex items-center gap-3 ${
+              className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all duration-200 hover:bg-surface-variant/50 flex items-center gap-3 ${
                 action.className || "text-surface-on-variant hover:text-primary"
               }`}
             >
@@ -133,7 +152,7 @@ Dropdown.propTypes = {
     })
   ).isRequired,
   className: PropTypes.string,
-  align: PropTypes.oneOf(["left", "right"]),
+  align: PropTypes.oneOf(["left", "right", "right-side"]),
   onOpenChange: PropTypes.func,
 };
 

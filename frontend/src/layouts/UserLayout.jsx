@@ -4,19 +4,23 @@ import UserSidebar from "../components/UserSidebar";
 import { getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import {
-  Bot,
-  Home,
+  Plus,
+  MessageSquare,
+  Share2,
+  Edit2,
+  Pin,
+  Trash2,
+  MoreVertical,
   History as HistoryIcon,
   Activity,
+  Bot,
   User as UserIcon,
-  Plus,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify, safeParse } from "../utils/json";
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { MessageSquare, Share2, Edit2, Pin, Trash2, MoreVertical } from "lucide-react";
 import Modal from "../components/Modal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import TextField from "../components/TextField";
@@ -220,17 +224,20 @@ const UserLayout = () => {
             {
               label: "Bagikan",
               icon: <Share2 size={14} />,
+              className: "hover:bg-primary/10 hover:text-error",
               onClick: () => handleShare(chat)
             },
             {
               label: "Ubah Nama",
               icon: <Edit2 size={14} />,
+              className: "hover:bg-primary/10 hover:text-error",
               onClick: () => handleRenameClick(chat)
             },
             {
               label: "Pin",
               icon: <Pin size={14} />,
-              onClick: () => handlePin(chat)
+              onClick: () => handlePin(chat),
+              className: "hover:bg-primary/10 hover:text-error",
             },
             {
               label: "Hapus",
