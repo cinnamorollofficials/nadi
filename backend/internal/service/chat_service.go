@@ -15,6 +15,7 @@ type ChatService interface {
 	GetChatHistory(ctx context.Context, userID uint) ([]entity.ChatChannel, error)
 	GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error)
 	ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error
+	RenameChannel(ctx context.Context, userID uint, channelID uint, newTitle string) error
 }
 
 type chatService struct {
@@ -157,4 +158,17 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	}
 
 	return nil
+}
+func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelID uint, newTitle string) error {
+	channel, err := s.chatRepo.GetChannelWithMessages(ctx, channelID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to rename this chat")
+	}
+
+	channel.Title = newTitle
+	return s.chatRepo.UpdateChannel(ctx, channel)
 }

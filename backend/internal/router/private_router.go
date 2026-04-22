@@ -127,6 +127,7 @@ func (r *Router) setupPrivateRoutes(
 		chat.GET("/history", chatHandler.GetHistory) // History of channels
 		chat.GET("/history/:id", chatHandler.GetMessages) // History of messages
 		chat.POST("/channel", chatHandler.CreateChannel) // Create new channel
+		chat.PUT("/rename/:id", chatHandler.RenameChannel) // Rename channel
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")

@@ -25,6 +25,7 @@ type ChatHandler interface {
 	GetHistory(c *gin.Context)
 	GetMessages(c *gin.Context)
 	CreateChannel(c *gin.Context)
+	RenameChannel(c *gin.Context)
 }
 
 type chatHandler struct {
@@ -130,4 +131,33 @@ func (h *chatHandler) CreateChannel(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusCreated, "Channel created", channel)
+}
+func (h *chatHandler) RenameChannel(c *gin.Context) {
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	channelID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Error(c, http.StatusBadRequest, "Invalid channel ID")
+		return
+	}
+
+	var req struct {
+		Title string `json:"title" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.chatService.RenameChannel(c.Request.Context(), uid, uint(channelID), req.Title)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Chat renamed successfully", nil)
 }

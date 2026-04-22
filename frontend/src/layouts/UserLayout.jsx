@@ -19,7 +19,7 @@ import {
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify, safeParse } from "../utils/json";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../api/client";
 import Modal from "../components/Modal";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -30,6 +30,7 @@ import { toast } from "react-hot-toast";
 const UserLayout = () => {
   const { theme, toggleTheme } = useTheme();
   const { app_name, logo } = useSettings();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -142,13 +143,16 @@ const UserLayout = () => {
   }, []);
 
   const handleRenameSubmit = async () => {
-    if (!newTitle.trim()) return;
+    if (!newTitle.trim() || !activeChat) return;
     setIsActionLoading(true);
     try {
+      await apiClient.put(`/chat/rename/${activeChat.id}`, { title: newTitle });
+      await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Nama berhasil diubah");
       setIsRenameModalOpen(false);
     } catch (err) {
-      toast.error("Gagal mengubah nama");
+      console.error("Failed to rename chat:", err);
+      toast.error(err.response?.data?.message || "Gagal mengubah nama");
     } finally {
       setIsActionLoading(false);
     }
