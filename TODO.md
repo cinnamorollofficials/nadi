@@ -14,3 +14,17 @@
 9. buatkan fitur export result dari symtomp
 10. buatkan plan untuk hemat token ai dan performa untuk meminimkan respon gagal
 11. monitor juga respon ai yang berhasil dan gagal untuk dianalisa
+
+
+
+Deployment step:
+1. git pull main
+2. build frontend
+3. stop nadi service
+4. delete and create database (optional)
+5. run migration
+6. run seeder
+7. build nadi
+8. start nadi service
+9. tes login
+10. test chat konsultasi
