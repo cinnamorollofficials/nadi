@@ -26,7 +26,9 @@ var masterPermissionList = []string{
 	"service:view_redis", "service:manage_redis",
 	"service:view_kafka", "service:manage_kafka",
 	"log:audit", "log:http", "log:system",
-	"system:stat", "system:gen", "system:export", "system:profile", "any",
+	"system:stat", "system:gen", "system:export", "system:profile",
+		"aitier:view", "aitier:create", "aitier:edit", "aitier:delete", "any",
+	"aitier:view", "aitier:create", "aitier:edit", "aitier:delete",
 }
 
 type RolePermission struct {
@@ -62,6 +64,7 @@ func getRoleAssignments() []RolePermission {
 		"service:view_redis", "service:view_kafka",
 		"log:audit", "log:http", "log:system",
 		"system:stat", "system:export", "system:profile",
+		"aitier:view", "aitier:create", "aitier:edit", "aitier:delete",
 	}
 	for _, p := range adminPerms {
 		assignments = append(assignments, RolePermission{Role: "admin", Permission: p})
@@ -75,6 +78,7 @@ func getRoleAssignments() []RolePermission {
 		"service:view_redis", "service:view_kafka",
 		"log:audit", "log:http", "log:system",
 		"system:stat", "system:export", "system:profile",
+		"aitier:view", "aitier:create", "aitier:edit", "aitier:delete",
 	}
 	for _, p := range auditorPerms {
 		assignments = append(assignments, RolePermission{Role: "auditor", Permission: p})
@@ -87,6 +91,7 @@ func getRoleAssignments() []RolePermission {
 		"nutrisi:view", "nutrisi:create", "nutrisi:edit", "nutrisi:delete",
 		"faq:view", "faq:create", "faq:edit", "faq:delete",
 		"system:profile",
+		"aitier:view", "aitier:create", "aitier:edit", "aitier:delete",
 	}
 	for _, p := range copywritingPerms {
 		assignments = append(assignments, RolePermission{Role: "copywriting", Permission: p})

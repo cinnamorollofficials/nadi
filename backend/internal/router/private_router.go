@@ -31,6 +31,7 @@ func (r *Router) setupPrivateRoutes(
 	faqHandler customHandler.FaqHandler,
 	chatHandler customHandler.ChatHandler,
 	aiHandler handler.AiHandler,
+	aiTierHandler customHandler.AiTierHandler,
 	// [GENERATOR_INSERT_HANDLER_PARAM]
 ) {
 	// Health and Status
@@ -125,9 +126,23 @@ func (r *Router) setupPrivateRoutes(
 	{
 		chat.GET("/ws", chatHandler.HandleWebSocket) // Real-time chat
 		chat.GET("/history", chatHandler.GetHistory) // History of channels
-		chat.GET("/history/:id", chatHandler.GetMessages) // History of messages
+		chat.GET("/history/:uid", chatHandler.GetMessages) // History of messages
 		chat.POST("/channel", chatHandler.CreateChannel) // Create new channel
+		chat.PUT("/rename/:uid", chatHandler.RenameChannel) // Rename channel
+		chat.PATCH("/pin/:uid", chatHandler.TogglePinChannel) // Pin channel
+		chat.DELETE("/delete/:uid", chatHandler.DeleteChannel) // Delete channel
 	}
+
+	aiTiers := v1.Group("/ai-tiers")
+	aiTiers.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
+	{
+		aiTiers.POST("", permGuard.Check("aitier:create"), aiTierHandler.Create)
+		aiTiers.GET("", permGuard.Check("aitier:view"), aiTierHandler.GetAll)
+		aiTiers.GET("/:id", permGuard.Check("aitier:view"), aiTierHandler.GetByID)
+		aiTiers.PUT("/:id", permGuard.Check("aitier:edit"), aiTierHandler.Update)
+		aiTiers.DELETE("/:id", permGuard.Check("aitier:delete"), aiTierHandler.Delete)
+	}
+
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")
 	{

@@ -69,6 +69,7 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
             <motion.div
+              key="empty-state"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full text-center space-y-4"

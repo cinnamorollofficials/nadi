@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/hadi-projects/go-react-starter/internal/entity"
+	entity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	"gorm.io/gorm"
 )
 

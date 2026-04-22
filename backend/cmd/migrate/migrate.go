@@ -21,6 +21,13 @@ func main() {
 
 	logger.SystemLogger.Info().Msg("Starting auto-migration...")
 
+	// Truncate tables for a clean start as requested
+	logger.SystemLogger.Info().Msg("Truncating chat tables...")
+	db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
+	db.Exec("TRUNCATE TABLE chat_channels;")
+	db.Exec("TRUNCATE TABLE chat_messages;")
+	db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
+
 	err = db.AutoMigrate(
 		&entity.User{},
 		&entity.Role{},
@@ -43,7 +50,8 @@ func main() {
 		&customEntity.Faq{},
 		&customEntity.ChatChannel{},
 		&customEntity.ChatMessage{},
-		&customEntity.AiUsageLog{},
+		&entity.AiUsageLog{},
+		&entity.AiTier{},
 		// [GENERATOR_INSERT_MIGRATION]
 	)
 
@@ -72,6 +80,7 @@ func main() {
 	logger.SystemLogger.Info().Msg("Running Seeders...")
 	seeder.SeedRole(db)
 	seeder.SeedSettings(db)
+	seeder.SeedAiTier(db)
 
 	logger.SystemLogger.Info().Msg("Auto-migration completed successfully!")
 }

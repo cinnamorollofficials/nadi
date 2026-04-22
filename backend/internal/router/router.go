@@ -90,6 +90,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	faqRepo := customRepository.NewFaqRepository(db)
 	chatRepo := customRepository.NewChatRepository(db)
 	aiUsageRepo := customRepository.NewAiUsageRepository(db)
+	aiTierRepo := customRepository.NewAiTierRepository(db)
 	// [GENERATOR_INSERT_REPOSITORY]
 
 	// Initialize Encryptor
@@ -123,6 +124,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	faqService := customService.NewFaqService(faqRepo, r.cache)
 	geminiService := customService.NewGeminiService(r.config, chatRepo)
 	chatService := customService.NewChatService(chatRepo, userRepo, aiUsageRepo, geminiService, encryptor)
+	aiTierService := customService.NewAiTierService(aiTierRepo, r.cache)
 	// [GENERATOR_INSERT_SERVICE]
 
 	// Handlers
@@ -147,6 +149,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 	faqHandler := customHandler.NewFaqHandler(faqService)
 	chatHandler := customHandler.NewChatHandler(chatService)
 	aiHandler := handler.NewAiHandler(aiUsageRepo)
+	aiTierHandler := customHandler.NewAiTierHandler(aiTierService)
 	// [GENERATOR_INSERT_HANDLER]
 
 	v1 := router.Group("/api/v1")
@@ -167,6 +170,7 @@ func (r *Router) SetupRouter() *gin.Engine {
 			faqHandler,
 			chatHandler,
 			aiHandler,
+			aiTierHandler,
 			// [GENERATOR_INSERT_HANDLER_PARAM]
 		)
 	}

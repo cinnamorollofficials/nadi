@@ -4,19 +4,23 @@ import UserSidebar from "../components/UserSidebar";
 import { getMe } from "../api/admin";
 import { useTheme } from "../context/ThemeContext";
 import {
-  Bot,
-  Home,
+  Plus,
+  MessageSquare,
+  Share2,
+  Edit2,
+  Pin,
+  Trash2,
+  MoreVertical,
   History as HistoryIcon,
   Activity,
+  Bot,
   User as UserIcon,
-  Plus,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import { PERMS } from "../utils/permissions";
 import { safeStringify, safeParse } from "../utils/json";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../api/client";
-import { MessageSquare, Share2, Edit2, Pin, Trash2, MoreVertical } from "lucide-react";
 import Modal from "../components/Modal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import TextField from "../components/TextField";
@@ -26,6 +30,7 @@ import { toast } from "react-hot-toast";
 const UserLayout = () => {
   const { theme, toggleTheme } = useTheme();
   const { app_name, logo } = useSettings();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -138,21 +143,31 @@ const UserLayout = () => {
   }, []);
 
   const handleRenameSubmit = async () => {
-    if (!newTitle.trim()) return;
+    if (!newTitle.trim() || !activeChat) return;
     setIsActionLoading(true);
     try {
+      await apiClient.put(`/chat/rename/${activeChat.uid}`, { title: newTitle });
+      await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Nama berhasil diubah");
       setIsRenameModalOpen(false);
     } catch (err) {
-      toast.error("Gagal mengubah nama");
+      console.error("Failed to rename chat:", err);
+      toast.error(err.response?.data?.message || "Gagal mengubah nama");
     } finally {
       setIsActionLoading(false);
     }
   };
 
-  const handlePin = useCallback((chat) => {
-    toast.success(`"${chat.title}" di-pin`);
-  }, []);
+  const handlePin = useCallback(async (chat) => {
+    try {
+      await apiClient.patch(`/chat/pin/${chat.uid}`);
+      await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
+      toast.success(chat.is_pinned ? "Pin dilepas" : "Percakapan di-pin");
+    } catch (err) {
+      console.error("Failed to toggle pin:", err);
+      toast.error("Gagal mengubah status pin");
+    }
+  }, [queryClient]);
 
   const handleDeleteClick = useCallback((chat) => {
     setActiveChat(chat);
@@ -160,15 +175,21 @@ const UserLayout = () => {
   }, []);
 
   const handleDeleteConfirm = async () => {
+    if (!activeChat) return;
     setIsActionLoading(true);
     try {
+      await apiClient.delete(`/chat/delete/${activeChat.uid}`);
+      await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Percakapan dihapus");
       setIsDeleteOpen(false);
-      if (location.pathname.includes(`/consultations/ai/${activeChat.id}`)) {
+      
+      // If we are currently viewing the deleted chat, navigate away
+      if (location.pathname.includes(`/consultations/ai/${activeChat.uid}`)) {
         navigate("/consultations/ai");
       }
     } catch (err) {
-      toast.error("Gagal menghapus");
+      console.error("Failed to delete chat:", err);
+      toast.error(err.response?.data?.message || "Gagal menghapus");
     } finally {
       setIsActionLoading(false);
     }
@@ -184,7 +205,7 @@ const UserLayout = () => {
     } else if (path.includes("/consultations/ai/")) {
       // Find the specific chat title from history
       const chatId = path.split("/").pop();
-      const currentChat = chatHistory?.find((c) => String(c.id) === String(chatId));
+      const currentChat = chatHistory?.find((c) => String(c.uid) === String(chatId));
       const rawTitle = currentChat ? currentChat.title : "Konsultasi AI";
       title = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
     } else if (path.includes("/consultations/ai")) {
@@ -205,32 +226,41 @@ const UserLayout = () => {
       .filter((chat) => {
         const isSearchMatch = chat.title.toLowerCase().includes(searchQuery.toLowerCase());
         const isGhost = chat.title === "New Conversation" && chat.message_count === 0;
-        const isCurrent = String(chat.id) === String(location.pathname.split('/').pop());
+        const isCurrent = String(chat.uid) === String(location.pathname.split('/').pop());
         
         return isSearchMatch && (!isGhost || isCurrent);
       })
-      .slice(0, 10) // Show last 10 in sidebar
+      .sort((a, b) => {
+        if (a.is_pinned && !b.is_pinned) return -1;
+        if (!a.is_pinned && b.is_pinned) return 1;
+        return 0; // Maintain relative order for same pin status (which is updated_at DESC from backend)
+      })
+      .slice(0, 15) // Show more items now that pinning is available
       .map((chat) => {
         const title = chat.title.charAt(0).toUpperCase() + chat.title.slice(1);
         return {
-          id: `chat-${chat.id}`,
+          id: `chat-${chat.uid}`,
           label: title,
-          path: `/consultations/ai/${chat.id}`,
+          path: `/consultations/ai/${chat.uid}`,
+          isPinned: chat.is_pinned,
           actions: [
             {
               label: "Bagikan",
               icon: <Share2 size={14} />,
+              className: "hover:bg-primary/10 hover:text-error",
               onClick: () => handleShare(chat)
             },
             {
               label: "Ubah Nama",
               icon: <Edit2 size={14} />,
+              className: "hover:bg-primary/10 hover:text-error",
               onClick: () => handleRenameClick(chat)
             },
             {
-              label: "Pin",
-              icon: <Pin size={14} />,
-              onClick: () => handlePin(chat)
+              label: chat.is_pinned ? "Lepas Pin" : "Pin",
+              icon: <Pin size={14} className={chat.is_pinned ? "fill-current" : ""} />,
+              onClick: () => handlePin(chat),
+              className: "hover:bg-primary/10 hover:text-error",
             },
             {
               label: "Hapus",
@@ -249,7 +279,6 @@ const UserLayout = () => {
             label: "Mulai Konsultasi Baru",
             path: "/consultations/ai",
             icon: <Plus size={18} />,
-            highlight: true,
           },
         ],
       },

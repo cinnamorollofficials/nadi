@@ -4,17 +4,24 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
+
 	"github.com/hadi-projects/go-react-starter/internal/entity"
+	defaultEntity "github.com/hadi-projects/go-react-starter/internal/entity/default"
 	"github.com/hadi-projects/go-react-starter/internal/repository"
 	defaultRepo "github.com/hadi-projects/go-react-starter/internal/repository/default"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/crypto"
 )
 
 type ChatService interface {
 	CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error)
 	GetChatHistory(ctx context.Context, userID uint) ([]entity.ChatChannel, error)
-	GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error)
-	ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error
+	GetMessages(ctx context.Context, userID uint, channelUID string) ([]entity.ChatMessage, error)
+	ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error
+	RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error
+	TogglePinChannel(ctx context.Context, userID uint, channelUID string) error
+	DeleteChannel(ctx context.Context, userID uint, channelUID string) error
 }
 
 type chatService struct {
@@ -26,8 +33,8 @@ type chatService struct {
 }
 
 func NewChatService(
-	chatRepo repository.ChatRepository, 
-	userRepo defaultRepo.UserRepository, 
+	chatRepo repository.ChatRepository,
+	userRepo defaultRepo.UserRepository,
 	aiUsageRepo repository.AiUsageRepository,
 	geminiService GeminiService,
 	encryptor *crypto.Encryptor,
@@ -43,6 +50,7 @@ func NewChatService(
 
 func (s *chatService) CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error) {
 	channel := &entity.ChatChannel{
+		UID:    utils.GenerateUID(),
 		UserID: userID,
 		Title:  "New Conversation",
 		Mode:   mode,
@@ -56,8 +64,17 @@ func (s *chatService) GetChatHistory(ctx context.Context, userID uint) ([]entity
 	return s.chatRepo.GetChannelsByUserID(ctx, userID)
 }
 
-func (s *chatService) GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error) {
-	messages, err := s.chatRepo.GetMessagesByChannelID(ctx, channelID)
+func (s *chatService) GetMessages(ctx context.Context, userID uint, channelUID string) ([]entity.ChatMessage, error) {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if channel.UserID != userID {
+		return nil, fmt.Errorf("unauthorized access to chat")
+	}
+
+	messages, err := s.chatRepo.GetMessagesByChannelID(ctx, channel.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -72,11 +89,15 @@ func (s *chatService) GetMessages(ctx context.Context, channelID uint) ([]entity
 	return messages, nil
 }
 
-func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error {
+func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error {
 	// 1. Get channel info with recent messages
-	channel, err := s.chatRepo.GetChannelWithMessages(ctx, channelID)
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
 	if err != nil {
 		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to post to this chat")
 	}
 
 	// Decrypt context messages for Gemini
@@ -92,14 +113,29 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 		return err
 	}
 
-	if user.CurrentUsage >= user.UsageLimit {
-		return fmt.Errorf("batas konsultasi harian Anda (%d/%d) telah tercapai. Silakan coba lagi besok.", user.CurrentUsage, user.UsageLimit)
+	// 1.1 Check and Reset Daily Usage
+	now := time.Now().UTC()
+	if user.UpdatedAt.Year() != now.Year() || user.UpdatedAt.YearDay() != now.YearDay() {
+		user.CurrentUsage = 0
+	}
+
+	// 1.2 Calculate Effective Limit
+	effectiveLimit := user.UsageLimit
+	if effectiveLimit <= 0 {
+		effectiveLimit = user.AiTier.DailyLimit
+	}
+	if effectiveLimit <= 0 {
+		effectiveLimit = 20 // Absolute fallback
+	}
+
+	if user.CurrentUsage >= effectiveLimit {
+		return fmt.Errorf("batas konsultasi harian Anda (%d/%d) telah tercapai. Silakan coba lagi besok.", user.CurrentUsage, effectiveLimit)
 	}
 
 	// 2. Save User Message to DB (Encrypted)
 	encryptedUserMsg, _ := s.encryptor.Encrypt(userMessage)
 	userMsg := &entity.ChatMessage{
-		ChannelID: channelID,
+		ChannelID: channel.ID,
 		Role:      "user",
 		Content:   encryptedUserMsg,
 	}
@@ -121,7 +157,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	// 4. Save entire AI Message to DB (Encrypted)
 	encryptedAiMsg, _ := s.encryptor.Encrypt(fullResponse.String())
 	aiMsg := &entity.ChatMessage{
-		ChannelID: channelID,
+		ChannelID: channel.ID,
 		Role:      "assistant",
 		Content:   encryptedAiMsg,
 	}
@@ -146,7 +182,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	// 7. Save AI Usage Log
 	if usage != nil {
 		cost := (float64(usage.PromptTokenCount) * 0.0000001) + (float64(usage.CandidatesTokenCount) * 0.0000004)
-		s.aiUsageRepo.Create(ctx, &entity.AiUsageLog{
+		s.aiUsageRepo.Create(ctx, &defaultEntity.AiUsageLog{
 			UserID:           channel.UserID,
 			PromptTokens:     int(usage.PromptTokenCount),
 			CandidatesTokens: int(usage.CandidatesTokenCount),
@@ -157,4 +193,44 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	}
 
 	return nil
+}
+func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to rename this chat")
+	}
+
+	channel.Title = newTitle
+	return s.chatRepo.UpdateChannel(ctx, channel)
+}
+
+func (s *chatService) TogglePinChannel(ctx context.Context, userID uint, channelUID string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to pin this chat")
+	}
+
+	channel.IsPinned = !channel.IsPinned
+	return s.chatRepo.UpdateChannel(ctx, channel)
+}
+
+func (s *chatService) DeleteChannel(ctx context.Context, userID uint, channelUID string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to delete this chat")
+	}
+
+	return s.chatRepo.DeleteChannel(ctx, channel.ID)
 }

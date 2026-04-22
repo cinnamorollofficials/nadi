@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -25,6 +24,9 @@ type ChatHandler interface {
 	GetHistory(c *gin.Context)
 	GetMessages(c *gin.Context)
 	CreateChannel(c *gin.Context)
+	RenameChannel(c *gin.Context)
+	TogglePinChannel(c *gin.Context)
+	DeleteChannel(c *gin.Context)
 }
 
 type chatHandler struct {
@@ -36,7 +38,7 @@ func NewChatHandler(chatService service.ChatService) ChatHandler {
 }
 
 func (h *chatHandler) HandleWebSocket(c *gin.Context) {
-	_, err := utils.GetUserID(c)
+	uid, err := utils.GetUserID(c)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
@@ -51,7 +53,7 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 	for {
 		var msg struct {
 			Type      string `json:"type"`
-			ChannelID uint   `json:"channel_id"`
+			ChannelUID string `json:"channel_uid"`
 			Content   string `json:"content"`
 		}
 
@@ -60,7 +62,7 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 		}
 
 		if msg.Type == "message" {
-			err := h.chatService.ProcessMessage(c.Request.Context(), msg.ChannelID, msg.Content, func(chunk string) {
+			err := h.chatService.ProcessMessage(c.Request.Context(), uid, msg.ChannelUID, msg.Content, func(chunk string) {
 				conn.WriteJSON(gin.H{
 					"type":    "chunk",
 					"content": chunk,
@@ -93,13 +95,19 @@ func (h *chatHandler) GetHistory(c *gin.Context) {
 }
 
 func (h *chatHandler) GetMessages(c *gin.Context) {
-	channelID, err := strconv.Atoi(c.Param("id"))
+	uid, err := utils.GetUserID(c)
 	if err != nil {
-		response.Error(c, http.StatusBadRequest, "Invalid channel ID")
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
 		return
 	}
 
-	messages, err := h.chatService.GetMessages(c.Request.Context(), uint(channelID))
+	channelUID := c.Param("uid")
+	if channelUID == "" {
+		response.Error(c, http.StatusBadRequest, "Invalid channel UID")
+		return
+	}
+
+	messages, err := h.chatService.GetMessages(c.Request.Context(), uid, channelUID)
 	if err != nil {
 		response.Error(c, http.StatusInternalServerError, err.Error())
 		return
@@ -130,4 +138,77 @@ func (h *chatHandler) CreateChannel(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusCreated, "Channel created", channel)
+}
+func (h *chatHandler) RenameChannel(c *gin.Context) {
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	channelUID := c.Param("uid")
+	if channelUID == "" {
+		response.Error(c, http.StatusBadRequest, "Invalid channel UID")
+		return
+	}
+
+	var req struct {
+		Title string `json:"title" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = h.chatService.RenameChannel(c.Request.Context(), uid, channelUID, req.Title)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Chat renamed successfully", nil)
+}
+
+func (h *chatHandler) TogglePinChannel(c *gin.Context) {
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	channelUID := c.Param("uid")
+	if channelUID == "" {
+		response.Error(c, http.StatusBadRequest, "Invalid channel UID")
+		return
+	}
+
+	err = h.chatService.TogglePinChannel(c.Request.Context(), uid, channelUID)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Pin status toggled", nil)
+}
+
+func (h *chatHandler) DeleteChannel(c *gin.Context) {
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	channelUID := c.Param("uid")
+	if channelUID == "" {
+		response.Error(c, http.StatusBadRequest, "Invalid channel UID")
+		return
+	}
+
+	err = h.chatService.DeleteChannel(c.Request.Context(), uid, channelUID)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Chat deleted successfully", nil)
 }

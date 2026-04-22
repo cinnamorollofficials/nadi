@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight } from "lucide-react";
+import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight, MoreVertical, Pin } from "lucide-react";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
@@ -27,6 +27,7 @@ const UserSidebar = ({
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({});
   const isActuallyCollapsed = collapsed && !mobileOpen;
+  const navigate = useNavigate();
 
   const isActive = (path) => location.pathname === path;
   const isChildActive = (item) => {
@@ -91,7 +92,7 @@ const UserSidebar = ({
           fixed inset-y-0 left-0 z-[70] lg:relative lg:translate-x-0
           ${mobileOpen ? "translate-x-0" : "-translate-x-full"} 
           glass-sidebar shadow-xl lg:shadow-none`}
-        style={{ overflow: (isActuallyCollapsed && !mobileOpen) ? "visible" : "hidden" }}
+        style={{ overflow: "visible" }}
       >
       {/* Header with toggle button */}
       <div
@@ -184,25 +185,48 @@ const UserSidebar = ({
             )}
             <ul className={`space-y-0.5 ${collapsed ? "px-2" : "px-3"}`}>
               {section.items
-                .filter(item => !isActuallyCollapsed || item.highlight)
+                .filter(item => !isActuallyCollapsed || item.highlight || item.icon)
                 .map((item) => {
                   const active = isChildActive(item);
                   const hasSubItems = !!item.subItems;
+                  const hasActions = item.actions && item.actions.length > 0;
 
                 if (isActuallyCollapsed) {
                   const href = item.subItems ? item.subItems[0]?.path : item.path;
+                  const innerContent = (
+                    <div
+                      className={`flex items-center justify-center w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
+                        active
+                          ? "text-on-primary"
+                          : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
+                      }`}
+                    >
+                      {item.icon || (hasActions ? <MoreVertical size={18} /> : null)}
+                    </div>
+                  );
+
                   return (
                     <li key={item.id || item.path || item.label} className="relative group/sidebar-item">
-                      <Link
-                        to={href || "#"}
-                        className={`flex items-center justify-center w-full p-3 rounded-xl transition-all duration-200 ${
-                          active
-                            ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
-                            : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
-                        }`}
-                      >
-                        {item.icon}
-                      </Link>
+                      {hasActions ? (
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <Dropdown
+                            trigger={innerContent}
+                            actions={[
+                              {
+                                label: "Buka Chat",
+                                icon: <ArrowUpRight size={14} />,
+                                onClick: () => navigate(href)
+                              },
+                              ...item.actions
+                            ]}
+                            align="right-side"
+                          />
+                        </div>
+                      ) : (
+                        <Link to={href || "#"}>
+                          {innerContent}
+                        </Link>
+                      )}
 
                       <div className="absolute left-full top-0 ml-3 invisible opacity-0 -translate-x-4 group-hover/sidebar-item:visible group-hover/sidebar-item:opacity-100 group-hover/sidebar-item:translate-x-0 transition-all duration-500 z-50">
                         {hasSubItems ? (
@@ -309,32 +333,39 @@ const UserSidebar = ({
                         </div>
                       </div>
                     ) : (
-                      <Link
-                        to={item.path}
-                        className={`flex items-center gap-3 px-3 py-1 rounded-xl transition-all duration-300 group ${
+                      <div
+                        className={`flex items-center justify-between px-3 rounded-xl transition-all duration-300 group relative ${
                           active
                             ? "bg-surface-variant/50 text-surface-on font-semibold"
                             : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                         }`}
                       >
-                        {item.icon && <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{item.icon}</div>}
-                        <span className="text-sm font-medium whitespace-nowrap truncate flex-1">{item.label}</span>
+                        <Link
+                          to={item.path}
+                          className="flex items-center gap-3 flex-1 overflow-hidden py-2"
+                        >
+                          {item.icon && <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{item.icon}</div>}
+                          <span className="text-sm font-medium whitespace-nowrap truncate">{item.label}</span>
+                        </Link>
+                        {!isActuallyCollapsed && item.isPinned && (
+                          <div className="text-primary flex-shrink-0 mr-1 animate-in zoom-in duration-300">
+                            <Pin size={12} className="fill-current rotate-45" />
+                          </div>
+                        )}
                         {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
-                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                          <div className="relative z-20 flex-shrink-0 ml-1">
                             <Dropdown
                               trigger={
-                                <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/50 hover:text-surface-on transition-all">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                  </svg>
+                                <button className="p-1 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-surface-on-variant/60 hover:text-surface-on transition-all">
+                                  <MoreVertical size={16} />
                                 </button>
                               }
                               actions={item.actions}
-                              align="right"
+                              align="right-side"
                             />
                           </div>
                         )}
-                      </Link>
+                      </div>
                     )}
                   </li>
                 );
