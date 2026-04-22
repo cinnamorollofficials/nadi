@@ -18,6 +18,7 @@ type ChatService interface {
 	ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error
 	RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error
 	TogglePinChannel(ctx context.Context, userID uint, channelUID string) error
+	DeleteChannel(ctx context.Context, userID uint, channelUID string) error
 }
 
 type chatService struct {
@@ -201,4 +202,17 @@ func (s *chatService) TogglePinChannel(ctx context.Context, userID uint, channel
 
 	channel.IsPinned = !channel.IsPinned
 	return s.chatRepo.UpdateChannel(ctx, channel)
+}
+
+func (s *chatService) DeleteChannel(ctx context.Context, userID uint, channelUID string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to delete this chat")
+	}
+
+	return s.chatRepo.DeleteChannel(ctx, channel.ID)
 }

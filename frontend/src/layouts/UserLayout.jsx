@@ -175,15 +175,21 @@ const UserLayout = () => {
   }, []);
 
   const handleDeleteConfirm = async () => {
+    if (!activeChat) return;
     setIsActionLoading(true);
     try {
+      await apiClient.delete(`/chat/delete/${activeChat.uid}`);
+      await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Percakapan dihapus");
       setIsDeleteOpen(false);
-      if (location.pathname.includes(`/consultations/ai/${activeChat.id}`)) {
+      
+      // If we are currently viewing the deleted chat, navigate away
+      if (location.pathname.includes(`/consultations/ai/${activeChat.uid}`)) {
         navigate("/consultations/ai");
       }
     } catch (err) {
-      toast.error("Gagal menghapus");
+      console.error("Failed to delete chat:", err);
+      toast.error(err.response?.data?.message || "Gagal menghapus");
     } finally {
       setIsActionLoading(false);
     }

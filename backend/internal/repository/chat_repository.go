@@ -12,6 +12,7 @@ type ChatRepository interface {
 	GetChannelWithMessages(ctx context.Context, channelID uint) (*entity.ChatChannel, error)
 	GetChannelByUID(ctx context.Context, uid string) (*entity.ChatChannel, error)
 	UpdateChannel(ctx context.Context, channel *entity.ChatChannel) error
+	DeleteChannel(ctx context.Context, channelID uint) error
 	
 	CreateMessage(ctx context.Context, message *entity.ChatMessage) error
 	GetMessagesByChannelID(ctx context.Context, channelID uint) ([]entity.ChatMessage, error)
@@ -63,6 +64,17 @@ func (r *chatRepository) GetChannelByUID(ctx context.Context, uid string) (*enti
 
 func (r *chatRepository) UpdateChannel(ctx context.Context, channel *entity.ChatChannel) error {
 	return r.db.WithContext(ctx).Save(channel).Error
+}
+
+func (r *chatRepository) DeleteChannel(ctx context.Context, channelID uint) error {
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// Delete all messages in the channel first to satisfy foreign key constraints
+		if err := tx.Where("channel_id = ?", channelID).Delete(&entity.ChatMessage{}).Error; err != nil {
+			return err
+		}
+		// Delete the channel itself
+		return tx.Delete(&entity.ChatChannel{}, channelID).Error
+	})
 }
 
 func (r *chatRepository) CreateMessage(ctx context.Context, message *entity.ChatMessage) error {

@@ -129,6 +129,7 @@ func (r *Router) setupPrivateRoutes(
 		chat.POST("/channel", chatHandler.CreateChannel) // Create new channel
 		chat.PUT("/rename/:uid", chatHandler.RenameChannel) // Rename channel
 		chat.PATCH("/pin/:uid", chatHandler.TogglePinChannel) // Pin channel
+		chat.DELETE("/delete/:uid", chatHandler.DeleteChannel) // Delete channel
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")

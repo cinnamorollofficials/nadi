@@ -26,6 +26,7 @@ type ChatHandler interface {
 	CreateChannel(c *gin.Context)
 	RenameChannel(c *gin.Context)
 	TogglePinChannel(c *gin.Context)
+	DeleteChannel(c *gin.Context)
 }
 
 type chatHandler struct {
@@ -188,4 +189,26 @@ func (h *chatHandler) TogglePinChannel(c *gin.Context) {
 	}
 
 	response.Success(c, http.StatusOK, "Pin status toggled", nil)
+}
+
+func (h *chatHandler) DeleteChannel(c *gin.Context) {
+	uid, err := utils.GetUserID(c)
+	if err != nil {
+		response.Error(c, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	channelUID := c.Param("uid")
+	if channelUID == "" {
+		response.Error(c, http.StatusBadRequest, "Invalid channel UID")
+		return
+	}
+
+	err = h.chatService.DeleteChannel(c.Request.Context(), uid, channelUID)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response.Success(c, http.StatusOK, "Chat deleted successfully", nil)
 }
