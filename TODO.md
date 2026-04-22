@@ -28,3 +28,13 @@ Deployment step:
 8. start nadi service
 9. tes login
 10. test chat konsultasi
+
+
+Required QA
+1. register by email
+2. login by email
+3. register by google account
+4. login by google account
+5. start ai consultation
+6. start ai consultation from medicpedia
+7. start ai symtomp checker
