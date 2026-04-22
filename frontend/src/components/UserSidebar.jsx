@@ -197,7 +197,7 @@ const UserSidebar = ({
                     <div
                       className={`flex items-center justify-center w-full p-3 rounded-xl transition-all duration-200 cursor-pointer ${
                         active
-                          ? "bg-primary text-on-primary shadow-lg shadow-primary/20"
+                          ? "text-on-primary"
                           : "text-surface-on-variant hover:bg-surface-variant/50 hover:text-surface-on"
                       }`}
                     >
