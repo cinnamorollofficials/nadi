@@ -125,9 +125,10 @@ func (r *Router) setupPrivateRoutes(
 	{
 		chat.GET("/ws", chatHandler.HandleWebSocket) // Real-time chat
 		chat.GET("/history", chatHandler.GetHistory) // History of channels
-		chat.GET("/history/:id", chatHandler.GetMessages) // History of messages
+		chat.GET("/history/:uid", chatHandler.GetMessages) // History of messages
 		chat.POST("/channel", chatHandler.CreateChannel) // Create new channel
-		chat.PUT("/rename/:id", chatHandler.RenameChannel) // Rename channel
+		chat.PUT("/rename/:uid", chatHandler.RenameChannel) // Rename channel
+		chat.PATCH("/pin/:uid", chatHandler.TogglePinChannel) // Pin channel
 	}
 	// [GENERATOR_INSERT_GROUP]
 	auth := v1.Group("/auth")

@@ -11,6 +11,7 @@ const (
 
 type ChatChannel struct {
 	ID        uint          `gorm:"primaryKey;autoIncrement" json:"id"`
+	UID       string        `gorm:"type:varchar(100);uniqueIndex" json:"uid"`
 	UserID    uint          `gorm:"not null;index" json:"user_id"`
 	Title     string        `gorm:"type:varchar(255);not null" json:"title"`
 	Mode      ChatMode      `gorm:"type:varchar(50);default:'consultation'" json:"mode"`
@@ -19,6 +20,7 @@ type ChatChannel struct {
 	UpdatedAt time.Time     `json:"updated_at"`
 	Messages     []ChatMessage `gorm:"foreignKey:ChannelID" json:"messages,omitempty"`
 	MessageCount int           `gorm:"-" json:"message_count"`
+	IsPinned     bool          `gorm:"default:false" json:"is_pinned"`
 }
 
 type ChatMessage struct {

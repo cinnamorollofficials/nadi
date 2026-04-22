@@ -21,6 +21,13 @@ func main() {
 
 	logger.SystemLogger.Info().Msg("Starting auto-migration...")
 
+	// Truncate tables for a clean start as requested
+	logger.SystemLogger.Info().Msg("Truncating chat tables...")
+	db.Exec("SET FOREIGN_KEY_CHECKS = 0;")
+	db.Exec("TRUNCATE TABLE chat_channels;")
+	db.Exec("TRUNCATE TABLE chat_messages;")
+	db.Exec("SET FOREIGN_KEY_CHECKS = 1;")
+
 	err = db.AutoMigrate(
 		&entity.User{},
 		&entity.Role{},

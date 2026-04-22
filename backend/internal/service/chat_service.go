@@ -8,14 +8,16 @@ import (
 	"github.com/hadi-projects/go-react-starter/internal/repository"
 	defaultRepo "github.com/hadi-projects/go-react-starter/internal/repository/default"
 	"github.com/hadi-projects/go-react-starter/pkg/crypto"
+	"github.com/hadi-projects/go-react-starter/internal/utils"
 )
 
 type ChatService interface {
 	CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error)
 	GetChatHistory(ctx context.Context, userID uint) ([]entity.ChatChannel, error)
-	GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error)
-	ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error
-	RenameChannel(ctx context.Context, userID uint, channelID uint, newTitle string) error
+	GetMessages(ctx context.Context, userID uint, channelUID string) ([]entity.ChatMessage, error)
+	ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error
+	RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error
+	TogglePinChannel(ctx context.Context, userID uint, channelUID string) error
 }
 
 type chatService struct {
@@ -44,6 +46,7 @@ func NewChatService(
 
 func (s *chatService) CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error) {
 	channel := &entity.ChatChannel{
+		UID:    utils.GenerateUID(),
 		UserID: userID,
 		Title:  "New Conversation",
 		Mode:   mode,
@@ -57,8 +60,17 @@ func (s *chatService) GetChatHistory(ctx context.Context, userID uint) ([]entity
 	return s.chatRepo.GetChannelsByUserID(ctx, userID)
 }
 
-func (s *chatService) GetMessages(ctx context.Context, channelID uint) ([]entity.ChatMessage, error) {
-	messages, err := s.chatRepo.GetMessagesByChannelID(ctx, channelID)
+func (s *chatService) GetMessages(ctx context.Context, userID uint, channelUID string) ([]entity.ChatMessage, error) {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if channel.UserID != userID {
+		return nil, fmt.Errorf("unauthorized access to chat")
+	}
+
+	messages, err := s.chatRepo.GetMessagesByChannelID(ctx, channel.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,11 +85,15 @@ func (s *chatService) GetMessages(ctx context.Context, channelID uint) ([]entity
 	return messages, nil
 }
 
-func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMessage string, onChunk func(string)) error {
+func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error {
 	// 1. Get channel info with recent messages
-	channel, err := s.chatRepo.GetChannelWithMessages(ctx, channelID)
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
 	if err != nil {
 		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to post to this chat")
 	}
 
 	// Decrypt context messages for Gemini
@@ -100,7 +116,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	// 2. Save User Message to DB (Encrypted)
 	encryptedUserMsg, _ := s.encryptor.Encrypt(userMessage)
 	userMsg := &entity.ChatMessage{
-		ChannelID: channelID,
+		ChannelID: channel.ID,
 		Role:      "user",
 		Content:   encryptedUserMsg,
 	}
@@ -122,7 +138,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 	// 4. Save entire AI Message to DB (Encrypted)
 	encryptedAiMsg, _ := s.encryptor.Encrypt(fullResponse.String())
 	aiMsg := &entity.ChatMessage{
-		ChannelID: channelID,
+		ChannelID: channel.ID,
 		Role:      "assistant",
 		Content:   encryptedAiMsg,
 	}
@@ -159,8 +175,8 @@ func (s *chatService) ProcessMessage(ctx context.Context, channelID uint, userMe
 
 	return nil
 }
-func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelID uint, newTitle string) error {
-	channel, err := s.chatRepo.GetChannelWithMessages(ctx, channelID)
+func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
 	if err != nil {
 		return err
 	}
@@ -170,5 +186,19 @@ func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelID 
 	}
 
 	channel.Title = newTitle
+	return s.chatRepo.UpdateChannel(ctx, channel)
+}
+
+func (s *chatService) TogglePinChannel(ctx context.Context, userID uint, channelUID string) error {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return err
+	}
+
+	if channel.UserID != userID {
+		return fmt.Errorf("unauthorized to pin this chat")
+	}
+
+	channel.IsPinned = !channel.IsPinned
 	return s.chatRepo.UpdateChannel(ctx, channel)
 }

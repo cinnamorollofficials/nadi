@@ -99,7 +99,7 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
 
     const message = {
       type: 'message',
-      channel_id: parseInt(channelId),
+      channel_uid: channelId,
       content: content
     };
 

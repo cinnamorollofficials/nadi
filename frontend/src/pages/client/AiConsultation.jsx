@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../api/client";
 import ChatInterface from "../../components/Chat/ChatInterface";
@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 const AiConsultation = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const [activeChannelId, setActiveChannelId] = useState(id);
 
@@ -21,7 +22,7 @@ const AiConsultation = () => {
     },
     onSuccess: (newChannel) => {
       queryClient.invalidateQueries({ queryKey: ["chat-history"] });
-      navigate(`/consultations/ai/${newChannel.id}`);
+      navigate(`/consultations/ai/${newChannel.uid}`);
     },
   });
 
@@ -37,7 +38,7 @@ const AiConsultation = () => {
 
   // Load existing messages when channel changes
   useEffect(() => {
-    if (activeChannelId) {
+    if (activeChannelId && activeChannelId !== "undefined") {
       const fetchMessages = async () => {
         try {
           const response = await apiClient.get(`/chat/history/${activeChannelId}`);
@@ -56,12 +57,20 @@ const AiConsultation = () => {
 
   useEffect(() => {
     setActiveChannelId(id);
-    
-    // Auto-start new chat if landing on root AI page without an ID
-    if (!id) {
-      handleNewChat();
-    }
   }, [id]);
+
+  // Handle initial message after navigation
+  useEffect(() => {
+    if (activeChannelId && location.state?.initialMessage) {
+      // Small delay to ensure socket is ready
+      const timer = setTimeout(() => {
+        sendMessage(location.state.initialMessage);
+        // Clear state so it doesn't resend on refresh
+        navigate(location.pathname, { replace: true, state: {} });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeChannelId, location.state, sendMessage, navigate, location.pathname]);
 
   // Fetch history to check for empty chats
   const { data: history } = useQuery({
@@ -79,13 +88,28 @@ const AiConsultation = () => {
     // Check if the most recent chat is empty (no messages)
     const emptyChat = history?.find(h => h.message_count === 0);
     if (emptyChat) {
-      if (id !== String(emptyChat.id)) {
-        navigate(`/consultations/ai/${emptyChat.id}`);
+      if (id !== emptyChat.uid) {
+        navigate(`/consultations/ai/${emptyChat.uid}`);
       }
       return;
     }
 
     createChannelMutation.mutate();
+  };
+
+  const handleSendMessage = async (content) => {
+    if (!activeChannelId) {
+      // 1. Create channel first
+      try {
+        const newChannel = await createChannelMutation.mutateAsync();
+        // 2. Navigate to new UID
+        navigate(`/consultations/ai/${newChannel.uid}`, { state: { initialMessage: content } });
+      } catch (err) {
+        console.error("Failed to start chat", err);
+      }
+    } else {
+      sendMessage(content);
+    }
   };
 
   return (
@@ -95,8 +119,8 @@ const AiConsultation = () => {
         {activeChannelId ? (
           <ChatInterface
             messages={messages}
-            onSendMessage={sendMessage}
-            isTyping={isTyping}
+            onSendMessage={handleSendMessage}
+            isTyping={isTyping || createChannelMutation.isPending}
             error={error}
           />
         ) : (

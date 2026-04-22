@@ -10,6 +10,7 @@ type ChatRepository interface {
 	CreateChannel(ctx context.Context, channel *entity.ChatChannel) error
 	GetChannelsByUserID(ctx context.Context, userID uint) ([]entity.ChatChannel, error)
 	GetChannelWithMessages(ctx context.Context, channelID uint) (*entity.ChatChannel, error)
+	GetChannelByUID(ctx context.Context, uid string) (*entity.ChatChannel, error)
 	UpdateChannel(ctx context.Context, channel *entity.ChatChannel) error
 	
 	CreateMessage(ctx context.Context, message *entity.ChatMessage) error
@@ -45,6 +46,15 @@ func (r *chatRepository) GetChannelsByUserID(ctx context.Context, userID uint) (
 func (r *chatRepository) GetChannelWithMessages(ctx context.Context, channelID uint) (*entity.ChatChannel, error) {
 	var channel entity.ChatChannel
 	err := r.db.WithContext(ctx).Preload("Messages").First(&channel, channelID).Error
+	if err != nil {
+		return nil, err
+	}
+	return &channel, nil
+}
+
+func (r *chatRepository) GetChannelByUID(ctx context.Context, uid string) (*entity.ChatChannel, error) {
+	var channel entity.ChatChannel
+	err := r.db.WithContext(ctx).Preload("Messages").Where("uid = ?", uid).First(&channel).Error
 	if err != nil {
 		return nil, err
 	}
