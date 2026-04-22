@@ -49,6 +49,8 @@ const AiConsultation = () => {
           })));
         } catch (err) {
           console.error("Failed to fetch messages", err);
+          // Redirect to root if access is denied or channel not found
+          navigate("/consultations/ai");
         }
       };
       fetchMessages();
@@ -84,15 +86,6 @@ const AiConsultation = () => {
   const handleNewChat = () => {
     // Prevent multiple simultaneous creations
     if (createChannelMutation.isPending) return;
-
-    // Check if the most recent chat is empty (no messages)
-    const emptyChat = history?.find(h => h.message_count === 0);
-    if (emptyChat) {
-      if (id !== emptyChat.uid) {
-        navigate(`/consultations/ai/${emptyChat.uid}`);
-      }
-      return;
-    }
 
     createChannelMutation.mutate();
   };

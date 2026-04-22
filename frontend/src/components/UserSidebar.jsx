@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight, MoreVertical } from "lucide-react";
+import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight, MoreVertical, Pin } from "lucide-react";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
@@ -347,6 +347,11 @@ const UserSidebar = ({
                           {item.icon && <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{item.icon}</div>}
                           <span className="text-sm font-medium whitespace-nowrap truncate">{item.label}</span>
                         </Link>
+                        {!isActuallyCollapsed && item.isPinned && (
+                          <div className="text-primary flex-shrink-0 mr-1 animate-in zoom-in duration-300">
+                            <Pin size={12} className="fill-current rotate-45" />
+                          </div>
+                        )}
                         {!isActuallyCollapsed && item.actions && item.actions.length > 0 && (
                           <div className="relative z-20 flex-shrink-0 ml-1">
                             <Dropdown

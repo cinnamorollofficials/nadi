@@ -236,6 +236,7 @@ const UserLayout = () => {
           id: `chat-${chat.uid}`,
           label: title,
           path: `/consultations/ai/${chat.uid}`,
+          isPinned: chat.is_pinned,
           actions: [
             {
               label: "Bagikan",
