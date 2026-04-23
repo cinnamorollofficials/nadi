@@ -7,38 +7,54 @@ import { useSettings } from "../../context/SettingsContext";
 import LottieLogo from "../LottieLogo";
 import Label from "../Label";
 
-const MarkdownRenderer = ({ content }) => {
-  return (
-    <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
-      components={{
-        p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-        ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
-        ol: ({ children }) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
-        li: ({ children }) => <li className="mb-1">{children}</li>,
-        h1: ({ children }) => <h1 className="text-xl font-bold mb-2">{children}</h1>,
-        h2: ({ children }) => <h2 className="text-lg font-bold mb-2">{children}</h2>,
-        h3: ({ children }) => <h3 className="text-md font-bold mb-2">{children}</h3>,
-        blockquote: ({ children }) => (
-          <blockquote className="border-l-4 border-primary/30 pl-4 italic my-2">
-            {children}
-          </blockquote>
-        ),
-        table: ({ children }) => (
-          <div className="overflow-x-auto my-4">
-            <table className="min-w-full border border-outline-variant/30 text-sm">
-              {children}
-            </table>
-          </div>
-        ),
-        th: ({ children }) => <th className="border border-outline-variant/30 p-2 bg-surface-variant/20">{children}</th>,
-        td: ({ children }) => <td className="border border-outline-variant/30 p-2">{children}</td>,
-      }}
-    >
-      {content}
-    </ReactMarkdown>
-  );
+const DiseaseButton = ({ name, onClick }) => (
+  <button
+    onClick={() => onClick?.(name)}
+    className="inline-flex items-center gap-1.5 mt-2 mb-1 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl font-bold text-xs transition-all active:scale-95 cursor-pointer"
+  >
+    <span>{name}</span>
+    <ArrowUp size={10} className="rotate-45" />
+  </button>
+);
+
+const DISEASE_PATTERN = /\[\[(.*?)\]\]/g;
+
+const mdComponents = {
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  li: ({ children }) => <li className="mb-1">{children}</li>,
+  ul: ({ children }) => <ul className="list-disc ml-4 mb-2">{children}</ul>,
+  ol: ({ children }) => <ol className="list-decimal ml-4 mb-2">{children}</ol>,
+  h1: ({ children }) => <h1 className="text-xl font-bold mb-2">{children}</h1>,
+  h2: ({ children }) => <h2 className="text-lg font-bold mb-2">{children}</h2>,
+  h3: ({ children }) => <h3 className="text-md font-bold mb-2">{children}</h3>,
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-4 border-primary/30 pl-4 italic my-2">{children}</blockquote>
+  ),
+  table: ({ children }) => (
+    <div className="overflow-x-auto my-4">
+      <table className="min-w-full border border-outline-variant/30 text-sm">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => <th className="border border-outline-variant/30 p-2 bg-surface-variant/20">{children}</th>,
+  td: ({ children }) => <td className="border border-outline-variant/30 p-2">{children}</td>,
 };
+
+// Extract [[disease]] tags from content and return clean text + disease list
+const extractDiseases = (content) => {
+  const diseases = [];
+  const cleanContent = content.replace(/\[\[(.*?)\]\]/g, (_, name) => {
+    diseases.push(name.trim());
+    return ''; // Remove from displayed text
+  }).trim();
+  return { cleanContent, diseases };
+};
+
+const MarkdownRenderer = ({ content }) => (
+  <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+    {content}
+  </ReactMarkdown>
+);
+
 
 const ChatInterface = ({ 
   messages, 
@@ -47,7 +63,8 @@ const ChatInterface = ({
   isTyping, 
   error,
   disease,
-  suggestions = []
+  suggestions = [],
+  onDiseaseClick
 }) => {
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
@@ -137,41 +154,65 @@ const ChatInterface = ({
             </motion.div>
           )}
 
-          {messages.map((msg, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.2 }}
-              className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-            >
-              <div
-                className={`flex max-w-[85%] ${
-                  msg.role === "user" ? "flex-row-reverse" : "flex-row"
-                } gap-3`}
+          {messages.map((msg, index) => {
+            const isBot = msg.role === "assistant";
+            const { cleanContent, diseases } = isBot 
+              ? extractDiseases(msg.content) 
+              : { cleanContent: msg.content, diseases: [] };
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.2 }}
+                className={`flex flex-col ${isBot ? "items-start" : "items-end"} gap-2`}
               >
-                <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
-                  msg.role === "user" ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
-                }`}>
-                  {msg.role === "user" ? (
-                    <User size={20} />
-                  ) : logo ? (
-                    <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain dark:brightness-0 dark:invert opacity-80" />
-                  ) : (
-                    <Bot size={20} />
-                  )}
+                <div className={`flex max-w-[85%] ${isBot ? "flex-row" : "flex-row-reverse"} gap-3`}>
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
+                    !isBot ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
+                  }`}>
+                    {!isBot ? (
+                      <User size={20} />
+                    ) : logo ? (
+                      <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi" className="w-full h-full object-contain dark:brightness-0 dark:invert opacity-80" />
+                    ) : (
+                      <Bot size={20} />
+                    )}
+                  </div>
+                  
+                  <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
+                    !isBot 
+                      ? "bg-primary text-white rounded-tr-none" 
+                      : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
+                  }`}>
+                    <MarkdownRenderer content={cleanContent} />
+                  </div>
                 </div>
-                
-                <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
-                  msg.role === "user" 
-                    ? "bg-primary text-white rounded-tr-none" 
-                    : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
-                }`}>
-                  <MarkdownRenderer content={msg.content} />
-                </div>
-              </div>
-            </motion.div>
-          ))}
+
+                {/* Disease suggestion buttons — shown below AI bubble */}
+                {isBot && diseases.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="flex flex-wrap gap-2 pl-14"
+                  >
+                    {diseases.map((d, i) => (
+                      <button
+                        key={i}
+                        onClick={() => onDiseaseClick?.(d)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl font-semibold text-xs transition-all active:scale-95"
+                      >
+                        {d}
+                        <ArrowUp size={10} className="rotate-45" />
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
 
           {isTyping && (
             <motion.div

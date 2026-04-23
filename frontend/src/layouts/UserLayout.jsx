@@ -139,15 +139,30 @@ const UserLayout = () => {
 
   const handleRenameClick = useCallback((chat) => {
     setActiveChat(chat);
-    setNewTitle(chat.title);
+    // If title has "Label: Question" format, only pre-fill the question part
+    if (chat.title.includes(": ")) {
+      const parts = chat.title.split(": ");
+      setNewTitle(parts.slice(1).join(": ")); // everything after first ": "
+    } else {
+      setNewTitle(chat.title);
+    }
     setIsRenameModalOpen(true);
   }, []);
+
+  // Extract disease label prefix from active chat title if present
+  const activeChatLabelPrefix = activeChat?.title?.includes(": ")
+    ? activeChat.title.split(": ")[0]
+    : null;
 
   const handleRenameSubmit = async () => {
     if (!newTitle.trim() || !activeChat) return;
     setIsActionLoading(true);
     try {
-      await apiClient.put(`/chat/rename/${activeChat.uid}`, { title: newTitle });
+      // Prepend the disease label back if it existed
+      const finalTitle = activeChatLabelPrefix
+        ? `${activeChatLabelPrefix}: ${newTitle.trim()}`
+        : newTitle.trim();
+      await apiClient.put(`/chat/rename/${activeChat.uid}`, { title: finalTitle });
       await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Nama berhasil diubah");
       setIsRenameModalOpen(false);
@@ -410,12 +425,20 @@ const UserLayout = () => {
         maxWidth="max-w-sm"
       >
         <div className="space-y-4">
+          {activeChatLabelPrefix && (
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-xs text-surface-on-variant">Label terkunci:</span>
+              <Label variant="primary" className="!py-0.5 !px-1.5 !text-[9px]">
+                {activeChatLabelPrefix}
+              </Label>
+            </div>
+          )}
           <TextField
-            label="Nama Baru"
+            label="Nama Percakapan"
+            name="title"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Masukkan nama baru..."
-            autoFocus
           />
           <div className="flex justify-end gap-2">
             <Button variant="tonal" onClick={() => setIsRenameModalOpen(false)}>
