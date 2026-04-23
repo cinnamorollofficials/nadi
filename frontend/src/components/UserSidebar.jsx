@@ -5,6 +5,7 @@ import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight, MoreVertic
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
+import Label from "./Label";
 
 const UserSidebar = ({
   sections = [],
@@ -345,7 +346,18 @@ const UserSidebar = ({
                           className="flex items-center gap-3 flex-1 overflow-hidden py-2"
                         >
                           {item.icon && <div className="transition-transform duration-300 group-hover:scale-110 flex-shrink-0">{item.icon}</div>}
-                          <span className="text-sm font-medium whitespace-nowrap truncate">{item.label}</span>
+                          <span className="text-sm font-medium whitespace-nowrap truncate flex items-center gap-2">
+                            {item.label && item.label.includes(": ") ? (
+                              <>
+                                <Label variant="primary" className="flex-shrink-0 !py-0.5 !px-1.5 !text-[9px]">
+                                  {item.label.split(": ")[0]}
+                                </Label>
+                                <span className="truncate">{item.label.split(": ")[1]}</span>
+                              </>
+                            ) : (
+                              item.label
+                            )}
+                          </span>
                         </Link>
                         {!isActuallyCollapsed && item.isPinned && (
                           <div className="text-primary flex-shrink-0 mr-1 animate-in zoom-in duration-300">

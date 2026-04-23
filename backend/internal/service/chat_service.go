@@ -165,11 +165,35 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		return err
 	}
 
-	// 5. Auto-summarize title if it's a new chat
-	if channel.Title == "New Conversation" {
+	// 5. Auto-summarize title if it's a new chat (or if it contains the hidden prefix)
+	if channel.Title == "New Conversation" || strings.Contains(channel.Title, "[PENTING:") {
 		newTitle := userMessage
-		if len(newTitle) > 40 {
-			newTitle = newTitle[:37] + "..."
+		diseaseName := ""
+
+		// Clean up hidden prefix and extract disease name
+		if strings.Contains(newTitle, "[PENTING:") {
+			// Extract disease name from "[PENTING: Batasi diskusi ini hanya pada topik ...]"
+			startIdx := strings.Index(newTitle, "topik ")
+			endIdx := strings.Index(newTitle, " dan berikan")
+			if startIdx != -1 && endIdx != -1 && endIdx > startIdx {
+				diseaseName = newTitle[startIdx+6 : endIdx]
+			}
+
+			// Extract actual user message
+			if parts := strings.SplitN(newTitle, "User: ", 2); len(parts) > 1 {
+				newTitle = parts[1]
+			} else if idx := strings.LastIndex(newTitle, "]. "); idx != -1 {
+				newTitle = newTitle[idx+3:]
+			}
+		}
+		
+		// Format title
+		if diseaseName != "" {
+			newTitle = fmt.Sprintf("%s: %s", diseaseName, newTitle)
+		}
+
+		if len(newTitle) > 50 {
+			newTitle = newTitle[:47] + "..."
 		}
 		channel.Title = newTitle
 		s.chatRepo.UpdateChannel(ctx, channel)

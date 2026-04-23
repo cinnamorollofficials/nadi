@@ -198,7 +198,7 @@ const PenyakitList = () => {
       <div className="max-w-5xl mx-auto px-6 py-10">
         {/* Meta Info */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-          <p className="text-surface-on-variant text-sm">
+          <div className="text-surface-on-variant text-sm">
             {loading ? (
               <Skeleton className="w-24 h-4" />
             ) : (
@@ -227,7 +227,7 @@ const PenyakitList = () => {
                 )}
               </span>
             )}
-          </p>
+          </div>
 
           {isFiltered && (
             <button

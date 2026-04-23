@@ -160,7 +160,7 @@ function App() {
           <Route path="/2fa-reset-confirm" element={<TwoFAResetConfirmPage />} />
 
           {/* Standalone Route for Auth Checks (Priority) */}
-          <Route path="/" element={localStorage.getItem("token") ? <Navigate to="/consultations/ai" replace /> : <PublicLayout />}>
+          <Route path="/" element={<PublicLayout />}>
             <Route index element={<Landing />} />
             <Route path="medicpedia" element={<MedicpediaHome />} />
             <Route path="medicpedia/penyakit" element={<PenyakitList />} />

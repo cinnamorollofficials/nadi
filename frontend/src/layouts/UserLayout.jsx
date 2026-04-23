@@ -25,6 +25,7 @@ import Modal from "../components/Modal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import TextField from "../components/TextField";
 import Button from "../components/Button";
+import Label from "../components/Label";
 import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
@@ -346,7 +347,16 @@ const UserLayout = () => {
             <div className="flex items-center gap-6 flex-1">
               <div className="flex flex-col gap-0.5">
                 <h1 className="text-base font-bold text-surface-on leading-tight">
-                  {pageTitle}
+                  {pageTitle && pageTitle.includes(": ") ? (
+                    <div className="flex items-center gap-2">
+                      <Label variant="primary" className="!py-0.5 !px-1.5 !text-[10px]">
+                        {pageTitle.split(": ")[0]}
+                      </Label>
+                      <span className="truncate">{pageTitle.split(": ")[1]}</span>
+                    </div>
+                  ) : (
+                    pageTitle
+                  )}
                 </h1>
               </div>
             </div>

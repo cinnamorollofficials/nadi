@@ -121,21 +121,35 @@ const PublicLayout = () => {
               </>
             )}
           </button>
-          <Link
-            to="/login"
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center justify-center w-full py-3 rounded-2xl border-2 border-zinc-300 dark:border-white/10 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary transition-all active:scale-95"
-          >
-            Masuk
-          </Link>
-          <Link
-            to="/register"
-            onClick={() => setMobileOpen(false)}
-          >
-            <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl   transition-all hover:scale-[1.02] active:scale-95">
-              Daftar Sekarang
-            </Button>
-          </Link>
+          
+          {localStorage.getItem("token") ? (
+            <Link
+              to="/consultations/ai"
+              onClick={() => setMobileOpen(false)}
+            >
+              <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all hover:scale-[1.02] active:scale-95">
+                Konsultasi AI
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center w-full py-3 rounded-2xl border-2 border-zinc-300 dark:border-white/10 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary transition-all active:scale-95"
+              >
+                Masuk
+              </Link>
+              <Link
+                to="/register"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all hover:scale-[1.02] active:scale-95">
+                  Daftar Sekarang
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </aside>
 
@@ -195,17 +209,28 @@ const PublicLayout = () => {
                 </svg>
               )}
             </button>
-            <Link
-              to="/login"
-              className="text-sm font-bold text-slate-500 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors tracking-widest uppercase"
-            >
-              Masuk
-            </Link>
-            <Link to="/register">
-              <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl   transition-all hover:scale-105 active:scale-95">
-                Daftar Sekarang
-              </Button>
-            </Link>
+
+            {localStorage.getItem("token") ? (
+              <Link to="/consultations/ai">
+                <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:scale-105 active:scale-95">
+                  Konsultasi AI
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-sm font-bold text-slate-500 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors tracking-widest uppercase"
+                >
+                  Masuk
+                </Link>
+                <Link to="/register">
+                  <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:scale-105 active:scale-95">
+                    Daftar Sekarang
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile: Hamburger */}

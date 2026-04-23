@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, User, Bot, AlertCircle, Loader2, ArrowUp } from "lucide-react";
 import { useSettings } from "../../context/SettingsContext";
 import LottieLogo from "../LottieLogo";
+import Label from "../Label";
 
 const MarkdownRenderer = ({ content }) => {
   return (
@@ -39,7 +40,15 @@ const MarkdownRenderer = ({ content }) => {
   );
 };
 
-const ChatInterface = ({ messages, onSendMessage, onRetry, isTyping, error }) => {
+const ChatInterface = ({ 
+  messages, 
+  onSendMessage, 
+  onRetry, 
+  isTyping, 
+  error,
+  disease,
+  suggestions = []
+}) => {
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -65,6 +74,20 @@ const ChatInterface = ({ messages, onSendMessage, onRetry, isTyping, error }) =>
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
+        {/* Topic Badge if disease info is present */}
+        {disease && (
+          <div className="sticky top-0 z-10 flex justify-center py-4 px-6 pointer-events-none">
+            <motion.div 
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="backdrop-blur-md px-1 py-1 rounded-full flex items-center gap-2 shadow-sm pointer-events-auto"
+            >
+              <Label variant="primary" className="shadow-lg shadow-primary/20">
+                Topik: {disease}
+              </Label>
+            </motion.div>
+          </div>
+        )}
         <div className="max-w-4xl mx-auto p-4 lg:p-8 space-y-10">
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
@@ -72,21 +95,45 @@ const ChatInterface = ({ messages, onSendMessage, onRetry, isTyping, error }) =>
               key="empty-state"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col items-center justify-center h-full text-center space-y-4"
+              className="flex flex-col items-center justify-center h-full text-center space-y-6"
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center text-primary overflow-hidden p-3">
+              <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center text-primary overflow-hidden p-3 shadow-inner">
                 {logo ? (
                   <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi AI" className="w-full h-full object-contain" />
                 ) : (
                   <Bot size={32} />
                 )}
               </div>
-              <div>
-                <h3 className="text-xl font-bold text-surface-on">How can I help you today?</h3>
-                <p className="text-surface-on-variant px-12 capitalize">
-                  Start a consultation by asking about your health concerns, symptoms, or nutritional needs.
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold text-surface-on tracking-tight">
+                  {disease ? `Diskusi mengenai ${disease}` : "Apa yang ingin Anda tanyakan?"}
+                </h3>
+                <p className="text-surface-on-variant px-12 max-w-md mx-auto text-sm leading-relaxed opacity-70">
+                  {disease 
+                    ? `Asisten Nadi siap membantu Anda memahami lebih lanjut tentang ${disease}. Pilih pertanyaan di bawah atau ketik sendiri.`
+                    : "Mulai konsultasi dengan menanyakan keluhan kesehatan, gejala, atau kebutuhan nutrisi Anda."}
                 </p>
               </div>
+
+              {suggestions.length > 0 && (
+                <div className="flex flex-col gap-3 w-full max-w-md px-4 mt-4">
+                  {suggestions.map((s, i) => (
+                    <motion.button
+                      key={i}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.1 * (i + 1) }}
+                      onClick={() => onSendMessage(s)}
+                      className="text-left px-5 py-4 bg-surface-container-highest dark:bg-surface-container-high hover:bg-primary/10 hover:text-primary border border-outline-variant/30 rounded-2xl text-sm font-semibold transition-all group active:scale-95"
+                    >
+                      <span className="flex items-center justify-between">
+                        {s}
+                        <ArrowUp size={16} className="opacity-0 group-hover:opacity-100 -rotate-90 transition-all" />
+                      </span>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
 

@@ -93,7 +93,7 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
 
   const lastMessageRef = useRef(null);
 
-  const sendMessage = (content, isRetry = false) => {
+  const sendMessage = (content, isRetry = false, prefix = '') => {
     setError(null);
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
       setError('Connection failed. Please check your internet or retry.');
@@ -103,7 +103,7 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
     const message = {
       type: 'message',
       channel_uid: channelId,
-      content: content
+      content: prefix ? `${prefix}\n\nUser: ${content}` : content
     };
 
     if (!isRetry) {
