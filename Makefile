@@ -7,9 +7,9 @@ run-frontend:
 run-dev:
 	make -j2 run-backend run-frontend
 
-run-compile-backend-prod:
+run-build-prod:
 	sudo systemctl stop nadi
-	cd backend && go build -o main ./cmd/api/main.go
+	cd backend && go build -o nadi ./cmd/api/main.go
 	sudo systemctl start nadi
 
 run-build-frontend-prod:

@@ -15,22 +15,21 @@
 10. buatkan plan untuk hemat token ai dan performa untuk meminimkan respon gagal
 11. monitor juga respon ai yang berhasil dan gagal untuk dianalisa
 
-
-
 Deployment step:
+
 1. git pull main
 2. build frontend
-3. stop nadi service
+3. stop nadi service `systemctl stop nadi`
 4. delete and create database (optional)
 5. run migration
 6. run seeder
-7. build nadi
-8. start nadi service
+7. build nadi `make build`
+8. start nadi service `systemctl start nadi`
 9. tes login
 10. test chat konsultasi
 
-
 Required QA
+
 1. register by email
 2. login by email
 3. register by google account
