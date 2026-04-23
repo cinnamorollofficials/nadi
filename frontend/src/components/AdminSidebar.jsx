@@ -48,7 +48,10 @@ const AdminSidebar = ({
   }, [location.pathname, sections, isActuallyCollapsed]);
 
   const toggleSection = (label) => {
-    if (isActuallyCollapsed) return;
+    if (isActuallyCollapsed) {
+      if (onToggleCollapse) onToggleCollapse();
+      return;
+    }
     setExpandedSections((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 

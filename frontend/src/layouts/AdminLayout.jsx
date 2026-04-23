@@ -839,8 +839,8 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-10 sticky top-0 z-10">
-          <div className="flex items-center gap-3">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-10 sticky top-0 z-10 border-b border-outline-variant/30 bg-surface/80 backdrop-blur-md">
+          <div className="flex items-center gap-4">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
@@ -860,14 +860,6 @@ const AdminLayout = () => {
                 />
               </svg>
             </button>
-
-            <div className="flex flex-col gap-0.5 mt-0.5">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="text-sm font-bold text-surface-on truncate max-w-[180px] lg:max-w-none">
-                  {pageTitle}
-                </span>
-              </div>
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -932,7 +924,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar px-4 lg:px-10 py-6 lg:py-8">
+        <main className="flex-1 overflow-y-auto px-4 lg:px-10 py-6">
           <div className="max-w-screen-2xl mx-auto animate-fade-in-up pb-10">
             <Outlet />
           </div>
