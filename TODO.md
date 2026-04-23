@@ -23,7 +23,7 @@ Deployment step:
 4. delete and create database (optional)
 5. run migration
 6. run seeder
-7. build nadi `make build`
+7. build nadi `make run-build-prod`
 8. start nadi service `systemctl start nadi`
 9. tes login
 10. test chat konsultasi
