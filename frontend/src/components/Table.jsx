@@ -33,7 +33,7 @@ const Table = ({
           </thead>
           <tbody className="bg-surface-container">
             {[1, 2, 3, 4, 5].map((row) => (
-              <tr key={row} className="border-b border-outline-variant/30">
+              <tr key={row} className="border-b border-outline-variant/30 odd:bg-surface-variant/10">
                 {allColumns.map((col, index) => (
                   <td key={index} className="px-4 py-2.5">
                     <div className="h-3.5 bg-surface-variant/30 rounded"></div>
@@ -77,7 +77,7 @@ const Table = ({
           {data.map((row, rowIndex) => (
             <tr
               key={row.id || rowIndex}
-              className="hover:bg-primary-container/20 transition-colors duration-200"
+              className="hover:bg-black/[0.04] dark:hover:bg-primary-container/40 transition-colors duration-200 odd:bg-surface-variant/10"
             >
               {columns.map((col, colIndex) => (
                 <td

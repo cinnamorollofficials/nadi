@@ -182,7 +182,7 @@ const Logs = () => {
                     <p className="text-surface-on-variant mt-2">Monitor {logType} activities and trails</p>
                 </div>
                 {hasPermission(PERMS.SYSTEM_EXPORT) && (
-                    <div className="flex bg-surface-variant/20 p-1 rounded-lg shrink-0">
+                    <div className="flex bg-surface-container border border-outline-variant/50 p-1 rounded-lg shrink-0 shadow-sm">
                         <button
                             onClick={() => handleExport('excel')}
                             className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

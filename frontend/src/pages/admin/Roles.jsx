@@ -186,7 +186,7 @@ const Roles = () => {
                 </div>
                 <div className="flex gap-2">
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
-                        <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                        <div className="flex bg-surface-container border border-outline-variant/50 p-1 rounded-lg shadow-sm">
                             <button
                                 onClick={handleSyncCache}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
