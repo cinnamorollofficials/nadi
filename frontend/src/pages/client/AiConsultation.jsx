@@ -94,7 +94,7 @@ const AiConsultation = () => {
     // If disease context exists, add a hidden instruction for the first message
     const diseaseContext = location.state?.disease;
     const prefix = diseaseContext 
-      ? `[PENTING: Batasi diskusi ini hanya pada topik ${diseaseContext} dan berikan informasi yang relevan secara medis].`
+      ? `[SISTEM: Diskusi ini bersifat TERBATAS hanya untuk topik "${diseaseContext}". JANGAN menjawab pertanyaan yang tidak ada kaitannya dengan ${diseaseContext}. Jika user bertanya hal lain yang tidak relevan, ingatkan user untuk tetap pada topik ${diseaseContext}. Berikan informasi medis yang akurat].`
       : '';
 
     if (!activeChannelId) {
