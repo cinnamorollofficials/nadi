@@ -29,7 +29,7 @@ const AdminSidebar = ({
   };
 
   useEffect(() => {
-    if (collapsed) return;
+    if (isActuallyCollapsed) return;
     const newExpanded = { ...expandedSections };
     let changed = false;
     sections.forEach((section) => {
@@ -45,10 +45,10 @@ const AdminSidebar = ({
       });
     });
     if (changed) setExpandedSections(newExpanded);
-  }, [location.pathname, sections, collapsed]);
+  }, [location.pathname, sections, isActuallyCollapsed]);
 
   const toggleSection = (label) => {
-    if (collapsed) return;
+    if (isActuallyCollapsed) return;
     setExpandedSections((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 

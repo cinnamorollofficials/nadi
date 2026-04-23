@@ -839,7 +839,7 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-10 border-b border-outline-variant/30 sticky top-0 z-10">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-10 sticky top-0 z-10">
           <div className="flex items-center gap-3">
             {/* Mobile Menu Button */}
             <button
