@@ -51,12 +51,6 @@ const Landing = () => {
         <div className="container mx-auto px-6 relative z-10 py-20">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2 text-left">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest mb-6 animate-fade-in">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                Trusted by 50K+ Users
-              </div>
-             
               <h1 className="text-5xl md:text-7xl font-bold text-slate-900 dark:text-white leading-[1.05] tracking-tight mb-8">
                 Analisis Medis Akurat,<br />
                 <span className="text-primary">
@@ -104,18 +98,6 @@ const Landing = () => {
                     alt="Nadi App Professional Context" 
                     className="w-full h-auto rounded-[2rem] object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Overlay stats card */}
-                  <div className="absolute bottom-8 right-8 bg-white/95 dark:bg-slate-900/95 p-4 rounded-2xl border border-slate-200 dark:border-white/10 animate-breathing">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
-                      </div>
-                      <div>
-                        <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Health Pulse</div>
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">Normal Sinus Rhythm</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

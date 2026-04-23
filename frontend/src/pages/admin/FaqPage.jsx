@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import { Search, RefreshCw } from "lucide-react";
 import { toast } from "react-hot-toast";
 import Button from "../../components/Button";
@@ -180,10 +181,8 @@ const FaqPage = () => {
   };
 
   const tableActions = [
-    { label: "Detail", onClick: handleDetail, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
-    ...(can(PERMS.FAQ_EDIT)
-      ? [{ label: "Edit", onClick: handleOpenModal }]
-      : []),
+    { label: "Detail", onClick: handleDetail },
+    ...(can(PERMS.FAQ_EDIT) ? [{ label: "Edit", onClick: handleOpenModal }] : []),
     ...(can(PERMS.FAQ_DELETE)
       ? [
           {
@@ -194,6 +193,10 @@ const FaqPage = () => {
         ]
       : []),
   ];
+
+  if (!loading && !can(PERMS.FAQ_VIEW)) {
+    return <Navigate to="/admin" replace />;
+  }
 
   return (
     <div className="space-y-6">
@@ -208,7 +211,7 @@ const FaqPage = () => {
         </div>
         <div className="flex gap-2">
           {can(PERMS.SYSTEM_EXPORT) && (
-            <div className="flex bg-surface-container border border-outline-variant/50 p-1 rounded-lg shrink-0 shadow-sm">
+            <div className="flex bg-surface-container-high border border-outline-variant/60 p-1 rounded-xl shrink-0 shadow-md">
               <button
                 onClick={handleSyncCache}
                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

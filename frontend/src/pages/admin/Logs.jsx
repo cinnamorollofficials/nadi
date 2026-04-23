@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import Table from '../../components/Table';
@@ -66,27 +67,25 @@ const Logs = () => {
                     </div>
                 );
             }
-        },
-        {
-            header: 'Actions',
-            accessor: 'id',
-            render: (row) => (
-                <button
-                    onClick={() => {
-                        setSelectedLog(row);
-                        setIsDetailsModalOpen(true);
-                    }}
-                    className="flex items-center gap-1.5 p-1.5 rounded-full hover:bg-surface-variant/40 transition-colors text-primary"
-                    title="Detail"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                </button>
-            )
         }
     ];
 
+    const tableActions = [
+        { 
+            label: 'Detail', 
+            onClick: (row) => {
+                setSelectedLog(row);
+                setIsDetailsModalOpen(true);
+            }
+        }
+    ];
+
+    if (!isLoading && !hasPermission(PERMS.LOG_VIEW)) {
+        return <Navigate to="/admin" replace />;
+    }
+
     const columns = logType === 'system'
-        ? allColumns.filter(col => ['level', 'time', 'id'].includes(col.accessor))
+        ? allColumns.filter(col => ['level', 'time'].includes(col.accessor))
         : allColumns;
 
     if (error) {
@@ -182,7 +181,7 @@ const Logs = () => {
                     <p className="text-surface-on-variant mt-2">Monitor {logType} activities and trails</p>
                 </div>
                 {hasPermission(PERMS.SYSTEM_EXPORT) && (
-                    <div className="flex bg-surface-container border border-outline-variant/50 p-1 rounded-lg shrink-0 shadow-sm">
+                    <div className="flex bg-surface-container-high border border-outline-variant/60 p-1 rounded-xl shrink-0 shadow-md">
                         <button
                             onClick={() => handleExport('excel')}
                             className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"
@@ -278,7 +277,7 @@ const Logs = () => {
             </Card>
 
             <Card className="p-0 overflow-hidden border border-outline-variant/30 bg-surface-container">
-                <Table columns={columns} data={paginatedLogs} loading={isLoading} hideEmptyState={true} />
+                <Table columns={columns} data={paginatedLogs} loading={isLoading} actions={tableActions} hideEmptyState={true} />
                 {!isLoading && filteredLogs.length > 0 && (
                     <Pagination
                         currentPage={currentPage}

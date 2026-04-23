@@ -398,7 +398,7 @@ const Register = () => {
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
                     </div>
-                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant bg-white dark:bg-slate-900 px-2">
+                    <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant">
                       Or sign up with
                     </div>
                   </div>
