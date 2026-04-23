@@ -124,6 +124,8 @@ const UserLayout = () => {
     } catch (err) {
       console.error("Logout API failed:", err);
     }
+    // Clear all React Query cache so next user starts fresh
+    queryClient.clear();
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
