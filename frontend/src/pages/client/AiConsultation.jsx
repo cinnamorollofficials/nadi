@@ -27,7 +27,7 @@ const AiConsultation = () => {
   });
 
   // Messaging Hook
-  const { messages, setMessages, sendMessage, isTyping, error } = useChat(activeChannelId, {
+  const { messages, setMessages, sendMessage, resendLastMessage, isTyping, error } = useChat(activeChannelId, {
     onMessageDone: () => {
       // Refresh sidebar to get the new summarized title after the first exchange
       if (messages.length <= 2) {
@@ -113,6 +113,7 @@ const AiConsultation = () => {
           <ChatInterface
             messages={messages}
             onSendMessage={handleSendMessage}
+            onRetry={resendLastMessage}
             isTyping={isTyping || createChannelMutation.isPending}
             error={error}
           />

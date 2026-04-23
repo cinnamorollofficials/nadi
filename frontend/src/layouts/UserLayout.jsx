@@ -385,8 +385,8 @@ const UserLayout = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-hidden">
-          <div className="h-full animate-fade-in-up">
+        <main className={`flex-1 ${location.pathname.includes('/consultations/ai') ? 'overflow-hidden' : 'overflow-y-auto'}`}>
+          <div className={`animate-fade-in-up ${location.pathname.includes('/consultations/ai') ? 'h-full' : 'px-4 lg:px-10 py-6 max-w-screen-2xl mx-auto pb-10'}`}>
             <Outlet />
           </div>
         </main>
