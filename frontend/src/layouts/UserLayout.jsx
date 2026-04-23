@@ -25,6 +25,7 @@ import Modal from "../components/Modal";
 import ConfirmDialog from "../components/ConfirmDialog";
 import TextField from "../components/TextField";
 import Button from "../components/Button";
+import Label from "../components/Label";
 import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
@@ -123,6 +124,8 @@ const UserLayout = () => {
     } catch (err) {
       console.error("Logout API failed:", err);
     }
+    // Clear all React Query cache so next user starts fresh
+    queryClient.clear();
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user");
@@ -138,15 +141,30 @@ const UserLayout = () => {
 
   const handleRenameClick = useCallback((chat) => {
     setActiveChat(chat);
-    setNewTitle(chat.title);
+    // If title has "Label: Question" format, only pre-fill the question part
+    if (chat.title.includes(": ")) {
+      const parts = chat.title.split(": ");
+      setNewTitle(parts.slice(1).join(": ")); // everything after first ": "
+    } else {
+      setNewTitle(chat.title);
+    }
     setIsRenameModalOpen(true);
   }, []);
+
+  // Extract disease label prefix from active chat title if present
+  const activeChatLabelPrefix = activeChat?.title?.includes(": ")
+    ? activeChat.title.split(": ")[0]
+    : null;
 
   const handleRenameSubmit = async () => {
     if (!newTitle.trim() || !activeChat) return;
     setIsActionLoading(true);
     try {
-      await apiClient.put(`/chat/rename/${activeChat.uid}`, { title: newTitle });
+      // Prepend the disease label back if it existed
+      const finalTitle = activeChatLabelPrefix
+        ? `${activeChatLabelPrefix}: ${newTitle.trim()}`
+        : newTitle.trim();
+      await apiClient.put(`/chat/rename/${activeChat.uid}`, { title: finalTitle });
       await queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       toast.success("Nama berhasil diubah");
       setIsRenameModalOpen(false);
@@ -346,7 +364,16 @@ const UserLayout = () => {
             <div className="flex items-center gap-6 flex-1">
               <div className="flex flex-col gap-0.5">
                 <h1 className="text-base font-bold text-surface-on leading-tight">
-                  {pageTitle}
+                  {pageTitle && pageTitle.includes(": ") ? (
+                    <div className="flex items-center gap-2">
+                      <Label variant="primary" className="!py-0.5 !px-1.5 !text-[10px]">
+                        {pageTitle.split(": ")[0]}
+                      </Label>
+                      <span className="truncate">{pageTitle.split(": ")[1]}</span>
+                    </div>
+                  ) : (
+                    pageTitle
+                  )}
                 </h1>
               </div>
             </div>
@@ -400,12 +427,20 @@ const UserLayout = () => {
         maxWidth="max-w-sm"
       >
         <div className="space-y-4">
+          {activeChatLabelPrefix && (
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-xs text-surface-on-variant">Label terkunci:</span>
+              <Label variant="primary" className="!py-0.5 !px-1.5 !text-[9px]">
+                {activeChatLabelPrefix}
+              </Label>
+            </div>
+          )}
           <TextField
-            label="Nama Baru"
+            label="Nama Percakapan"
+            name="title"
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Masukkan nama baru..."
-            autoFocus
           />
           <div className="flex justify-end gap-2">
             <Button variant="tonal" onClick={() => setIsRenameModalOpen(false)}>

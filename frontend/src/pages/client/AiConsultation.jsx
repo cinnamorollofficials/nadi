@@ -66,7 +66,7 @@ const AiConsultation = () => {
     if (activeChannelId && location.state?.initialMessage) {
       // Small delay to ensure socket is ready
       const timer = setTimeout(() => {
-        sendMessage(location.state.initialMessage);
+        sendMessage(location.state.initialMessage, false, location.state.prefix || '');
         // Clear state so it doesn't resend on refresh
         navigate(location.pathname, { replace: true, state: {} });
       }, 500);
@@ -91,31 +91,83 @@ const AiConsultation = () => {
   };
 
   const handleSendMessage = async (content) => {
+    // If disease context exists, add a hidden instruction for the first message
+    const diseaseContext = location.state?.disease;
+    const prefix = diseaseContext 
+      ? `[SISTEM: Diskusi ini bersifat TERBATAS hanya untuk topik "${diseaseContext}". JANGAN menjawab pertanyaan yang tidak ada kaitannya dengan ${diseaseContext}. Jika user bertanya hal lain yang tidak relevan, ingatkan user untuk tetap pada topik ${diseaseContext}. Namun, jika user menanyakan penyakit lain, sarankan user untuk berdiskusi tentang penyakit tersebut secara terpisah dengan memberikan button berformat [[Tanya tentang Nama Penyakit]]. Berikan informasi medis yang akurat].`
+      : '';
+
     if (!activeChannelId) {
       // 1. Create channel first
       try {
         const newChannel = await createChannelMutation.mutateAsync();
-        // 2. Navigate to new UID
-        navigate(`/consultations/ai/${newChannel.uid}`, { state: { initialMessage: content } });
+        
+        // 1.5 Rename channel if disease context exists
+        if (diseaseContext) {
+          try {
+            await apiClient.put(`/chat/rename/${newChannel.uid}`, {
+              title: `${diseaseContext}: ${content}`
+            });
+          } catch (renameErr) {
+            console.error("Failed to rename channel", renameErr);
+            // Non-critical, continue
+          }
+        }
+
+        // 2. Keep disease context for UI label, but ensure prefix is only for initialMessage
+        const newState = { ...location.state };
+        
+        // 3. Navigate to new UID
+        navigate(`/consultations/ai/${newChannel.uid}`, { 
+          replace: true,
+          state: { ...newState, initialMessage: content, prefix: prefix } 
+        });
       } catch (err) {
         console.error("Failed to start chat", err);
       }
     } else {
-      sendMessage(content);
+      sendMessage(content, false, location.state?.prefix || '');
+      // Clear ONLY prefix from state after first use in existing channel
+      if (location.state?.prefix) {
+        navigate(location.pathname, { replace: true, state: { ...location.state, prefix: '' } });
+      }
     }
   };
 
+  // Extract suggestions and disease name for UI
+  const suggestions = location.state?.suggestions || [];
+  const activeDisease = location.state?.disease; 
+
+  const handleDiseaseClick = (fullQuery) => {
+    // Extract disease name if it has "Tanya tentang " prefix
+    const diseaseName = fullQuery.replace(/^Tanya tentang /i, "").trim();
+    
+    navigate('/consultations/ai', {
+      state: {
+        disease: diseaseName,
+        suggestions: [
+          `Apa saja gejala awal ${diseaseName} yang harus diwaspadai?`,
+          `Bagaimana cara menangani ${diseaseName} di rumah secara mandiri?`,
+          `Kapan saya harus segera ke dokter jika terkena ${diseaseName}?`,
+        ],
+      }
+    });
+  };
+  
   return (
     <div className="flex h-full gap-0 lg:gap-6 p-0 lg:p-2">
       {/* Main: Chat Interface */}
       <div className="flex-1 overflow-hidden">
-        {activeChannelId ? (
+        {activeChannelId || activeDisease ? (
           <ChatInterface
             messages={messages}
             onSendMessage={handleSendMessage}
             onRetry={resendLastMessage}
             isTyping={isTyping || createChannelMutation.isPending}
             error={error}
+            disease={activeDisease}
+            suggestions={suggestions}
+            onDiseaseClick={handleDiseaseClick}
           />
         ) : (
           <div className="h-full flex flex-col items-center justify-center p-6 text-center">

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicPenyakitBySlug } from "../../../api/client/medicpedia";
 import Skeleton from "../../../components/Skeleton";
@@ -26,7 +26,6 @@ function estimateReadTime(sections, data) {
   }, 0);
   return Math.max(1, Math.ceil(totalWords / 200));
 }
-
 const PenyakitDetail = () => {
   const { slug } = useParams();
   const [data, setData] = useState(null);
@@ -35,6 +34,28 @@ const PenyakitDetail = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const sectionRefs = useRef({});
   const contentRef = useRef(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleDiskusiAI = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Silakan login untuk mendiskusikan penyakit ini dengan AI");
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    navigate("/consultations/ai", {
+      state: {
+        disease: data.name,
+        suggestions: [
+          `Apa saja gejala awal ${data.name} yang harus diwaspadai?`,
+          `Bagaimana cara menangani ${data.name} di rumah secara mandiri?`,
+          `Kapan saya harus segera ke dokter jika terkena ${data.name}?`,
+        ],
+      },
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -230,12 +251,12 @@ const PenyakitDetail = () => {
                 <span className="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 text-white/80 text-xs font-bold px-3 py-1.5 rounded-full">
                   Medicpedia
                 </span>
-                <Link
-                  to={`/new-check?topic=${encodeURIComponent(data.name)}`}
+                <button
+                  onClick={handleDiskusiAI}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105  shadow-emerald-500/20 md:hidden"
                 >
                   Tanya AI
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -323,8 +344,8 @@ const PenyakitDetail = () => {
                   dan mendapatkan rekomendasi langkah selanjutnya.
                 </p>
               </div>
-              <Link
-                to="/"
+              <button
+                onClick={handleDiskusiAI}
                 className="flex-shrink-0 flex items-center gap-2 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-sm hover:scale-105 active:scale-95 transition-all  shadow-black/10 whitespace-nowrap"
               >
                 <svg
@@ -341,7 +362,7 @@ const PenyakitDetail = () => {
                   />
                 </svg>
                 Cek Gejala Sekarang
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -423,30 +444,27 @@ const PenyakitDetail = () => {
             </div>
 
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
-              <Link
-                to={`/new-check?topic=${encodeURIComponent(data.name)}`}
+              <button
+                onClick={handleDiskusiAI}
                 className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold  shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                Diskusi AI
-              </Link>
+                Tanya Nadi
+              </button>
             </div>
           </div>
         </div>
       </div>
       {/* ── Floating Ask AI (Mobile) ── */}
       <div className="md:hidden fixed bottom-6 right-4 z-50">
-        <Link
-          to={`/new-check?topic=${encodeURIComponent(data.name)}`}
+        <button
+          onClick={handleDiskusiAI}
           className="flex items-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white pl-4 pr-5 h-14 rounded-full  hover:scale-105 active:scale-95 transition-all font-bold text-sm"
         >
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
           Tanya AI
-        </Link>
+        </button>
       </div>
     </div>
   );

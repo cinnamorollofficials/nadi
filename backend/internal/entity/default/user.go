@@ -8,7 +8,7 @@ type User struct {
 	Email     string    `gorm:"not null;unique" json:"email"`
 	RoleID    uint      `gorm:"not null" json:"role_id"`
 	Role      Role      `gorm:"foreignKey:RoleID" json:"role"`
-	AiTierID  uint      `gorm:"default:null" json:"ai_tier_id"`
+	AiTierID  *uint     `gorm:"default:null" json:"ai_tier_id"`
 	AiTier    AiTier    `gorm:"foreignKey:AiTierID" json:"ai_tier"`
 	Password     *string    `gorm:"default:null" json:"-"`
 	GoogleID     *string    `gorm:"uniqueIndex;default:null" json:"google_id"`
