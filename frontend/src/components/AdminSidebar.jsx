@@ -256,10 +256,10 @@ const AdminSidebar = ({
         <div className="p-2 border-t border-outline-variant/10">
           <button
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-3 p-2 rounded-xl text-error hover:bg-error/10 font-bold transition-all"
+            className="w-full flex items-center justify-start gap-3 p-2 px-6 rounded-xl text-error hover:bg-error/10 font-bold transition-all"
           >
             <LogOut size={18} />
-            {!isActuallyCollapsed && <span className="text-[11px]">Keluar Sistem</span>}
+            {!isActuallyCollapsed && <span className="text-[11px]">Logout</span>}
           </button>
         </div>
       </aside>

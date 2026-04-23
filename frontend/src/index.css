@@ -14,14 +14,14 @@
     --md-sys-color-secondary-container: 241 245 249; /* Slate-100 (Neutral) */
     --md-sys-color-on-secondary-container: 51 65 85; /* Slate-700 */
 
-    --md-sys-color-surface: 255 255 255; /* Pure white for cleaner look */
-    --md-sys-color-on-surface: 15 23 42; /* Darker text for contrast */
-    --md-sys-color-surface-variant: 248 250 252; /* Very light slate */
+    --md-sys-color-surface: 215 221 232; /* Darker Slate for Background */
+    --md-sys-color-on-surface: 15 23 42; 
+    --md-sys-color-surface-variant: 234 239 245; /* Darker off-white for components */
     --md-sys-color-on-surface-variant: 71 85 105;
-    --md-sys-color-surface-container-low: 255 255 255;
-    --md-sys-color-surface-container: 244 247 250; /* Slightly darker than surface */
-    --md-sys-color-surface-container-high: 238 242 248;
-    --md-sys-color-surface-container-highest: 230 234 242; /* Much darker for sidebar/active items */
+    --md-sys-color-surface-container-low: 234 239 245; /* Darker off-white for cards */
+    --md-sys-color-surface-container: 234 239 245; /* Darker off-white for tables */
+    --md-sys-color-surface-container-high: 228 233 241; /* Slightly deeper for button groups */
+    --md-sys-color-surface-container-highest: 203 213 225; /* Tailwind Slate-300 for Sidebar */
 
     --md-sys-color-outline: 203 213 225;
     --md-sys-color-outline-variant: 226 232 240;
@@ -271,7 +271,7 @@ html.dark,
     }
 
     .glass-sidebar {
-        background: rgba(var(--md-sys-color-surface-container-high) / 0.9);
+        background: rgba(var(--md-sys-color-surface-container-highest) / 0.9);
         backdrop-filter: blur(24px);
         border-right: 1px solid rgb(var(--md-sys-color-outline-variant) / 0.8);
         box-shadow: 4px 0 24px -12px rgba(0, 0, 0, 0.1);

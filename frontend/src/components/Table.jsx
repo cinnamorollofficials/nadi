@@ -19,7 +19,7 @@ const Table = ({
     return (
       <div className="w-full overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-surface-container-low">
+          <thead className="bg-surface-container-highest/40 border-b border-outline-variant/30">
             <tr>
               {allColumns.map((col, index) => (
                 <th
@@ -33,7 +33,7 @@ const Table = ({
           </thead>
           <tbody className="bg-surface-container">
             {[1, 2, 3, 4, 5].map((row) => (
-              <tr key={row} className="border-b border-outline-variant/30 odd:bg-surface-variant/10">
+              <tr key={row} className="border-b border-outline-variant/30 odd:bg-black/[0.02] dark:odd:bg-white/[0.02]">
                 {allColumns.map((col, index) => (
                   <td key={index} className="px-4 py-2.5">
                     <div className="h-3.5 bg-surface-variant/30 rounded"></div>
@@ -61,7 +61,7 @@ const Table = ({
   return (
     <div className="w-full overflow-x-auto bg-surface-container border border-outline-variant/30 transition-colors duration-300">
       <table className="w-full">
-        <thead className="bg-surface-variant border-b border-outline-variant/30">
+        <thead className="bg-surface-container-highest/40 border-b border-outline-variant/30">
           <tr>
             {allColumns.map((col, index) => (
               <th
@@ -77,7 +77,7 @@ const Table = ({
           {data.map((row, rowIndex) => (
             <tr
               key={row.id || rowIndex}
-              className="hover:bg-black/[0.04] dark:hover:bg-primary-container/40 transition-colors duration-200 odd:bg-surface-variant/10"
+              className="hover:bg-black/[0.04] dark:hover:bg-primary-container/40 transition-colors duration-200 odd:bg-black/[0.02] dark:odd:bg-white/[0.02]"
             >
               {columns.map((col, colIndex) => (
                 <td
