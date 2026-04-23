@@ -91,9 +91,12 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
     };
   }, [connect]);
 
-  const sendMessage = (content) => {
+  const lastMessageRef = useRef(null);
+
+  const sendMessage = (content, isRetry = false) => {
+    setError(null);
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      setError('Socket not connected');
+      setError('Connection failed. Please check your internet or retry.');
       return;
     }
 
@@ -103,10 +106,20 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
       content: content
     };
 
-    setMessages((prev) => [...prev, { role: 'user', content }]);
+    if (!isRetry) {
+      setMessages((prev) => [...prev, { role: 'user', content }]);
+    }
+    
+    lastMessageRef.current = content;
     socketRef.current.send(JSON.stringify(message));
     setIsTyping(true);
   };
 
-  return { messages, setMessages, sendMessage, isTyping, error };
+  const resendLastMessage = () => {
+    if (lastMessageRef.current) {
+      sendMessage(lastMessageRef.current, true);
+    }
+  };
+
+  return { messages, setMessages, sendMessage, resendLastMessage, isTyping, error };
 };

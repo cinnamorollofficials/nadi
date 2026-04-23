@@ -39,7 +39,7 @@ const MarkdownRenderer = ({ content }) => {
   );
 };
 
-const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
+const ChatInterface = ({ messages, onSendMessage, onRetry, isTyping, error }) => {
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -161,12 +161,18 @@ const ChatInterface = ({ messages, onSendMessage, isTyping, error }) => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex justify-center p-4"
+              className="flex flex-col items-center gap-3 p-4"
             >
-              <div className="bg-error/10 text-error px-4 py-2 rounded-full flex items-center gap-2 text-sm border border-error/20">
-                <AlertCircle size={16} />
+              <div className="bg-error/10 text-error px-4 py-2 rounded-2xl flex items-center gap-2 text-sm border border-error/20 max-w-md text-center">
+                <AlertCircle size={16} className="shrink-0" />
                 {error}
               </div>
+              <button 
+                onClick={onRetry}
+                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+              >
+                Coba Kirim Ulang
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
