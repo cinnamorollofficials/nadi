@@ -6,55 +6,55 @@
 
 :root {
     /* Modern Zen Theme - Calm Clinical Health */
-    --md-sys-color-primary: 24 135 128; /* Softer, balanced clinical teal */
+    --md-sys-color-primary: 59 130 246; /* Soft Medical Blue (Blue-500) */
     --md-sys-color-on-primary: 255 255 255;
-    --md-sys-color-primary-container: 224 250 248;
-    --md-sys-color-on-primary-container: 15 75 70;
+    --md-sys-color-primary-container: 219 234 254; /* Blue-100 */
+    --md-sys-color-on-primary-container: 30 64 175; /* Blue-800 */
 
-    --md-sys-color-secondary-container: 255 241 242; /* Rose-50 */
-    --md-sys-color-on-secondary-container: 190 18 60; /* Rose-700 */
+    --md-sys-color-secondary-container: 241 245 249; /* Slate-100 (Neutral) */
+    --md-sys-color-on-secondary-container: 51 65 85; /* Slate-700 */
 
-    --md-sys-color-surface: 250 251 253; /* Near-white slate tint */
-    --md-sys-color-on-surface: 30 41 59;
-    --md-sys-color-surface-variant: 241 245 249;
+    --md-sys-color-surface: 255 255 255; /* Pure white for cleaner look */
+    --md-sys-color-on-surface: 15 23 42; /* Darker text for contrast */
+    --md-sys-color-surface-variant: 248 250 252; /* Very light slate */
     --md-sys-color-on-surface-variant: 71 85 105;
     --md-sys-color-surface-container-low: 255 255 255;
     --md-sys-color-surface-container: 251 252 254;
     --md-sys-color-surface-container-high: 244 247 250;
-    --md-sys-color-surface-container-highest: 235 240 245;
+    --md-sys-color-surface-container-highest: 238 242 248;
 
     --md-sys-color-outline: 203 213 225;
     --md-sys-color-outline-variant: 226 232 240;
 
-    --md-sys-color-error: 225 29 72;
+    --md-sys-color-error: 248 113 113; /* Soft Red (Red-400) */
     --md-sys-color-on-error: 255 255 255;
-    --md-sys-color-error-container: 255 241 242;
-    --md-sys-color-on-error-container: 159 18 57;
+    --md-sys-color-error-container: 254 226 226; /* Red-100 */
+    --md-sys-color-on-error-container: 153 27 27; /* Red-800 */
 
     /* Design-specific Humanist Accents */
-    --color-nadi-red: 225 29 72;
-    --color-accent-red: 225 29 72;
+    --color-nadi-red: 248 113 113;
+    --color-accent-red: 248 113 113;
 }
 
-/* Dark Theme - Premium Professional AI (Deep Slate & Teal) */
+/* Dark Theme - Premium Professional AI (Deep Slate & Blue) */
 html.dark,
 .dark {
-    --md-sys-color-primary: 45 212 191; /* Teal-400 */
-    --md-sys-color-on-primary: 19 78 74;
-    --md-sys-color-primary-container: 19 78 74;
-    --md-sys-color-on-primary-container: 204 251 241;
+    --md-sys-color-primary: 96 165 250; /* Softer Blue (Blue-400) */
+    --md-sys-color-on-primary: 30 58 138; /* Blue-900 */
+    --md-sys-color-primary-container: 30 58 138;
+    --md-sys-color-on-primary-container: 191 219 254; /* Blue-200 */
 
-    --md-sys-color-secondary-container: 136 19 55; /* Rose-900 */
-    --md-sys-color-on-secondary-container: 255 228 230;
+    --md-sys-color-secondary-container: 30 41 59; /* Slate-800 */
+    --md-sys-color-on-secondary-container: 226 232 240; /* Slate-200 */
 
-    --md-sys-color-surface: 15 23 42; /* Refined Slate Navy */
-    --md-sys-color-on-surface: 248 250 252;
-    --md-sys-color-surface-variant: 51 65 85;
+    --md-sys-color-surface: 28 39 60; /* Softer, lighter navy background */
+    --md-sys-color-on-surface: 241 245 249;
+    --md-sys-color-surface-variant: 45 58 85;
     --md-sys-color-on-surface-variant: 203 213 225;
-    --md-sys-color-surface-container-low: 30 41 59;
-    --md-sys-color-surface-container: 22 30 50;
-    --md-sys-color-surface-container-high: 51 65 85;
-    --md-sys-color-surface-container-highest: 71 85 105;
+    --md-sys-color-surface-container-low: 35 48 72;
+    --md-sys-color-surface-container: 24 33 55;
+    --md-sys-color-surface-container-high: 55 68 95;
+    --md-sys-color-surface-container-highest: 65 78 105;
 
     --md-sys-color-outline: 71 85 105;
     --md-sys-color-outline-variant: 51 65 85;
@@ -68,7 +68,7 @@ html.dark,
     --color-navy-950: 2 6 23;
     --color-navy-900: 15 23 42;
     --color-navy-800: 30 41 59;
-    --color-accent-red: 244 63 94; /* Rose-500 */
+    --color-accent-red: 251 113 133; /* rose-400 */
 }
 
 @layer base {
