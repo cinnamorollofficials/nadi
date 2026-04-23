@@ -11,6 +11,8 @@ export default {
         // Humanist Health + AI Theme
         primary: {
           DEFAULT: 'rgb(var(--md-sys-color-primary) / <alpha-value>)',
+          container: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-primary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-primary-container))`,
+          'on-container': ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-on-primary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-on-primary-container))`,
           '50': '#f0fdfa',
           '100': '#ccfbf1',
           '400': '#2dd4bf',

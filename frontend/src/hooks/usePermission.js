@@ -5,18 +5,17 @@ import { useState, useEffect } from 'react';
  * @returns {Object} object containing hasPermission function
  */
 export const usePermission = () => {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
+    const [user] = useState(() => {
         const userData = localStorage.getItem('user');
         if (userData) {
             try {
-                setUser(JSON.parse(userData));
+                return JSON.parse(userData);
             } catch (e) {
                 console.error('Failed to parse user data', e);
             }
         }
-    }, []);
+        return null;
+    });
 
     const hasPermission = (permission) => {
         if (!user) return false;

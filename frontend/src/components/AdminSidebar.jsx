@@ -29,7 +29,7 @@ const AdminSidebar = ({
   };
 
   useEffect(() => {
-    if (collapsed) return;
+    if (isActuallyCollapsed) return;
     const newExpanded = { ...expandedSections };
     let changed = false;
     sections.forEach((section) => {
@@ -45,10 +45,13 @@ const AdminSidebar = ({
       });
     });
     if (changed) setExpandedSections(newExpanded);
-  }, [location.pathname, sections, collapsed]);
+  }, [location.pathname, sections, isActuallyCollapsed]);
 
   const toggleSection = (label) => {
-    if (collapsed) return;
+    if (isActuallyCollapsed) {
+      if (onToggleCollapse) onToggleCollapse();
+      return;
+    }
     setExpandedSections((prev) => ({ ...prev, [label]: !prev[label] }));
   };
 
@@ -57,14 +60,12 @@ const AdminSidebar = ({
       if (!isActuallyCollapsed && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
         if (mobileOpen) {
           onCloseMobile();
-        } else if (!collapsed) {
-          onToggleCollapse();
         }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isActuallyCollapsed, sidebarRef, mobileOpen, collapsed, onCloseMobile, onToggleCollapse]);
+  }, [isActuallyCollapsed, sidebarRef, mobileOpen, onCloseMobile]);
 
   return (
     <>
@@ -204,7 +205,7 @@ const AdminSidebar = ({
                           <button
                             onClick={() => toggleSection(item.label)}
                             className={`w-full flex items-center justify-between px-4 py-1.5 rounded-xl transition-all ${
-                              active ? "bg-primary/10 text-primary font-semibold" : "text-surface-on-variant hover:bg-surface-variant/50 shadow-sm border border-outline-variant/5"
+                              active ? "bg-primary/10 text-primary font-semibold border border-primary/20" : "text-surface-on-variant hover:bg-surface-variant/50 border border-outline-variant/5"
                             }`}
                           >
                             <div className="flex items-center gap-3">
@@ -236,8 +237,8 @@ const AdminSidebar = ({
                       ) : (
                         <Link
                           to={item.path}
-                          className={`flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all ${
-                            active ? "bg-primary/10 text-primary font-semibold border border-primary/20" : "text-surface-on-variant hover:bg-surface-variant/50"
+                          className={`flex items-center gap-3 px-4 py-1.5 rounded-xl transition-all ${
+                            active ? "bg-primary/10 text-primary font-semibold border border-primary/20" : "text-surface-on-variant hover:bg-surface-variant/50 border border-outline-variant/5"
                           }`}
                         >
                           {item.icon}
@@ -255,10 +256,10 @@ const AdminSidebar = ({
         <div className="p-2 border-t border-outline-variant/10">
           <button
             onClick={onLogout}
-            className="w-full flex items-center justify-center gap-3 p-2 rounded-xl text-error hover:bg-error/10 font-bold transition-all"
+            className="w-full flex items-center justify-start gap-3 p-2 px-6 rounded-xl text-error hover:bg-error/10 font-bold transition-all"
           >
             <LogOut size={18} />
-            {!isActuallyCollapsed && <span className="text-[11px]">Keluar Sistem</span>}
+            {!isActuallyCollapsed && <span className="text-[11px]">Logout</span>}
           </button>
         </div>
       </aside>

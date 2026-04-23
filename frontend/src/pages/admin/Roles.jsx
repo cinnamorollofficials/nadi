@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Search, RefreshCw } from 'lucide-react';
 import TextField from '../../components/TextField';
@@ -155,10 +156,14 @@ const Roles = () => {
     ];
 
     const tableActions = useMemo(() => [
-        { label: 'Detail', onClick: handleDetailRole, icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> },
+        { label: 'Detail', onClick: handleDetailRole },
         hasPermission(PERMS.ROLE_EDIT) && { label: 'Edit', onClick: handleEditRole },
         hasPermission(PERMS.ROLE_DELETE) && { label: 'Delete', onClick: handleDeleteRole, className: 'text-error' },
     ].filter(Boolean), [hasPermission]);
+
+    if (!isLoading && !hasPermission(PERMS.ROLE_VIEW)) {
+        return <Navigate to="/admin" replace />;
+    }
 
     if (error) {
         return (
@@ -186,7 +191,7 @@ const Roles = () => {
                 </div>
                 <div className="flex gap-2">
                     {hasPermission(PERMS.SYSTEM_EXPORT) && (
-                        <div className="flex bg-surface-variant/20 p-1 rounded-lg">
+                        <div className="flex bg-surface-container-high border border-outline-variant/60 p-1 rounded-xl shadow-md">
                             <button
                                 onClick={handleSyncCache}
                                 className="px-3 py-1.5 text-xs font-semibold hover:bg-surface-variant/30 rounded-md transition-all flex items-center gap-1.5 text-surface-on disabled:opacity-50"

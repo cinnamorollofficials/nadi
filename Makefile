@@ -4,6 +4,9 @@ run-backend:
 run-frontend:
 	cd frontend && npm run dev
 
+run-dev:
+	make -j2 run-backend run-frontend
+
 run-compile-backend-prod:
 	sudo systemctl stop nadi
 	cd backend && go build -o main ./cmd/api/main.go

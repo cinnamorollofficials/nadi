@@ -14,7 +14,25 @@ const AdminLayout = () => {
   const { app_name, logo } = useSettings();
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState(null);
+
+  // Initialize user synchronously to avoid race conditions in sub-menus and accidental redirects
+  const [user, setUser] = useState(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      try {
+        const parsed = JSON.parse(userData);
+        // Regular users should not be in AdminLayout
+        if (parsed.role_id === ROLES.USER) {
+          return null;
+        }
+        return parsed;
+      } catch (e) {
+        console.error("Failed to parse user data", e);
+      }
+    }
+    return null;
+  });
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
@@ -55,30 +73,10 @@ const AdminLayout = () => {
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (!token) {
+    if (!user) {
       navigate("/login");
-      return;
     }
-
-    if (userData) {
-      try {
-        const parsedUser = safeParse(userData);
-        setUser(parsedUser);
-
-        // Secondary safety check: Redirect 'user' role out of admin layout
-        if (parsedUser.role_id === ROLES.USER) {
-          navigate("/consultations/ai");
-        }
-      } catch (err) {
-        console.error("Admin layout auth parsing error:", err);
-        localStorage.removeItem("user");
-        navigate("/login");
-      }
-    }
-  }, [navigate]);
+  }, [user, navigate]);
 
   const handleLogout = async () => {
     try {
@@ -839,8 +837,8 @@ const AdminLayout = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 bg-surface relative">
         {/* Compact Header (MD3 Layered Style) */}
-        <header className="h-14 flex items-center justify-between px-4 lg:px-10 border-b border-outline-variant/30 sticky top-0 z-10">
-          <div className="flex items-center gap-3">
+        <header className="h-14 flex items-center justify-between px-4 lg:px-10 sticky top-0 z-10 bg-surface/80 backdrop-blur-md">
+          <div className="flex items-center gap-4">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
@@ -860,14 +858,6 @@ const AdminLayout = () => {
                 />
               </svg>
             </button>
-
-            <div className="flex flex-col gap-0.5 mt-0.5">
-              <div className="flex items-center gap-2 overflow-hidden">
-                <span className="text-sm font-bold text-surface-on truncate max-w-[180px] lg:max-w-none">
-                  {pageTitle}
-                </span>
-              </div>
-            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -913,9 +903,6 @@ const AdminLayout = () => {
                 <span className="text-xs font-bold text-surface-on truncate max-w-[150px]">
                   {user.email}
                 </span>
-                <span className="text-[10px] text-surface-on-variant font-bold uppercase tracking-tighter opacity-70">
-                  Administrator
-                </span>
               </div>
               <Link
                 to="/profile"
@@ -932,7 +919,7 @@ const AdminLayout = () => {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar px-4 lg:px-10 py-6 lg:py-8">
+        <main className="flex-1 overflow-y-auto px-4 lg:px-10 py-6">
           <div className="max-w-screen-2xl mx-auto animate-fade-in-up pb-10">
             <Outlet />
           </div>
