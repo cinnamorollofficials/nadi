@@ -248,12 +248,20 @@ func (r *Router) setupPrivateRoutes(
 		apiKeys.DELETE("/:id", permGuard.Check("apikey:delete"), apiKeyHandler.Delete)
 	}
 
-	// AI Usage monitoring
+	// AI Usage monitoring (admin)
 	aiUsage := v1.Group("/ai/usage")
 	aiUsage.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
 	{
 		aiUsage.GET("/stats", permGuard.Check("system:stat"), aiHandler.GetStats)
 		aiUsage.GET("/daily", permGuard.Check("system:stat"), aiHandler.GetDailyUsage)
 		aiUsage.GET("/top-users", permGuard.Check("system:stat"), aiHandler.GetTopUsers)
+		aiUsage.GET("/users-today", permGuard.Check("system:stat"), aiHandler.GetAllUsersTodayUsage)
+	}
+
+	// AI Usage for the current authenticated user (no special perm needed)
+	aiMe := v1.Group("/ai/me")
+	aiMe.Use(middleware.AuthMiddleware(r.config.JWT.Secret, r.cache))
+	{
+		aiMe.GET("/usage", aiHandler.GetMyUsage)
 	}
 }
