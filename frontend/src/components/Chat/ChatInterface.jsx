@@ -63,6 +63,7 @@ const ChatInterface = ({
   isTyping, 
   error,
   disease,
+  mode = "consultation",
   suggestions = [],
   onDiseaseClick
 }) => {
@@ -87,13 +88,26 @@ const ChatInterface = ({
     }
   };
 
+  const isSymptomMode = mode === "symptom_check";
+
   return (
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
-        {/* Topic Badge if disease info is present */}
-        {disease && (
-          <div className="sticky top-0 z-10 flex justify-center py-4 px-6 pointer-events-none">
+        {/* Topic/Mode Badge */}
+        <div className="sticky top-0 z-10 flex flex-col items-center py-4 px-6 gap-2 pointer-events-none">
+          {isSymptomMode && (
+            <motion.div 
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="backdrop-blur-md px-1 py-1 rounded-full flex items-center gap-2 shadow-sm pointer-events-auto"
+            >
+              <Label variant="secondary" className="shadow-lg shadow-secondary/20">
+                Symptom Identification Room
+              </Label>
+            </motion.div>
+          )}
+          {disease && (
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -103,8 +117,9 @@ const ChatInterface = ({
                 Topik: {disease}
               </Label>
             </motion.div>
-          </div>
-        )}
+          )}
+        </div>
+
         <div className="max-w-4xl mx-auto p-4 lg:p-8 space-y-10">
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
@@ -114,8 +129,8 @@ const ChatInterface = ({
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full text-center space-y-6"
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center text-primary overflow-hidden p-3 shadow-inner">
-                {logo ? (
+              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center overflow-hidden p-3 shadow-inner ${isSymptomMode ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'}`}>
+                {logo && !isSymptomMode ? (
                   <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi AI" className="w-full h-full object-contain" />
                 ) : (
                   <Bot size={32} />
@@ -123,12 +138,16 @@ const ChatInterface = ({
               </div>
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold text-surface-on tracking-tight">
-                  {disease ? `Diskusi mengenai ${disease}` : "Apa yang ingin Anda tanyakan?"}
+                  {isSymptomMode 
+                    ? "Mari analisis gejala Anda" 
+                    : (disease ? `Diskusi mengenai ${disease}` : "Apa yang ingin Anda tanyakan?")}
                 </h3>
                 <p className="text-surface-on-variant px-12 max-w-md mx-auto text-sm leading-relaxed opacity-70">
-                  {disease 
-                    ? `Asisten Nadi siap membantu Anda memahami lebih lanjut tentang ${disease}. Pilih pertanyaan di bawah atau ketik sendiri.`
-                    : "Mulai konsultasi dengan menanyakan keluhan kesehatan, gejala, atau kebutuhan nutrisi Anda."}
+                  {isSymptomMode
+                    ? "Jelaskan apa yang Anda rasakan. Saya akan menanyakan beberapa hal untuk memahami kondisi Anda."
+                    : (disease 
+                      ? `Asisten Nadi siap membantu Anda memahami lebih lanjut tentang ${disease}. Pilih pertanyaan di bawah atau ketik sendiri.`
+                      : "Mulai konsultasi dengan menanyakan keluhan kesehatan, gejala, atau kebutuhan nutrisi Anda.")}
                 </p>
               </div>
 

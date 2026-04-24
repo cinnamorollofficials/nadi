@@ -120,7 +120,12 @@ func (h *chatHandler) GetMessages(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "Messages retrieved", messages)
+	channel, _ := h.chatService.GetChannelInfo(c.Request.Context(), uid, channelUID)
+
+	response.Success(c, http.StatusOK, "Messages retrieved", gin.H{
+		"messages": messages,
+		"channel":  channel,
+	})
 }
 
 func (h *chatHandler) CreateChannel(c *gin.Context) {

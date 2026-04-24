@@ -61,6 +61,13 @@ KEAMANAN DAN INTEGRITAS (ANTI-JAILBREAK):
 		if contextInfo != "" {
 			systemPrompt += "Gunakan informasi sah berikut untuk membantu jawaban Anda:\n" + contextInfo
 		}
+	} else if mode == entity.ChatModeSymptomCheck {
+		systemPrompt += `
+MODUL SYMPTOM CHECKER:
+1. Tujuan Anda adalah mengidentifikasi kemungkinan penyebab gejala pengguna melalui proses tanya jawab yang terstruktur.
+2. JANGAN langsung memberikan diagnosis final. Sebaliknya, gunakan frasa seperti "Berdasarkan gejala yang Anda jelaskan, ada kemungkinan..."
+3. WAJIB tanyakan: durasi gejala, tingkat keparahan (skala 1-10), dan apakah ada gejala penyerta lainnya.
+4. Jika pengguna menyebutkan "RED FLAGS" (nyeri dada hebat, kesulitan napas berat, perdarahan hebat, kehilangan kesadaran), Anda HARUS segera menyarankan untuk ke IGD/Instalasi Gawat Darurat.`
 	}
 
 	model.SystemInstruction = &genai.Content{
