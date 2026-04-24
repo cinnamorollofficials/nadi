@@ -110,11 +110,13 @@ func (r *aiUsageRepository) GetTopUsers(ctx context.Context, limit int) ([]map[s
 
 func (r *aiUsageRepository) GetTodayUsageByUserID(ctx context.Context, userID uint) (*TodayUsageSummary, error) {
 	var summary TodayUsageSummary
-	today := time.Now().UTC().Format("2006-01-02")
+	now := time.Now().UTC()
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	endOfDay := startOfDay.Add(24 * time.Hour).Add(-1 * time.Second)
 
 	err := r.db.WithContext(ctx).Model(&entity.AiUsageLog{}).
 		Select(`COUNT(*) as message_count, COALESCE(SUM(total_tokens), 0) as total_tokens, COALESCE(SUM(prompt_tokens), 0) as prompt_tokens, COALESCE(SUM(candidates_tokens), 0) as candidates_tokens, COALESCE(SUM(cost), 0) as estimated_cost`).
-		Where("user_id = ? AND DATE(created_at) = ?", userID, today).
+		Where("user_id = ? AND created_at BETWEEN ? AND ?", userID, startOfDay, endOfDay).
 		Scan(&summary).Error
 
 	return &summary, err
@@ -146,7 +148,9 @@ func (r *aiUsageRepository) GetAllTimeUsageByUserID(ctx context.Context, userID 
 }
 
 func (r *aiUsageRepository) GetTodayUsageAllUsers(ctx context.Context) (map[uint]*TodayUsageSummary, error) {
-	today := time.Now().UTC().Format("2006-01-02")
+	now := time.Now().UTC()
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	endOfDay := startOfDay.Add(24 * time.Hour).Add(-1 * time.Second)
 
 	type row struct {
 		UserID           uint    `gorm:"column:user_id"`
@@ -160,7 +164,7 @@ func (r *aiUsageRepository) GetTodayUsageAllUsers(ctx context.Context) (map[uint
 	var rows []row
 	err := r.db.WithContext(ctx).Model(&entity.AiUsageLog{}).
 		Select(`user_id, COUNT(*) as message_count, COALESCE(SUM(total_tokens), 0) as total_tokens, COALESCE(SUM(prompt_tokens), 0) as prompt_tokens, COALESCE(SUM(candidates_tokens), 0) as candidates_tokens, COALESCE(SUM(cost), 0) as estimated_cost`).
-		Where("DATE(created_at) = ?", today).
+		Where("created_at BETWEEN ? AND ?", startOfDay, endOfDay).
 		Group("user_id").
 		Scan(&rows).Error
 

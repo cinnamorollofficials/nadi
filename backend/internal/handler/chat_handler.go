@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"context"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -62,12 +64,17 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 		}
 
 		if msg.Type == "message" {
-			err := h.chatService.ProcessMessage(c.Request.Context(), uid, msg.ChannelUID, msg.Content, func(chunk string) {
+			// Use a longer timeout for AI processing
+			// Now that middleware ignores WS, c.Request.Context() correctly reflects the connection stay
+			ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Minute)
+
+			err := h.chatService.ProcessMessage(ctx, uid, msg.ChannelUID, msg.Content, func(chunk string) {
 				conn.WriteJSON(gin.H{
 					"type":    "chunk",
 					"content": chunk,
 				})
 			})
+			cancel() // Free resources immediately
 
 			if err != nil {
 				conn.WriteJSON(gin.H{"type": "error", "content": err.Error()})
