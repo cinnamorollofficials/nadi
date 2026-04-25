@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { motion, AnimatePresence } from "framer-motion";
@@ -63,12 +63,14 @@ const ChatInterface = ({
   isTyping, 
   error,
   disease,
+  mode = "consultation",
   suggestions = [],
   onDiseaseClick
 }) => {
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [charCount, setCharCount] = useState(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -84,16 +86,30 @@ const ChatInterface = ({
     if (content && !isTyping) {
       onSendMessage(content);
       inputRef.current.value = "";
+      setCharCount(0);
     }
   };
+
+  const isSymptomMode = mode === "symptom_check";
 
   return (
     <div className="flex flex-col h-full bg-transparent overflow-hidden">
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-outline-variant scrollbar-track-transparent">
-        {/* Topic Badge if disease info is present */}
-        {disease && (
-          <div className="sticky top-0 z-10 flex justify-center py-4 px-6 pointer-events-none">
+        {/* Topic/Mode Badge */}
+        <div className="sticky top-0 z-10 flex flex-col items-center py-4 px-6 gap-2 pointer-events-none">
+          {isSymptomMode && (
+            <motion.div 
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="backdrop-blur-md px-1 py-1 rounded-full flex items-center gap-2 shadow-sm pointer-events-auto"
+            >
+              <Label variant="secondary" className="shadow-lg shadow-secondary/20">
+                Symptom Identification Room
+              </Label>
+            </motion.div>
+          )}
+          {disease && (
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -103,8 +119,9 @@ const ChatInterface = ({
                 Topik: {disease}
               </Label>
             </motion.div>
-          </div>
-        )}
+          )}
+        </div>
+
         <div className="max-w-4xl mx-auto p-4 lg:p-8 space-y-10">
         <AnimatePresence initial={false}>
           {messages.length === 0 && !isTyping && (
@@ -114,8 +131,8 @@ const ChatInterface = ({
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full text-center space-y-6"
             >
-              <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center text-primary overflow-hidden p-3 shadow-inner">
-                {logo ? (
+              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center overflow-hidden p-3 shadow-inner ${isSymptomMode ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'}`}>
+                {logo && !isSymptomMode ? (
                   <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi AI" className="w-full h-full object-contain" />
                 ) : (
                   <Bot size={32} />
@@ -123,12 +140,16 @@ const ChatInterface = ({
               </div>
               <div className="space-y-2">
                 <h3 className="text-2xl font-bold text-surface-on tracking-tight">
-                  {disease ? `Diskusi mengenai ${disease}` : "Apa yang ingin Anda tanyakan?"}
+                  {isSymptomMode 
+                    ? "Mari analisis gejala Anda" 
+                    : (disease ? `Diskusi mengenai ${disease}` : "Apa yang ingin Anda tanyakan?")}
                 </h3>
                 <p className="text-surface-on-variant px-12 max-w-md mx-auto text-sm leading-relaxed opacity-70">
-                  {disease 
-                    ? `Asisten Nadi siap membantu Anda memahami lebih lanjut tentang ${disease}. Pilih pertanyaan di bawah atau ketik sendiri.`
-                    : "Mulai konsultasi dengan menanyakan keluhan kesehatan, gejala, atau kebutuhan nutrisi Anda."}
+                  {isSymptomMode
+                    ? "Jelaskan apa yang Anda rasakan. Saya akan menanyakan beberapa hal untuk memahami kondisi Anda."
+                    : (disease 
+                      ? `Asisten Nadi siap membantu Anda memahami lebih lanjut tentang ${disease}. Pilih pertanyaan di bawah atau ketik sendiri.`
+                      : "Mulai konsultasi dengan menanyakan keluhan kesehatan, gejala, atau kebutuhan nutrisi Anda.")}
                 </p>
               </div>
 
@@ -154,11 +175,15 @@ const ChatInterface = ({
             </motion.div>
           )}
 
-          {messages.map((msg, index) => {
+          {messages
+            .filter(msg => !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
+            .map((msg, index) => {
             const isBot = msg.role === "assistant";
             const { cleanContent, diseases } = isBot 
               ? extractDiseases(msg.content) 
               : { cleanContent: msg.content, diseases: [] };
+
+            if (!cleanContent && !isBot) return null;
 
             return (
               <motion.div
@@ -274,14 +299,19 @@ const ChatInterface = ({
             <input
               ref={inputRef}
               type="text"
-              placeholder="Ask something.."
+              maxLength={500}
+              onChange={(e) => setCharCount(e.target.value.length)}
+              placeholder="Ketik pesan Anda di sini..."
               disabled={isTyping}
               className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
             />
+            <div className={`absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold ${charCount >= 500 ? 'text-error' : 'text-surface-on-variant/50'}`}>
+               {charCount}/500
+            </div>
             <button
               type="submit"
-              disabled={isTyping}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
+              disabled={isTyping || charCount === 0}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
             >
               {isTyping ? (
                 <Loader2 className="animate-spin" size={18} />

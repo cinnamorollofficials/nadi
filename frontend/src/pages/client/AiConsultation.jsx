@@ -13,11 +13,12 @@ const AiConsultation = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const [activeChannelId, setActiveChannelId] = useState(id);
+  const [activeMode, setActiveMode] = useState("consultation");
 
   // Create New Channel Mutation
   const createChannelMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.post("/chat/channel", { mode: "consultation" });
+    mutationFn: async (mode = "consultation") => {
+      const response = await apiClient.post("/chat/channel", { mode });
       return response.data.data;
     },
     onSuccess: (newChannel) => {
@@ -42,7 +43,10 @@ const AiConsultation = () => {
       const fetchMessages = async () => {
         try {
           const response = await apiClient.get(`/chat/history/${activeChannelId}`);
-          setMessages(response.data.data.map(m => ({
+          const { messages: historyMsgs, channel } = response.data.data;
+          
+          setActiveMode(channel?.mode || "consultation");
+          setMessages(historyMsgs.map(m => ({
             role: m.role,
             content: m.content,
             isDone: true
@@ -55,11 +59,23 @@ const AiConsultation = () => {
       };
       fetchMessages();
     }
-  }, [activeChannelId, setMessages]);
+  }, [activeChannelId, setMessages, navigate]);
 
   useEffect(() => {
     setActiveChannelId(id);
   }, [id]);
+
+  // Handle auto-start for Symptom Checker
+  useEffect(() => {
+    // If it's a new Symptom Check session (no messages), trigger AI to start
+    if (activeChannelId && activeMode === "symptom_check" && messages.length === 0 && !isTyping) {
+      // Small delay to ensure socket is connected and ready
+      const timer = setTimeout(() => {
+        sendMessage("[MULAI_CEK_GEJALA]", true); // isRetry=true means it won't be added to local messages list (hidden)
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeChannelId, activeMode, messages.length, sendMessage, isTyping]);
 
   // Handle initial message after navigation
   useEffect(() => {
@@ -83,11 +99,11 @@ const AiConsultation = () => {
     }
   });
 
-  const handleNewChat = () => {
+  const handleNewChat = (mode = "consultation") => {
     // Prevent multiple simultaneous creations
     if (createChannelMutation.isPending) return;
 
-    createChannelMutation.mutate();
+    createChannelMutation.mutate(mode);
   };
 
   const handleSendMessage = async (content) => {
@@ -98,9 +114,10 @@ const AiConsultation = () => {
       : '';
 
     if (!activeChannelId) {
-      // 1. Create channel first
+      // 1. Create channel first (default to consultation for manual typing from empty state)
       try {
-        const newChannel = await createChannelMutation.mutateAsync();
+        const mode = location.state?.mode || "consultation";
+        const newChannel = await createChannelMutation.mutateAsync(mode);
         
         // 1.5 Rename channel if disease context exists
         if (diseaseContext) {
@@ -145,6 +162,7 @@ const AiConsultation = () => {
     navigate('/consultations/ai', {
       state: {
         disease: diseaseName,
+        mode: "consultation",
         suggestions: [
           `Apa saja gejala awal ${diseaseName} yang harus diwaspadai?`,
           `Bagaimana cara menangani ${diseaseName} di rumah secara mandiri?`,
@@ -166,25 +184,86 @@ const AiConsultation = () => {
             isTyping={isTyping || createChannelMutation.isPending}
             error={error}
             disease={activeDisease}
+            mode={activeMode || location.state?.mode}
             suggestions={suggestions}
             onDiseaseClick={handleDiseaseClick}
           />
         ) : (
-          <div className="h-full flex flex-col items-center justify-center p-6 text-center">
-            <div className="w-24 h-24 bg-primary/5 rounded-full flex items-center justify-center text-primary/30 mb-6 mx-auto">
-              <LayoutDashboard size={48} />
-            </div>
-            <h3 className="text-2xl font-bold text-surface-on">Nadi AI Consultation</h3>
-            <p className="text-surface-on-variant mt-2 max-w-sm mx-auto text-sm">
-              Pilih percakapan dari sidebar atau mulai konsultasi medis baru untuk mendapatkan bantuan AI.
-            </p>
-            <button
-              onClick={handleNewChat}
-              disabled={createChannelMutation.isPending}
-              className="mt-8 px-8 py-3 bg-primary text-on-primary rounded-2xl font-bold hover:brightness-110 transition-all disabled:opacity-50"
-            >
-              {createChannelMutation.isPending ? "Memulai..." : "Mulai Chat Baru Sekarang"}
-            </button>
+          <div className="h-full flex flex-col items-center justify-center p-6 md:p-12 overflow-y-auto custom-scrollbar">
+             <motion.div 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               className="max-w-2xl w-full text-center"
+             >
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold mb-6 border border-primary/20">
+                  <Bot size={14} className="animate-bounce" />
+                  <span>CERDAS • PERSONAL • AKURAT</span>
+                </div>
+                
+                <h2 className="text-3xl md:text-4xl font-black text-surface-on tracking-tight mb-4">
+                  Halo! Saya <span className="text-primary italic">Nadi AI</span>.
+                </h2>
+                <p className="text-surface-on-variant mb-12 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                  Pilih cara Anda ingin memulai hari ini. Saya siap membantu Anda memahami kondisi kesehatan Anda dengan lebih baik.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                  {/* Mode: Consultation */}
+                  <motion.button
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleNewChat("consultation")}
+                    disabled={createChannelMutation.isPending}
+                    className="p-6 rounded-3xl bg-surface border border-surface-variant/50 hover:border-primary/50 transition-all shadow-sm hover:shadow-xl hover:shadow-primary/10 group flex flex-col h-full"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                      <Bot size={30} />
+                    </div>
+                    <h4 className="text-lg font-bold text-surface-on mb-2">AI Consultation</h4>
+                    <p className="text-xs text-surface-on-variant leading-relaxed mb-6 flex-1">
+                      Tanyakan apa saja tentang kesehatan, nutrisi, atau penjelasan medis secara umum dengan bahasa santai.
+                    </p>
+                    <div className="flex items-center text-xs font-bold text-primary group-hover:translate-x-1 transition-transform">
+                      Mulai Konsultasi →
+                    </div>
+                  </motion.button>
+
+                  {/* Mode: Symptom Checker */}
+                  <motion.button
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleNewChat("symptom_check")}
+                    disabled={createChannelMutation.isPending}
+                    className="p-6 rounded-3xl bg-surface border border-surface-variant/50 hover:border-secondary/50 transition-all shadow-sm hover:shadow-xl hover:shadow-secondary/10 group flex flex-col h-full"
+                  >
+                    <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary mb-6 group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+                      <LayoutDashboard size={30} />
+                    </div>
+                    <h4 className="text-lg font-bold text-surface-on mb-2">Symptom Checker</h4>
+                    <p className="text-xs text-surface-on-variant leading-relaxed mb-6 flex-1">
+                      Bantu saya menganalisis gejala Anda melalui tanya jawab terstruktur untuk perkiraan kondisi kesehatan.
+                    </p>
+                    <div className="flex items-center text-xs font-bold text-secondary group-hover:translate-x-1 transition-transform">
+                      Cek Gejala Sekarang →
+                    </div>
+                  </motion.button>
+                </div>
+
+                <div className="mt-16 pt-8 border-t border-surface-variant/30 flex flex-wrap justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all">
+                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
+                      Privasi Terjaga
+                   </div>
+                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      Respons Cepat
+                   </div>
+                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
+                      <div className="w-2 h-2 rounded-full bg-purple-500" />
+                      Edukasi Medis
+                   </div>
+                </div>
+             </motion.div>
           </div>
         )}
       </div>

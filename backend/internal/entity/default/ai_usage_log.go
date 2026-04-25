@@ -10,5 +10,6 @@ type AiUsageLog struct {
 	TotalTokens     int       `gorm:"not null" json:"total_tokens"`
 	Model           string    `gorm:"type:varchar(100);not null" json:"model"`
 	Cost            float64   `gorm:"type:decimal(18,8);default:0" json:"cost"`
-	CreatedAt       time.Time `json:"created_at"`
+	CreatedAt       time.Time `gorm:"index" json:"created_at"`
 }
+

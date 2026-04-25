@@ -1,7 +1,11 @@
 package handler
 
 import (
+	"context"
 	"net/http"
+	"regexp"
+	"time"
+	"unicode/utf8"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -9,7 +13,11 @@ import (
 	"github.com/hadi-projects/go-react-starter/internal/service"
 	"github.com/hadi-projects/go-react-starter/internal/utils"
 	"github.com/hadi-projects/go-react-starter/pkg/response"
+	"golang.org/x/time/rate"
 )
+
+// Global regex to restrict input: allows alphanumeric, standard punctuation/symbols, and newlines. Rejects <, >, {, } and backticks for safety.
+var safeTextRegex = regexp.MustCompile(`^[^<>{}\x60]+$`)
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
@@ -50,11 +58,14 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 	}
 	defer conn.Close()
 
+	// Rate Limiter per connection (1 message every 2 seconds, burst size of 3)
+	limiter := rate.NewLimiter(rate.Every(2*time.Second), 3)
+
 	for {
 		var msg struct {
-			Type      string `json:"type"`
+			Type       string `json:"type"`
 			ChannelUID string `json:"channel_uid"`
-			Content   string `json:"content"`
+			Content    string `json:"content"`
 		}
 
 		if err := conn.ReadJSON(&msg); err != nil {
@@ -62,12 +73,35 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 		}
 
 		if msg.Type == "message" {
-			err := h.chatService.ProcessMessage(c.Request.Context(), uid, msg.ChannelUID, msg.Content, func(chunk string) {
+			// 1. Rate Limiting Check
+			if !limiter.Allow() {
+				conn.WriteJSON(gin.H{"type": "toast", "content": "Tolong jangan spam, tunggu beberapa detik sebelum mengirim pesan lagi."})
+				continue
+			}
+
+			// 2. Length Validation
+			if utf8.RuneCountInString(msg.Content) > 500 {
+				conn.WriteJSON(gin.H{"type": "toast", "content": "Pesan terlalu panjang. Maksimal 500 karakter."})
+				continue
+			}
+
+			// 3. Security Sanitization (Check against safe characters)
+			if !safeTextRegex.MatchString(msg.Content) && msg.Content != "" {
+				conn.WriteJSON(gin.H{"type": "toast", "content": "Input mengandung karakter yang tidak valid (<, >, {, } dilarang demi keamanan)."})
+				continue
+			}
+
+			// Use a longer timeout for AI processing
+			// Now that middleware ignores WS, c.Request.Context() correctly reflects the connection stay
+			ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Minute)
+
+			err := h.chatService.ProcessMessage(ctx, uid, msg.ChannelUID, msg.Content, func(chunk string) {
 				conn.WriteJSON(gin.H{
 					"type":    "chunk",
 					"content": chunk,
 				})
 			})
+			cancel() // Free resources immediately
 
 			if err != nil {
 				conn.WriteJSON(gin.H{"type": "error", "content": err.Error()})
@@ -113,7 +147,12 @@ func (h *chatHandler) GetMessages(c *gin.Context) {
 		return
 	}
 
-	response.Success(c, http.StatusOK, "Messages retrieved", messages)
+	channel, _ := h.chatService.GetChannelInfo(c.Request.Context(), uid, channelUID)
+
+	response.Success(c, http.StatusOK, "Messages retrieved", gin.H{
+		"messages": messages,
+		"channel":  channel,
+	})
 }
 
 func (h *chatHandler) CreateChannel(c *gin.Context) {

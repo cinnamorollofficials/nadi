@@ -10,7 +10,7 @@ import Button from '../../components/Button';
 import UserFormModal from '../../components/UserFormModal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import DataDetailModal from '../../components/DataDetailModal';
-import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers, syncCache } from '../../api/admin';
+import { getUsers, createUser, updateUser, deleteUser, getRoles, exportUsers, syncCache, getAiUsageUsersToday } from '../../api/admin';
 import { usePermission } from '../../hooks/usePermission';
 import { PERMS } from '../../utils/permissions';
 import { toast } from 'react-hot-toast';
@@ -50,6 +50,15 @@ const Users = () => {
         queryKey: ['roles', 'user'],
         queryFn: () => getRoles(1, 100, '', 'user'), // Get all user roles
     });
+
+    // Fetch real AI usage stats for all users (today)
+    const { data: usageData } = useQuery({
+        queryKey: ['ai-usage-users-today'],
+        queryFn: getAiUsageUsersToday,
+        refetchInterval: 30000, // Refresh every 30 seconds
+    });
+
+    const usageStats = usageData?.data || {};
 
     const createMutation = useMutation({
         mutationFn: createUser,
@@ -177,17 +186,30 @@ const Users = () => {
                 const used = row.current_usage || 0;
                 const percent = Math.min(100, Math.round((used / limit) * 100));
                 
+                // Real usage from logs
+                const real = usageStats[row.id] || { total_tokens: 0, estimated_cost: 0 };
+                const totalTokens = real.total_tokens || 0;
+                const estimatedCost = real.estimated_cost || 0;
+                const tokenK = (totalTokens / 1000).toFixed(1);
+
                 return (
-                    <div className="flex flex-col gap-1 w-32">
+                    <div className="flex flex-col gap-1 w-40">
                         <div className="flex justify-between text-[10px] font-bold">
                             <span className="text-secondary-600 dark:text-secondary-400">{row.ai_tier?.name || 'Basic'}</span>
-                            <span className="text-surface-on-variant">{used}/{limit}</span>
+                            <span className="text-surface-on-variant">{used}/{limit} msg</span>
                         </div>
-                        <div className="w-full bg-surface-variant/30 h-1.5 rounded-full overflow-hidden">
+                        <div className="w-full bg-surface-variant/30 h-1 rounded-full overflow-hidden">
                             <div 
                                 className={`h-full transition-all duration-500 ${percent > 90 ? 'bg-error' : percent > 50 ? 'bg-warning' : 'bg-primary'}`}
                                 style={{ width: `${percent}%` }}
                             />
+                        </div>
+                        <div className="flex justify-between items-center text-[9px] mt-0.5">
+                             <div className="flex items-center gap-1">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" />
+                                <span className="font-bold text-surface-on">{tokenK}K tokens</span>
+                             </div>
+                             <span className="text-surface-on-variant/60 font-medium">${estimatedCost.toFixed(4)}</span>
                         </div>
                     </div>
                 );

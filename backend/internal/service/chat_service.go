@@ -22,6 +22,7 @@ type ChatService interface {
 	RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error
 	TogglePinChannel(ctx context.Context, userID uint, channelUID string) error
 	DeleteChannel(ctx context.Context, userID uint, channelUID string) error
+	GetChannelInfo(ctx context.Context, userID uint, channelUID string) (*entity.ChatChannel, error)
 }
 
 type chatService struct {
@@ -257,4 +258,17 @@ func (s *chatService) DeleteChannel(ctx context.Context, userID uint, channelUID
 	}
 
 	return s.chatRepo.DeleteChannel(ctx, channel.ID)
+}
+
+func (s *chatService) GetChannelInfo(ctx context.Context, userID uint, channelUID string) (*entity.ChatChannel, error) {
+	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
+	if err != nil {
+		return nil, err
+	}
+
+	if channel.UserID != userID {
+		return nil, fmt.Errorf("unauthorized")
+	}
+
+	return channel, nil
 }

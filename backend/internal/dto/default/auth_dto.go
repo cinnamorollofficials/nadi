@@ -21,9 +21,39 @@ type LoginResponse struct {
 }
 
 type UsageInfo struct {
-	Limit   int `json:"limit"`
-	Used    int `json:"used"`
-	Percent int `json:"percent"`
+	Limit       int     `json:"limit"`
+	Used        int     `json:"used"`
+	Percent     int     `json:"percent"`
+	TodayTokens int     `json:"today_tokens"`
+	TotalTokens int64   `json:"total_tokens"`
+	EstCost     float64 `json:"est_cost"`
+}
+
+// UserDailyTokenUsage represents token usage stats from ai_usage_logs
+type UserDailyTokenUsage struct {
+	MessageCount     int     `json:"message_count"`
+	TotalTokens      int     `json:"total_tokens"`
+	PromptTokens     int     `json:"prompt_tokens"`
+	CandidatesTokens int     `json:"candidates_tokens"`
+	EstimatedCost    float64 `json:"estimated_cost"`
+}
+
+// UserUsageHistory represents usage stats for a specific day
+type UserUsageDailyHistory struct {
+	Date     string `json:"date"`
+	Tokens   int    `json:"tokens"`
+	Messages int    `json:"messages"`
+}
+
+// UserUsageResponse is the full per-user usage response
+type UserUsageResponse struct {
+	Today   *UserDailyTokenUsage    `json:"today"`
+	History []UserUsageDailyHistory `json:"history"`
+	AllTime struct {
+		TotalTokens   int64   `json:"total_tokens"`
+		TotalMessages int64   `json:"total_messages"`
+		TotalCost     float64 `json:"total_cost"`
+	} `json:"all_time"`
 }
 
 type AuthUserResponse struct {

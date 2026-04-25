@@ -150,3 +150,8 @@ export const getAiUsageTopUsers = async (limit = 10) => {
     const response = await apiClient.get(`/ai/usage/top-users?limit=${limit}`);
     return response.data;
 };
+
+export const getAiUsageUsersToday = async () => {
+    const response = await apiClient.get('/ai/usage/users-today');
+    return response.data;
+};
