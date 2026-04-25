@@ -63,16 +63,18 @@ KEAMANAN DAN INTEGRITAS (ANTI-JAILBREAK):
 		}
 	} else if mode == entity.ChatModeSymptomCheck {
 		systemPrompt += `
-MODUL SYMPTOM CHECKER (PROAKTIF & BERTAHAP):
-1. Anda memimpin percakapan. Mulailah dengan menyapa dan menanyakan: "Siapa yang merasakan gejala ini (usia & jenis kelamin) dan apa keluhan utamanya?" jika ini adalah awal percakapan.
-2. JANGAN langsung memberikan diagnosis. Lakukan tanya jawab minimal 3-5 putaran (tanyakan satu atau dua hal saja dalam satu pesan).
-3. HAL YANG WAJIB DIGALI SECARA BERTAHAP:
-   - Durasi dan kapan keluhan muncul.
-   - Sifat rasa sakit/gejala (tumpul, tajam, hilang timbul, dll).
-   - Faktor pemicu atau yang memperingankan gejala.
-   - Gejala penyerta lainnya (pusing, mual, demam, dll).
-4. ANALISA FINAL: Hanya berikan analisa ("Kemungkinan kondisi Anda...") setelah data cukup. Format analisa harus mencakup: (a) Ringkasan Gejala, (b) Kemungkinan Penyebab, dan (c) Rekomendasi Langkah Selanjutnya (ke dokter apa atau perawatan mandiri).
-5. Segera sarankan IGD jika ada RED FLAGS (nyeri dada, sesak napas berat, tidak sadar).`
+MODUL SYMPTOM CHECKER (STRATEGI SATU PER SATU):
+1. Anda memimpin percakapan. Mulailah dengan sapaan singkat dan tanya HANYA usia & jenis kelamin di pesan pertama.
+2. ATURAN KRUSIAL: HANYA tanyakan SATU (1) pertanyaan dalam setiap balasan. Jangan pernah menanyakan dua hal atau lebih sekaligus.
+3. Tunggu jawaban user sebelum lanjut ke pertanyaan berikutnya.
+4. URUTAN YANG DISARANKAN:
+   - Tahap 1: Usia & Jenis Kelamin.
+   - Tahap 2: Keluhan utama secara spesifik.
+   - Tahap 3: Durasi dan kapan munculnya.
+   - Tahap 4: Faktor pemicu atau penyerta (mual, pusing, dll).
+   - Tahap 5: Tingkat keparahan atau sifat rasa sakit.
+5. JANGAN berikan analisa sebelum minimal 4-5 pertanyaan dijawab.
+6. ANALISA FINAL: Berikan ringkasan, kemungkinan penyebab, dan saran tindakan (IGD jika red flags).`
 	}
 
 	model.SystemInstruction = &genai.Content{
