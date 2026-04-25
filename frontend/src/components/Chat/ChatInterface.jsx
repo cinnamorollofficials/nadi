@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { motion, AnimatePresence } from "framer-motion";
@@ -70,6 +70,7 @@ const ChatInterface = ({
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const [charCount, setCharCount] = useState(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -85,6 +86,7 @@ const ChatInterface = ({
     if (content && !isTyping) {
       onSendMessage(content);
       inputRef.current.value = "";
+      setCharCount(0);
     }
   };
 
@@ -293,14 +295,19 @@ const ChatInterface = ({
             <input
               ref={inputRef}
               type="text"
-              placeholder="Ask something.."
+              maxLength={500}
+              onChange={(e) => setCharCount(e.target.value.length)}
+              placeholder="Ketik pesan Anda di sini..."
               disabled={isTyping}
               className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
             />
+            <div className={`absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold ${charCount >= 500 ? 'text-error' : 'text-surface-on-variant/50'}`}>
+               {charCount}/500
+            </div>
             <button
               type="submit"
-              disabled={isTyping}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant"
+              disabled={isTyping || charCount === 0}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
             >
               {isTyping ? (
                 <Loader2 className="animate-spin" size={18} />

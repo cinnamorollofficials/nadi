@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import toast from 'react-hot-toast';
 
 export const useChat = (channelId, { onMessageDone } = {}) => {
   const [messages, setMessages] = useState([]);
@@ -71,6 +72,12 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
 
         setError(errorMsg);
         setIsTyping(false);
+      } else if (data.type === 'toast') {
+        toast.error(data.content || "Terjadi kesalahan", {
+          position: 'top-center',
+          duration: 3000,
+        });
+        setIsTyping(false); // Clear typing indicator for blocked requests
       }
     };
 
