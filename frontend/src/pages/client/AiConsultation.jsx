@@ -65,6 +65,18 @@ const AiConsultation = () => {
     setActiveChannelId(id);
   }, [id]);
 
+  // Handle auto-start for Symptom Checker
+  useEffect(() => {
+    // If it's a new Symptom Check session (no messages), trigger AI to start
+    if (activeChannelId && activeMode === "symptom_check" && messages.length === 0 && !isTyping) {
+      // Small delay to ensure socket is connected and ready
+      const timer = setTimeout(() => {
+        sendMessage("[MULAI_CEK_GEJALA]", true); // isRetry=true means it won't be added to local messages list (hidden)
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeChannelId, activeMode, messages.length, sendMessage, isTyping]);
+
   // Handle initial message after navigation
   useEffect(() => {
     if (activeChannelId && location.state?.initialMessage) {

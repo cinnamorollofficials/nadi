@@ -175,11 +175,15 @@ const ChatInterface = ({
             </motion.div>
           )}
 
-          {messages.map((msg, index) => {
+          {messages
+            .filter(msg => !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
+            .map((msg, index) => {
             const isBot = msg.role === "assistant";
             const { cleanContent, diseases } = isBot 
               ? extractDiseases(msg.content) 
               : { cleanContent: msg.content, diseases: [] };
+
+            if (!cleanContent && !isBot) return null;
 
             return (
               <motion.div

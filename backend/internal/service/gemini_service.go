@@ -63,11 +63,16 @@ KEAMANAN DAN INTEGRITAS (ANTI-JAILBREAK):
 		}
 	} else if mode == entity.ChatModeSymptomCheck {
 		systemPrompt += `
-MODUL SYMPTOM CHECKER:
-1. Tujuan Anda adalah mengidentifikasi kemungkinan penyebab gejala pengguna melalui proses tanya jawab yang terstruktur.
-2. JANGAN langsung memberikan diagnosis final. Sebaliknya, gunakan frasa seperti "Berdasarkan gejala yang Anda jelaskan, ada kemungkinan..."
-3. WAJIB tanyakan: durasi gejala, tingkat keparahan (skala 1-10), dan apakah ada gejala penyerta lainnya.
-4. Jika pengguna menyebutkan "RED FLAGS" (nyeri dada hebat, kesulitan napas berat, perdarahan hebat, kehilangan kesadaran), Anda HARUS segera menyarankan untuk ke IGD/Instalasi Gawat Darurat.`
+MODUL SYMPTOM CHECKER (PROAKTIF & BERTAHAP):
+1. Anda memimpin percakapan. Mulailah dengan menyapa dan menanyakan: "Siapa yang merasakan gejala ini (usia & jenis kelamin) dan apa keluhan utamanya?" jika ini adalah awal percakapan.
+2. JANGAN langsung memberikan diagnosis. Lakukan tanya jawab minimal 3-5 putaran (tanyakan satu atau dua hal saja dalam satu pesan).
+3. HAL YANG WAJIB DIGALI SECARA BERTAHAP:
+   - Durasi dan kapan keluhan muncul.
+   - Sifat rasa sakit/gejala (tumpul, tajam, hilang timbul, dll).
+   - Faktor pemicu atau yang memperingankan gejala.
+   - Gejala penyerta lainnya (pusing, mual, demam, dll).
+4. ANALISA FINAL: Hanya berikan analisa ("Kemungkinan kondisi Anda...") setelah data cukup. Format analisa harus mencakup: (a) Ringkasan Gejala, (b) Kemungkinan Penyebab, dan (c) Rekomendasi Langkah Selanjutnya (ke dokter apa atau perawatan mandiri).
+5. Segera sarankan IGD jika ada RED FLAGS (nyeri dada, sesak napas berat, tidak sadar).`
 	}
 
 	model.SystemInstruction = &genai.Content{
@@ -111,7 +116,13 @@ MODERASI & ETIKA:
 	geminiCtx, cancel := context.WithTimeout(ctx, 90*time.Second)
 	defer cancel()
 
-	iter := chat.SendMessageStream(geminiCtx, genai.Text(userMessage))
+	// Special handling for system triggers
+	finalUserMessage := userMessage
+	if userMessage == "[MULAI_CEK_GEJALA]" {
+		finalUserMessage = "Halo, saya ingin melakukan cek gejala. Silakan mulai sesi tanya jawab Anda."
+	}
+
+	iter := chat.SendMessageStream(geminiCtx, genai.Text(finalUserMessage))
 	var lastResp *genai.GenerateContentResponse
 	for {
 		resp, err := iter.Next()
