@@ -198,8 +198,8 @@ const ChatInterface = ({
                 className={`flex flex-col ${isBot ? "items-start" : "items-end"} gap-2`}
               >
                 <div className={`flex max-w-[85%] ${isBot ? "flex-row" : "flex-row-reverse"} gap-3`}>
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
-                    !isBot ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors ${
+                    !isBot ? "bg-primary dark:bg-slate-800 text-white" : "bg-zinc-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-2.5 border border-zinc-200 dark:border-slate-800"
                   }`}>
                     {!isBot ? (
                       <User size={20} />
@@ -210,10 +210,10 @@ const ChatInterface = ({
                     )}
                   </div>
                   
-                  <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
+                  <div className={`px-5 py-4 rounded-[2rem] leading-relaxed transition-all ${
                     !isBot 
-                      ? "bg-primary text-white rounded-tr-none" 
-                      : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
+                      ? "bg-primary text-white dark:bg-slate-800 dark:border dark:border-slate-700 rounded-tr-none" 
+                      : "bg-zinc-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-tl-none border border-zinc-200 dark:border-slate-800"
                   }`}>
                     <MarkdownRenderer content={cleanContent} />
                   </div>
