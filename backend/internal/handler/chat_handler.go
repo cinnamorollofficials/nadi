@@ -80,8 +80,8 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 			}
 
 			// 2. Length Validation
-			if utf8.RuneCountInString(msg.Content) > 500 {
-				conn.WriteJSON(gin.H{"type": "toast", "content": "Pesan terlalu panjang. Maksimal 500 karakter."})
+			if utf8.RuneCountInString(msg.Content) > 2000 {
+				conn.WriteJSON(gin.H{"type": "toast", "content": "Pesan terlalu panjang. Maksimal 2000 karakter."})
 				continue
 			}
 
