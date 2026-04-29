@@ -15,7 +15,7 @@ import (
 )
 
 type GeminiService interface {
-	GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) (*genai.UsageMetadata, error)
+	GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, extraSystemInstructions string, onChunk func(string)) (*genai.UsageMetadata, error)
 }
 
 type geminiService struct {
@@ -30,7 +30,7 @@ func NewGeminiService(config *config.Config, chatRepo repository.ChatRepository)
 	}
 }
 
-func (s *geminiService) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, onChunk func(string)) (*genai.UsageMetadata, error) {
+func (s *geminiService) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, extraSystemInstructions string, onChunk func(string)) (*genai.UsageMetadata, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(s.config.Gemini.APIKey))
 	if err != nil {
 		return nil, err
@@ -85,6 +85,10 @@ MODUL SYMPTOM CHECKER (STRATEGI SATU PER SATU):
    - Tahap 5: Tingkat keparahan atau sifat rasa sakit.
 5. JANGAN berikan analisa sebelum minimal 4-5 pertanyaan dijawab.
 6. ANALISA FINAL: Berikan ringkasan, kemungkinan penyebab, dan saran tindakan (IGD jika red flags).`
+	}
+
+	if extraSystemInstructions != "" {
+		systemPrompt += "\n\nINSTRUKSI KHUSUS SESI INI:\n" + extraSystemInstructions
 	}
 
 	model.SystemInstruction = &genai.Content{

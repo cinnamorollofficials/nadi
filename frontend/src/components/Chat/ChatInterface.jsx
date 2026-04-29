@@ -180,7 +180,7 @@ const ChatInterface = ({
           )}
 
           {messages
-            .filter(msg => !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
+            .filter(msg => msg.role !== 'system' && !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
             .map((msg, index) => {
             const isBot = msg.role === "assistant";
             const { cleanContent, diseases } = isBot 

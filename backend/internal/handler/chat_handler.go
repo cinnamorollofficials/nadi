@@ -63,9 +63,10 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 
 	for {
 		var msg struct {
-			Type       string `json:"type"`
-			ChannelUID string `json:"channel_uid"`
-			Content    string `json:"content"`
+			Type         string `json:"type"`
+			ChannelUID   string `json:"channel_uid"`
+			Content      string `json:"content"`
+			SystemPrefix string `json:"system_prefix"`
 		}
 
 		if err := conn.ReadJSON(&msg); err != nil {
@@ -95,7 +96,7 @@ func (h *chatHandler) HandleWebSocket(c *gin.Context) {
 			// Now that middleware ignores WS, c.Request.Context() correctly reflects the connection stay
 			ctx, cancel := context.WithTimeout(c.Request.Context(), 5*time.Minute)
 
-			err := h.chatService.ProcessMessage(ctx, uid, msg.ChannelUID, msg.Content, func(chunk string) {
+			err := h.chatService.ProcessMessage(ctx, uid, msg.ChannelUID, msg.Content, msg.SystemPrefix, func(chunk string) {
 				conn.WriteJSON(gin.H{
 					"type":    "chunk",
 					"content": chunk,
