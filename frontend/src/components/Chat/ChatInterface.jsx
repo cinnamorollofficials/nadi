@@ -199,7 +199,7 @@ const ChatInterface = ({
               >
                 <div className={`flex max-w-[85%] ${isBot ? "flex-row" : "flex-row-reverse"} gap-3`}>
                   <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors ${
-                    !isBot ? "bg-primary dark:bg-slate-800 text-white" : "bg-zinc-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-2.5 border border-zinc-200 dark:border-slate-800"
+                    !isBot ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-400 border border-zinc-200 dark:border-white/5" : "bg-transparent text-primary p-0"
                   }`}>
                     {!isBot ? (
                       <User size={20} />
@@ -212,8 +212,8 @@ const ChatInterface = ({
                   
                   <div className={`px-5 py-4 rounded-[2rem] leading-relaxed transition-all ${
                     !isBot 
-                      ? "bg-primary text-white dark:bg-slate-800 dark:border dark:border-slate-700 rounded-tr-none" 
-                      : "bg-zinc-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-tl-none border border-zinc-200 dark:border-slate-800"
+                      ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-200 border border-zinc-200 dark:border-white/5 rounded-tr-none" 
+                      : "bg-transparent text-slate-900 dark:text-slate-100 rounded-tl-none"
                   }`}>
                     <MarkdownRenderer content={cleanContent} />
                   </div>
