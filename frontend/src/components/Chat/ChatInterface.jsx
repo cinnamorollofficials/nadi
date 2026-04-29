@@ -65,7 +65,8 @@ const ChatInterface = ({
   disease,
   mode = "consultation",
   suggestions = [],
-  onDiseaseClick
+  onDiseaseClick,
+  usage
 }) => {
   const { logo } = useSettings();
   const messagesEndRef = useRef(null);
@@ -80,8 +81,11 @@ const ChatInterface = ({
     scrollToBottom();
   }, [messages, isTyping]);
 
+  const isLimitReached = usage && usage.used >= usage.limit;
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isLimitReached) return;
     const content = inputRef.current.value.trim();
     if (content && !isTyping) {
       onSendMessage(content);
@@ -176,7 +180,7 @@ const ChatInterface = ({
           )}
 
           {messages
-            .filter(msg => !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
+            .filter(msg => msg.role !== 'system' && !msg.content.startsWith("[MULAI_CEK_GEJALA]"))
             .map((msg, index) => {
             const isBot = msg.role === "assistant";
             const { cleanContent, diseases } = isBot 
@@ -194,8 +198,8 @@ const ChatInterface = ({
                 className={`flex flex-col ${isBot ? "items-start" : "items-end"} gap-2`}
               >
                 <div className={`flex max-w-[85%] ${isBot ? "flex-row" : "flex-row-reverse"} gap-3`}>
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors shadow-sm ${
-                    !isBot ? "bg-primary text-white shadow-primary/20" : "bg-surface-container-highest text-primary p-2.5 border border-outline-variant/30 dark:border-outline-variant/10"
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors ${
+                    !isBot ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-400 border border-zinc-200 dark:border-white/5" : "bg-transparent text-primary p-0"
                   }`}>
                     {!isBot ? (
                       <User size={20} />
@@ -206,10 +210,10 @@ const ChatInterface = ({
                     )}
                   </div>
                   
-                  <div className={`px-5 py-4 rounded-[2rem] shadow-sm leading-relaxed transition-all ${
+                  <div className={`px-5 py-4 rounded-[2rem] leading-relaxed transition-all ${
                     !isBot 
-                      ? "bg-primary text-white rounded-tr-none" 
-                      : "bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-tl-none border border-outline-variant/60 dark:border-outline-variant/30 shadow-sm"
+                      ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-200 border border-zinc-200 dark:border-white/5 rounded-tr-none" 
+                      : "bg-transparent text-slate-900 dark:text-slate-100 rounded-tl-none"
                   }`}>
                     <MarkdownRenderer content={cleanContent} />
                   </div>
@@ -296,29 +300,54 @@ const ChatInterface = ({
       <div className="p-4 lg:p-6 bg-transparent">
         <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto flex items-center">
           <div className="relative w-full">
-            <input
-              ref={inputRef}
-              type="text"
-              maxLength={500}
-              onChange={(e) => setCharCount(e.target.value.length)}
-              placeholder="Ketik pesan Anda di sini..."
-              disabled={isTyping}
-              className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm"
-            />
-            <div className={`absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold ${charCount >= 500 ? 'text-error' : 'text-surface-on-variant/50'}`}>
-               {charCount}/500
-            </div>
-            <button
-              type="submit"
-              disabled={isTyping || charCount === 0}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
-            >
-              {isTyping ? (
-                <Loader2 className="animate-spin" size={18} />
-              ) : (
-                <ArrowUp size={20} className="stroke-[3px]" />
-              )}
-            </button>
+            {isLimitReached ? (
+              <div className="w-full bg-error/5 dark:bg-error/10 text-error px-7 py-4 rounded-full border border-error/20 flex items-center justify-between animate-pulse shadow-sm">
+                <div className="flex items-center gap-3">
+                  <AlertCircle size={18} />
+                  <span className="text-sm font-bold">Batas harian tercapai. Reset besok.</span>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => window.location.href = '/profile'} // Example action
+                  className="text-xs font-black uppercase tracking-widest hover:underline"
+                >
+                  Upgrade PRO →
+                </button>
+              </div>
+            ) : (
+              <>
+                <input
+                  ref={inputRef}
+                  type="text"
+                  maxLength={500}
+                  onChange={(e) => setCharCount(e.target.value.length)}
+                  placeholder="Ketik pesan Anda di sini..."
+                  disabled={isTyping}
+                  className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm pr-24"
+                />
+                <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-3 h-10 pr-2 border-r border-outline-variant/30 mr-2">
+                   {usage && (
+                     <div className={`text-[10px] font-black uppercase tracking-tighter px-1.5 py-0.5 rounded-md ${usage.percent > 80 ? 'text-rose-500 bg-rose-500/10' : 'text-primary/60 bg-primary/5'}`}>
+                        {usage.used}/{usage.limit}
+                     </div>
+                   )}
+                   <div className={`text-[10px] font-bold ${charCount >= 500 ? 'text-error' : 'text-surface-on-variant/40'}`}>
+                      {charCount}/500
+                   </div>
+                </div>
+                <button
+                  type="submit"
+                  disabled={isTyping || charCount === 0}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
+                >
+                  {isTyping ? (
+                    <Loader2 className="animate-spin" size={18} />
+                  ) : (
+                    <ArrowUp size={20} className="stroke-[3px]" />
+                  )}
+                </button>
+              </>
+            )}
           </div>
         </form>
         <p className="text-[10px] text-surface-on-variant mt-3 text-center opacity-40">

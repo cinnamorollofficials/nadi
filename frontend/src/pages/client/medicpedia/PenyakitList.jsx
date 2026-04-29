@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicPenyakitAll } from "../../../api/client/medicpedia";
 import Skeleton from "../../../components/Skeleton";
@@ -10,10 +10,11 @@ const PAGE_LIMIT = 24;
 const PenyakitList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [activeLetter, setActiveLetter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput, setSearchInput] = useState(searchParams.get("search") || "");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get("search") || "");
+  const activeLetter = searchParams.get("letter") || "";
+  const [currentPage, setCurrentPage] = useState(() => parseInt(searchParams.get("page")) || 1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
@@ -23,11 +24,33 @@ const PenyakitList = () => {
     return () => { document.title = "Nadi"; };
   }, []);
 
-  // Debounce search input
+  // Sync state with URL (for back/forward navigation)
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || "";
+    if (urlSearch !== debouncedSearch) {
+      setSearchInput(urlSearch);
+      setDebouncedSearch(urlSearch);
+    }
+    const urlPage = parseInt(searchParams.get("page")) || 1;
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchInput);
       setCurrentPage(1);
+      
+      const newParams = new URLSearchParams(searchParams);
+      if (searchInput) {
+        newParams.set("search", searchInput);
+        newParams.delete("letter");
+      } else {
+        newParams.delete("search");
+      }
+      newParams.set("page", "1");
+      setSearchParams(newParams);
     }, 350);
     return () => clearTimeout(timer);
   }, [searchInput]);
@@ -59,27 +82,29 @@ const PenyakitList = () => {
   }, [fetchData]);
 
   const handleLetterClick = (letter) => {
+    const newParams = new URLSearchParams(searchParams);
     if (activeLetter === letter) {
-      // Toggle off
-      setActiveLetter("");
+      newParams.delete("letter");
     } else {
-      setActiveLetter(letter);
-      setSearchInput(""); // Clear search when letter filter is active
+      newParams.set("letter", letter);
+      setSearchInput("");
       setDebouncedSearch("");
+      newParams.delete("search"); // Clear search param if any
     }
+    newParams.set("page", "1");
+    setSearchParams(newParams);
     setCurrentPage(1);
   };
 
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
-    setActiveLetter(""); // Clear letter when typing
     setCurrentPage(1);
   };
 
   const handleClearAll = () => {
     setSearchInput("");
     setDebouncedSearch("");
-    setActiveLetter("");
+    setSearchParams({});
     setCurrentPage(1);
   };
 
@@ -119,10 +144,10 @@ const PenyakitList = () => {
               placeholder="Cari nama penyakit..."
               value={searchInput}
               onChange={handleSearchChange}
-              className="w-full py-4 pl-14 pr-12 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-primary-300 transition"
+              className="w-full py-4 pl-14 pr-12 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base font-medium border border-transparent dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-300 transition shadow-sm"
             />
             <svg
-              className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant"
+              className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -138,7 +163,7 @@ const PenyakitList = () => {
               <button
                 id="penyakit-search-clear"
                 onClick={handleClearAll}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-surface-on-variant hover:text-surface-on transition"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
                 aria-label="Hapus pencarian"
               >
                 <svg
@@ -161,7 +186,7 @@ const PenyakitList = () => {
       </div>
 
       {/* ── Alphabet Filter ── */}
-      <div className="sticky top-0 z-20 bg-surface/95  border-b border-outline-variant/30 ">
+      <div className="sticky top-0 z-20 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
         <div className="max-w-5xl mx-auto px-4 py-3">
           <div className="flex flex-wrap gap-1.5 justify-center">
             {/* "Semua" button */}
@@ -170,8 +195,8 @@ const PenyakitList = () => {
               onClick={handleClearAll}
               className={`px-3 h-8 rounded-lg text-xs font-bold transition-all duration-200 ${
                 !activeLetter && !debouncedSearch
-                  ? "bg-primary text-white  scale-105"
-                  : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                  ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary"
               }`}
             >
               Semua
@@ -183,8 +208,8 @@ const PenyakitList = () => {
                 onClick={() => handleLetterClick(letter)}
                 className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 ${
                   activeLetter === letter
-                    ? "bg-primary text-white  scale-110"
-                    : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
+                    ? "bg-primary text-white shadow-lg shadow-primary/20 scale-110"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary"
                 }`}
               >
                 {letter}
@@ -285,7 +310,7 @@ const PenyakitList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/penyakit/${item.slug}`}
-                className="group relative bg-surface-variant/10 border border-outline-variant/20 rounded-2xl p-5 hover:border-primary/30 hover:bg-primary/5 hover: hover: transition-all duration-300 flex items-center gap-4"
+                className="group relative bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300 flex items-center gap-4 shadow-sm hover:shadow-md"
               >
                 {/* Avatar letter */}
                 <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
@@ -320,7 +345,13 @@ const PenyakitList = () => {
         {!loading && totalPages > 1 && (
           <div className="flex justify-center items-center gap-2 mt-12 flex-wrap">
             <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              onClick={() => {
+                const nextPage = Math.max(1, currentPage - 1);
+                setCurrentPage(nextPage);
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("page", nextPage.toString());
+                setSearchParams(newParams);
+              }}
               disabled={currentPage === 1}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
@@ -345,7 +376,12 @@ const PenyakitList = () => {
                 return (
                   <button
                     key={page}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => {
+                      setCurrentPage(page);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set("page", page.toString());
+                      setSearchParams(newParams);
+                    }}
                     className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
                       currentPage === page
                         ? "bg-primary text-white "
@@ -359,9 +395,13 @@ const PenyakitList = () => {
             </div>
 
             <button
-              onClick={() =>
-                setCurrentPage((p) => Math.min(totalPages, p + 1))
-              }
+              onClick={() => {
+                const nextPage = Math.min(totalPages, currentPage + 1);
+                setCurrentPage(nextPage);
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("page", nextPage.toString());
+                setSearchParams(newParams);
+              }}
               disabled={currentPage === totalPages}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >

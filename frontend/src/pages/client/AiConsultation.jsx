@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../api/client";
 import ChatInterface from "../../components/Chat/ChatInterface";
@@ -8,12 +8,14 @@ import { Bot, History as HistoryIcon, PlusCircle, LayoutDashboard } from "lucide
 import { motion } from "framer-motion";
 
 const AiConsultation = () => {
+  const { user, refreshUserData } = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const queryClient = useQueryClient();
   const [activeChannelId, setActiveChannelId] = useState(id);
   const [activeMode, setActiveMode] = useState("consultation");
+  const isInitializingRef = useRef(false);
 
   // Create New Channel Mutation
   const createChannelMutation = useMutation({
@@ -34,12 +36,18 @@ const AiConsultation = () => {
       if (messages.length <= 2) {
         queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       }
+      // Refresh user usage data after every message
+      refreshUserData();
     }
   });
 
   // Load existing messages when channel changes
   useEffect(() => {
     if (activeChannelId && activeChannelId !== "undefined") {
+      // If we are currently initializing a new chat from medicpedia, 
+      // skip history fetch as it will be empty and might clobber our initial message
+      if (isInitializingRef.current) return;
+
       const fetchMessages = async () => {
         try {
           const response = await apiClient.get(`/chat/history/${activeChannelId}`);
@@ -53,11 +61,13 @@ const AiConsultation = () => {
           })));
         } catch (err) {
           console.error("Failed to fetch messages", err);
-          // Redirect to root if access is denied or channel not found
           navigate("/consultations/ai");
         }
       };
       fetchMessages();
+    } else {
+      // Clear messages if no channel is active
+      setMessages([]);
     }
   }, [activeChannelId, setMessages, navigate]);
 
@@ -80,12 +90,18 @@ const AiConsultation = () => {
   // Handle initial message after navigation
   useEffect(() => {
     if (activeChannelId && location.state?.initialMessage) {
+      isInitializingRef.current = true;
       // Small delay to ensure socket is ready
       const timer = setTimeout(() => {
         sendMessage(location.state.initialMessage, false, location.state.prefix || '');
         // Clear state so it doesn't resend on refresh
         navigate(location.pathname, { replace: true, state: {} });
-      }, 500);
+        
+        // Allow history fetch for future renders, but after a delay
+        setTimeout(() => {
+          isInitializingRef.current = false;
+        }, 2000);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [activeChannelId, location.state, sendMessage, navigate, location.pathname]);
@@ -181,12 +197,13 @@ const AiConsultation = () => {
             messages={messages}
             onSendMessage={handleSendMessage}
             onRetry={resendLastMessage}
-            isTyping={isTyping || createChannelMutation.isPending}
+            isTyping={isTyping || createChannelMutation.isPending || !!location.state?.initialMessage}
             error={error}
             disease={activeDisease}
             mode={activeMode || location.state?.mode}
             suggestions={suggestions}
             onDiseaseClick={handleDiseaseClick}
+            usage={user?.usage}
           />
         ) : (
           <div className="h-full flex flex-col items-center justify-center p-6 md:p-12 overflow-y-auto custom-scrollbar">

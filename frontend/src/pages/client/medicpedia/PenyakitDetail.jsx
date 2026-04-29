@@ -42,7 +42,7 @@ const PenyakitDetail = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Silakan login untuk mendiskusikan penyakit ini dengan AI");
-      navigate("/login", { state: { from: location.pathname } });
+      navigate(`/login?topic=${encodeURIComponent(data.name)}&redirect=/consultations/ai`);
       return;
     }
     navigate("/consultations/ai", {

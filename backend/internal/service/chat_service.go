@@ -18,7 +18,7 @@ type ChatService interface {
 	CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error)
 	GetChatHistory(ctx context.Context, userID uint) ([]entity.ChatChannel, error)
 	GetMessages(ctx context.Context, userID uint, channelUID string) ([]entity.ChatMessage, error)
-	ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error
+	ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, systemPrefix string, onChunk func(string)) error
 	RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error
 	TogglePinChannel(ctx context.Context, userID uint, channelUID string) error
 	DeleteChannel(ctx context.Context, userID uint, channelUID string) error
@@ -90,7 +90,7 @@ func (s *chatService) GetMessages(ctx context.Context, userID uint, channelUID s
 	return messages, nil
 }
 
-func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, onChunk func(string)) error {
+func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUID string, userMessage string, systemPrefix string, onChunk func(string)) error {
 	// 1. Get channel info with recent messages
 	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)
 	if err != nil {
@@ -144,9 +144,34 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		return err
 	}
 
+	// 2.1 Handle System Prefix (if provided)
+	if systemPrefix != "" {
+		encryptedPrefix, _ := s.encryptor.Encrypt(systemPrefix)
+		systemMsg := &entity.ChatMessage{
+			ChannelID: channel.ID,
+			Role:      "system",
+			Content:   encryptedPrefix,
+		}
+		if err := s.chatRepo.CreateMessage(ctx, systemMsg); err != nil {
+			return err
+		}
+	}
+
+	// 2.2 Collect all system messages from history to maintain context
+	var systemInstructions strings.Builder
+	for _, m := range channel.Messages {
+		if m.Role == "system" {
+			systemInstructions.WriteString(m.Content)
+			systemInstructions.WriteString("\n")
+		}
+	}
+	if systemPrefix != "" {
+		systemInstructions.WriteString(systemPrefix)
+	}
+
 	// 3. Generate AI Response using Gemini (Streaming)
 	var fullResponse strings.Builder
-	usage, err := s.geminiService.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, func(chunk string) {
+	usage, err := s.geminiService.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, systemInstructions.String(), func(chunk string) {
 		fullResponse.WriteString(chunk)
 		onChunk(chunk) // Callback to pass chunk to the handler (WebSocket)
 	})
@@ -166,25 +191,17 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		return err
 	}
 
-	// 5. Auto-summarize title if it's a new chat (or if it contains the hidden prefix)
-	if channel.Title == "New Conversation" || strings.Contains(channel.Title, "[PENTING:") {
+	// 5. Auto-summarize title if it's a new chat (or if a system prefix was provided)
+	if channel.Title == "New Conversation" || systemPrefix != "" {
 		newTitle := userMessage
 		diseaseName := ""
 
-		// Clean up hidden prefix and extract disease name
-		if strings.Contains(newTitle, "[PENTING:") {
-			// Extract disease name from "[PENTING: Batasi diskusi ini hanya pada topik ...]"
-			startIdx := strings.Index(newTitle, "topik ")
-			endIdx := strings.Index(newTitle, " dan berikan")
+		// Extract disease name from systemPrefix
+		if systemPrefix != "" {
+			startIdx := strings.Index(systemPrefix, "topik \"")
+			endIdx := strings.Index(systemPrefix, "\". JANGAN")
 			if startIdx != -1 && endIdx != -1 && endIdx > startIdx {
-				diseaseName = newTitle[startIdx+6 : endIdx]
-			}
-
-			// Extract actual user message
-			if parts := strings.SplitN(newTitle, "User: ", 2); len(parts) > 1 {
-				newTitle = parts[1]
-			} else if idx := strings.LastIndex(newTitle, "]. "); idx != -1 {
-				newTitle = newTitle[idx+3:]
+				diseaseName = systemPrefix[startIdx+7 : endIdx]
 			}
 		}
 		

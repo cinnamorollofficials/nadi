@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
 import TextField from "../components/TextField";
@@ -10,6 +10,9 @@ import { ROLES } from "../utils/constants";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const topic = searchParams.get("topic");
+  const redirect = searchParams.get("redirect");
   const { logo, app_name } = useSettings();
   const [formData, setFormData] = useState({
     email: "",
@@ -23,6 +26,19 @@ const Login = () => {
   useEffect(() => {
     document.title = "Masuk — Nadi";
     if (localStorage.getItem("token")) {
+      if (redirect) {
+        navigate(redirect, { 
+          state: { 
+            disease: topic,
+            suggestions: topic ? [
+              `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
+              `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
+              `Kapan saya harus segera ke dokter jika terkena ${topic}?`,
+            ] : []
+          } 
+        });
+        return;
+      }
       const userData = localStorage.getItem("user");
       if (userData) {
         const user = JSON.parse(userData);
@@ -50,6 +66,21 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
+      
+      if (redirect) {
+        navigate(redirect, { 
+          state: { 
+            disease: topic,
+            suggestions: topic ? [
+              `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
+              `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
+              `Kapan saya harus segera ke dokter jika terkena ${topic}?`,
+            ] : []
+          } 
+        });
+        return;
+      }
+
       const destination = data.data.user.role_id === ROLES.USER ? "/consultations/ai" : "/admin";
       navigate(destination);
     },
@@ -72,6 +103,21 @@ const Login = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
+
+      if (redirect) {
+        navigate(redirect, { 
+          state: { 
+            disease: topic,
+            suggestions: topic ? [
+              `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
+              `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
+              `Kapan saya harus segera ke dokter jika terkena ${topic}?`,
+            ] : []
+          } 
+        });
+        return;
+      }
+
       const destination = data.data.user.role_id === ROLES.USER ? "/consultations/ai" : "/admin";
       navigate(destination);
     },

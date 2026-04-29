@@ -110,7 +110,8 @@ export const useChat = (channelId, { onMessageDone } = {}) => {
     const message = {
       type: 'message',
       channel_uid: channelId,
-      content: prefix ? `${prefix}\n\nUser: ${content}` : content
+      content: content,
+      system_prefix: prefix
     };
 
     if (!isRetry) {
