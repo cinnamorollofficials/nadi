@@ -10,9 +10,9 @@ const PAGE_LIMIT = 24;
 const PenyakitList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchInput, setSearchInput] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
+  const [searchInput, setSearchInput] = useState(searchParams.get("search") || "");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get("search") || "");
   const activeLetter = searchParams.get("letter") || "";
   const [currentPage, setCurrentPage] = useState(() => parseInt(searchParams.get("page")) || 1);
   const [totalPages, setTotalPages] = useState(1);
@@ -24,11 +24,33 @@ const PenyakitList = () => {
     return () => { document.title = "Nadi"; };
   }, []);
 
-  // Debounce search input
+  // Sync state with URL (for back/forward navigation)
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || "";
+    if (urlSearch !== debouncedSearch) {
+      setSearchInput(urlSearch);
+      setDebouncedSearch(urlSearch);
+    }
+    const urlPage = parseInt(searchParams.get("page")) || 1;
+    if (urlPage !== currentPage) {
+      setCurrentPage(urlPage);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchInput);
       setCurrentPage(1);
+      
+      const newParams = new URLSearchParams(searchParams);
+      if (searchInput) {
+        newParams.set("search", searchInput);
+        newParams.delete("letter");
+      } else {
+        newParams.delete("search");
+      }
+      newParams.set("page", "1");
+      setSearchParams(newParams);
     }, 350);
     return () => clearTimeout(timer);
   }, [searchInput]);
@@ -76,10 +98,6 @@ const PenyakitList = () => {
 
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete("letter");
-    newParams.set("page", "1");
-    setSearchParams(newParams);
     setCurrentPage(1);
   };
 
