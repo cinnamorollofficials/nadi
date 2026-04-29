@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import apiClient from "../../api/client";
 import ChatInterface from "../../components/Chat/ChatInterface";
@@ -8,6 +8,7 @@ import { Bot, History as HistoryIcon, PlusCircle, LayoutDashboard } from "lucide
 import { motion } from "framer-motion";
 
 const AiConsultation = () => {
+  const { user, refreshUserData } = useOutletContext();
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,6 +35,8 @@ const AiConsultation = () => {
       if (messages.length <= 2) {
         queryClient.invalidateQueries({ queryKey: ["chat-history"] });
       }
+      // Refresh user usage data after every message
+      refreshUserData();
     }
   });
 
@@ -187,6 +190,7 @@ const AiConsultation = () => {
             mode={activeMode || location.state?.mode}
             suggestions={suggestions}
             onDiseaseClick={handleDiseaseClick}
+            usage={user?.usage}
           />
         ) : (
           <div className="h-full flex flex-col items-center justify-center p-6 md:p-12 overflow-y-auto custom-scrollbar">

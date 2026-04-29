@@ -2,4 +2,3 @@
 storage/logs/*
 storage/uploads/*
 .DS_Store
-data
