@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { getPublicPenyakitAll } from "../../../api/client/medicpedia";
 import Skeleton from "../../../components/Skeleton";
@@ -12,8 +12,9 @@ const PenyakitList = () => {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [activeLetter, setActiveLetter] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeLetter = searchParams.get("letter") || "";
+  const [currentPage, setCurrentPage] = useState(() => parseInt(searchParams.get("page")) || 1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
 
@@ -59,27 +60,33 @@ const PenyakitList = () => {
   }, [fetchData]);
 
   const handleLetterClick = (letter) => {
+    const newParams = new URLSearchParams(searchParams);
     if (activeLetter === letter) {
-      // Toggle off
-      setActiveLetter("");
+      newParams.delete("letter");
     } else {
-      setActiveLetter(letter);
-      setSearchInput(""); // Clear search when letter filter is active
+      newParams.set("letter", letter);
+      setSearchInput("");
       setDebouncedSearch("");
+      newParams.delete("search"); // Clear search param if any
     }
+    newParams.set("page", "1");
+    setSearchParams(newParams);
     setCurrentPage(1);
   };
 
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
-    setActiveLetter(""); // Clear letter when typing
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete("letter");
+    newParams.set("page", "1");
+    setSearchParams(newParams);
     setCurrentPage(1);
   };
 
   const handleClearAll = () => {
     setSearchInput("");
     setDebouncedSearch("");
-    setActiveLetter("");
+    setSearchParams({});
     setCurrentPage(1);
   };
 
@@ -320,7 +327,13 @@ const PenyakitList = () => {
         {!loading && totalPages > 1 && (
           <div className="flex justify-center items-center gap-2 mt-12 flex-wrap">
             <button
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              onClick={() => {
+                const nextPage = Math.max(1, currentPage - 1);
+                setCurrentPage(nextPage);
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("page", nextPage.toString());
+                setSearchParams(newParams);
+              }}
               disabled={currentPage === 1}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
@@ -345,7 +358,12 @@ const PenyakitList = () => {
                 return (
                   <button
                     key={page}
-                    onClick={() => setCurrentPage(page)}
+                    onClick={() => {
+                      setCurrentPage(page);
+                      const newParams = new URLSearchParams(searchParams);
+                      newParams.set("page", page.toString());
+                      setSearchParams(newParams);
+                    }}
                     className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
                       currentPage === page
                         ? "bg-primary text-white "
@@ -359,9 +377,13 @@ const PenyakitList = () => {
             </div>
 
             <button
-              onClick={() =>
-                setCurrentPage((p) => Math.min(totalPages, p + 1))
-              }
+              onClick={() => {
+                const nextPage = Math.min(totalPages, currentPage + 1);
+                setCurrentPage(nextPage);
+                const newParams = new URLSearchParams(searchParams);
+                newParams.set("page", nextPage.toString());
+                setSearchParams(newParams);
+              }}
               disabled={currentPage === totalPages}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
