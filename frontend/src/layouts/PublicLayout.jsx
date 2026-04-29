@@ -3,10 +3,18 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
 import { useTheme } from "../context/ThemeContext";
 import Button from "../components/Button";
+import { ChevronDown } from "lucide-react";
 
 const navLinks = [
   { to: "/", label: "Home" },
-  { to: "/medicpedia", label: "Medicpedia" },
+  { 
+    to: "/medicpedia", 
+    label: "Medicpedia",
+    submenu: [
+      { to: "/medicpedia/penyakit", label: "Daftar Penyakit" },
+      { to: "/medicpedia/nutrisi", label: "Info Nutrisi" },
+    ]
+  },
   { to: "/faq", label: "FAQ" },
   { to: "/about", label: "Tentang" },
 ];
@@ -80,21 +88,47 @@ const PublicLayout = () => {
             Navigasi
           </p>
           {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.to}
-              onClick={() => setMobileOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200
-                ${isActive(link.to)
-                  ? "bg-primary/10 text-primary"
-                  : "text-slate-600 dark:text-slate-400 hover:bg-zinc-200 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
-                }`}
-            >
-              {isActive(link.to) && (
-                <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+            <div key={link.label} className="space-y-1">
+              {link.submenu ? (
+                <>
+                  <div className="px-4 py-3 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-4 first:mt-0">
+                    {link.label}
+                  </div>
+                  {link.submenu.map((sub) => (
+                    <Link
+                      key={sub.to}
+                      to={sub.to}
+                      onClick={() => setMobileOpen(false)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200
+                        ${isActive(sub.to)
+                          ? "bg-primary/10 text-primary"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-zinc-200 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
+                        }`}
+                    >
+                      {isActive(sub.to) && (
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                      )}
+                      {sub.label}
+                    </Link>
+                  ))}
+                </>
+              ) : (
+                <Link
+                  to={link.to}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200
+                    ${isActive(link.to)
+                      ? "bg-primary/10 text-primary"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-zinc-200 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
+                    }`}
+                >
+                  {isActive(link.to) && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                  )}
+                  {link.label}
+                </Link>
               )}
-              {link.label}
-            </Link>
+            </div>
           ))}
         </nav>
 
@@ -177,17 +211,52 @@ const PublicLayout = () => {
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                to={link.to}
-                className={`text-sm font-semibold transition-colors tracking-wide
-                  ${isActive(link.to)
-                    ? "text-primary"
-                    : "text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white"
-                  }`}
-              >
-                {link.label}
-              </Link>
+              link.submenu ? (
+                <div key={link.label} className="relative group h-full flex items-center">
+                  <Link
+                    to={link.to}
+                    className={`text-sm font-semibold transition-colors tracking-wide flex items-center gap-1.5 h-full
+                      ${isActive(link.to) || link.submenu.some(s => isActive(s.to))
+                        ? "text-primary"
+                        : "text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white"
+                      }`}
+                  >
+                    {link.label}
+                    <ChevronDown size={14} className="opacity-50 group-hover:rotate-180 transition-transform" />
+                  </Link>
+
+                  {/* Submenu Desktop */}
+                  <div className="absolute top-[calc(100%-10px)] left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
+                    <div className="bg-white dark:bg-slate-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-2 min-w-[220px]">
+                      {link.submenu.map((sub) => (
+                        <Link
+                          key={sub.to}
+                          to={sub.to}
+                          className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all
+                            ${isActive(sub.to)
+                              ? "bg-primary/10 text-primary"
+                              : "text-slate-600 dark:text-slate-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
+                            }`}
+                        >
+                          {sub.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className={`text-sm font-semibold transition-colors tracking-wide
+                    ${isActive(link.to)
+                      ? "text-primary"
+                      : "text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-white"
+                    }`}
+                >
+                  {link.label}
+                </Link>
+              )
             ))}
           </div>
 
