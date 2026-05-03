@@ -31,6 +31,7 @@ type Config struct {
 	Storage   StorageConfig
 	Google    GoogleConfig
 	Gemini    GeminiConfig
+	SumoPod   SumoPodConfig
 }
 
 type StorageConfig struct {
@@ -60,6 +61,12 @@ type GoogleConfig struct {
 type GeminiConfig struct {
 	APIKey string
 }
+type SumoPodConfig struct {
+	APIKey      string
+	BaseURL     string
+	Model       string
+	LLMProvider string
+}
 
 func LoadConfig() (config Config) {
 	viper.SetDefault("LOG_DIR", "./storage/logs")
@@ -71,6 +78,9 @@ func LoadConfig() (config Config) {
 	viper.SetDefault("REDIS_TTL", 300)      // 5 minutes in seconds
 	viper.SetDefault("LOG_LEVEL", "info")
 	viper.SetDefault("LOG_RETENTION_DAYS", 30)
+	viper.SetDefault("SUMOPOD_BASE_URL", "https://ai.sumopod.com/v1")
+	viper.SetDefault("SUMOPOD_MODEL", "gpt-4o-mini")
+	viper.SetDefault("LLM_PROVIDER", "sumopod")
 
 	viper.AddConfigPath(".")
 	viper.SetConfigFile(".env")
@@ -126,6 +136,10 @@ func LoadConfig() (config Config) {
 		"STORAGE_MAX_FILE_SIZE_MB",
 		"GOOGLE_CLIENT_ID",
 		"GEMINI_API_KEY",
+		"SUMOPOD_API_KEY",
+		"SUMOPOD_BASE_URL",
+		"SUMOPOD_MODEL",
+		"LLM_PROVIDER",
 	}
 
 	for _, envVar := range envVars {
@@ -227,6 +241,13 @@ func LoadConfig() (config Config) {
 
 	config.Gemini = GeminiConfig{
 		APIKey: viper.GetString("GEMINI_API_KEY"),
+	}
+
+	config.SumoPod = SumoPodConfig{
+		APIKey:      viper.GetString("SUMOPOD_API_KEY"),
+		BaseURL:     viper.GetString("SUMOPOD_BASE_URL"),
+		Model:       viper.GetString("SUMOPOD_MODEL"),
+		LLMProvider: viper.GetString("LLM_PROVIDER"),
 	}
 
 	// Validate required configuration

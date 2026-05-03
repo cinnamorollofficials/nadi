@@ -26,26 +26,26 @@ type ChatService interface {
 }
 
 type chatService struct {
-	chatRepo      repository.ChatRepository
-	userRepo      defaultRepo.UserRepository
-	aiUsageRepo   repository.AiUsageRepository
-	geminiService GeminiService
-	encryptor     *crypto.Encryptor
+	chatRepo    repository.ChatRepository
+	userRepo    defaultRepo.UserRepository
+	aiUsageRepo repository.AiUsageRepository
+	llmProvider LLMProvider
+	encryptor   *crypto.Encryptor
 }
 
 func NewChatService(
 	chatRepo repository.ChatRepository,
 	userRepo defaultRepo.UserRepository,
 	aiUsageRepo repository.AiUsageRepository,
-	geminiService GeminiService,
+	llmProvider LLMProvider,
 	encryptor *crypto.Encryptor,
 ) ChatService {
 	return &chatService{
-		chatRepo:      chatRepo,
-		userRepo:      userRepo,
-		aiUsageRepo:   aiUsageRepo,
-		geminiService: geminiService,
-		encryptor:     encryptor,
+		chatRepo:    chatRepo,
+		userRepo:    userRepo,
+		aiUsageRepo: aiUsageRepo,
+		llmProvider: llmProvider,
+		encryptor:   encryptor,
 	}
 }
 
@@ -169,9 +169,9 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		systemInstructions.WriteString(systemPrefix)
 	}
 
-	// 3. Generate AI Response using Gemini (Streaming)
+	// 3. Generate AI Response using LLM Provider (Streaming)
 	var fullResponse strings.Builder
-	usage, err := s.geminiService.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, systemInstructions.String(), func(chunk string) {
+	usage, err := s.llmProvider.GenerateResponseStream(ctx, channel.Mode, channel.Messages, userMessage, systemInstructions.String(), func(chunk string) {
 		fullResponse.WriteString(chunk)
 		onChunk(chunk) // Callback to pass chunk to the handler (WebSocket)
 	})
@@ -223,18 +223,27 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 
 	// 7. Save AI Usage Log
 	if usage != nil {
-		cost := (float64(usage.PromptTokenCount) * 0.0000001) + (float64(usage.CandidatesTokenCount) * 0.0000004)
+		cost := calculateLLMCost(usage.ModelName, usage.PromptTokenCount, usage.CompletionTokenCount)
 		s.aiUsageRepo.Create(ctx, &defaultEntity.AiUsageLog{
 			UserID:           channel.UserID,
 			PromptTokens:     int(usage.PromptTokenCount),
-			CandidatesTokens: int(usage.CandidatesTokenCount),
+			CandidatesTokens: int(usage.CompletionTokenCount),
 			TotalTokens:      int(usage.TotalTokenCount),
-			Model:            "gemini-2.5-flash",
+			Model:            usage.ModelName,
 			Cost:             cost,
 		})
 	}
 
 	return nil
+}
+
+// calculateLLMCost returns the estimated cost for a generation call based on
+// the model name prefix and token counts.
+func calculateLLMCost(modelName string, promptTokens, completionTokens int32) float64 {
+	if strings.HasPrefix(modelName, "gemini") {
+		return (float64(promptTokens) * 0.0000001) + (float64(completionTokens) * 0.0000004)
+	}
+	return 0
 }
 func (s *chatService) RenameChannel(ctx context.Context, userID uint, channelUID string, newTitle string) error {
 	channel, err := s.chatRepo.GetChannelByUID(ctx, channelUID)

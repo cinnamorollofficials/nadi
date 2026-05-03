@@ -122,8 +122,11 @@ func (r *Router) SetupRouter() *gin.Engine {
 	medicpediapenyakitService := customService.NewMedicpediaPenyakitService(medicpediapenyakitRepo, r.cache)
 	medicpedianutrisiService := customService.NewMedicpediaNutrisiService(medicpedianutrisiRepo, r.cache)
 	faqService := customService.NewFaqService(faqRepo, r.cache)
-	geminiService := customService.NewGeminiService(r.config, chatRepo)
-	chatService := customService.NewChatService(chatRepo, userRepo, aiUsageRepo, geminiService, encryptor)
+	llmProvider, err := customService.NewLLMProvider(r.config, chatRepo)
+	if err != nil {
+		panic(fmt.Sprintf("failed to initialize LLM provider: %v", err))
+	}
+	chatService := customService.NewChatService(chatRepo, userRepo, aiUsageRepo, llmProvider, encryptor)
 	aiTierService := customService.NewAiTierService(aiTierRepo, r.cache)
 	// [GENERATOR_INSERT_SERVICE]
 
