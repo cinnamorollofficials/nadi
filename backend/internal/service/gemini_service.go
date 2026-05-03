@@ -14,23 +14,20 @@ import (
 	"google.golang.org/api/option"
 )
 
-type GeminiService interface {
-	GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, extraSystemInstructions string, onChunk func(string)) (*genai.UsageMetadata, error)
-}
-
-type geminiService struct {
+type geminiProvider struct {
 	config   *config.Config
 	chatRepo repository.ChatRepository
 }
 
-func NewGeminiService(config *config.Config, chatRepo repository.ChatRepository) GeminiService {
-	return &geminiService{
-		config:   config,
+// NewGeminiProvider creates a new GeminiProvider that implements LLMProvider.
+func NewGeminiProvider(cfg *config.Config, chatRepo repository.ChatRepository) LLMProvider {
+	return &geminiProvider{
+		config:   cfg,
 		chatRepo: chatRepo,
 	}
 }
 
-func (s *geminiService) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, extraSystemInstructions string, onChunk func(string)) (*genai.UsageMetadata, error) {
+func (s *geminiProvider) GenerateResponseStream(ctx context.Context, mode entity.ChatMode, history []entity.ChatMessage, userMessage string, extraSystemInstructions string, onChunk func(string)) (*UsageMetadata, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(s.config.Gemini.APIKey))
 	if err != nil {
 		return nil, err
@@ -64,7 +61,8 @@ Jika memberikan analisa terakhir, susun jawaban Anda secara sistematis dengan po
 ATURAN KETAT:
 1. HANYA jawab topik kesehatan. Tolak topik lain dengan wibawa seorang dokter.
 2. JANGAN mendiagnosis dengan kepastian 100%. Gunakan bahasa "Kemungkinan besar" atau "Ada indikasi ke arah...".
-3. JANGAN memberikan rekomendasi dosis obat keras (antibiotik, obat jantung, dll) tanpa resep.`
+3. JANGAN memberikan rekomendasi dosis obat keras (antibiotik, obat jantung, dll) tanpa resep.
+4. BAHASA: Anda WAJIB selalu merespons dalam Bahasa Indonesia, tanpa pengecualian. Meskipun pengguna menulis dalam bahasa lain, tetap jawab dalam Bahasa Indonesia.`
 
 	if mode == entity.ChatModeConsultation {
 		systemPrompt += "\n\nKonteks Medis Nadi:\n"
@@ -159,14 +157,19 @@ MODERASI & ETIKA:
 		}
 	}
 
-	if lastResp != nil {
-		return lastResp.UsageMetadata, nil
+	if lastResp != nil && lastResp.UsageMetadata != nil {
+		return &UsageMetadata{
+			PromptTokenCount:     lastResp.UsageMetadata.PromptTokenCount,
+			CompletionTokenCount: lastResp.UsageMetadata.CandidatesTokenCount,
+			TotalTokenCount:      lastResp.UsageMetadata.TotalTokenCount,
+			ModelName:            "gemini-2.5-flash",
+		}, nil
 	}
 
 	return nil, nil
 }
 
-func (s *geminiService) getRelevantContext(ctx context.Context, query string) string {
+func (s *geminiProvider) getRelevantContext(ctx context.Context, query string) string {
 	// Simple keyword extraction - just use the full query for now
 	penyakit, _ := s.chatRepo.SearchMedicpediaPenyakit(ctx, query)
 	nutrisi, _ := s.chatRepo.SearchMedicpediaNutrisi(ctx, query)
@@ -186,7 +189,7 @@ func (s *geminiService) getRelevantContext(ctx context.Context, query string) st
 	return strings.Join(contextParts, "\n\n")
 }
 
-func (s *geminiService) convertHistory(history []entity.ChatMessage) []*genai.Content {
+func (s *geminiProvider) convertHistory(history []entity.ChatMessage) []*genai.Content {
 	var genaiHistory []*genai.Content
 	for _, msg := range history {
 		role := "user"
