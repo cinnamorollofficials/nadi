@@ -50,7 +50,7 @@ func NewLLMProvider(cfg *config.Config, chatRepo repository.ChatRepository) (LLM
 		if cfg.SumoPod.APIKey == "" {
 			return nil, fmt.Errorf("SUMOPOD_API_KEY is required for the sumopod provider")
 		}
-		return NewSumoPodProvider(cfg), nil
+		return NewSumoPodProvider(cfg, chatRepo), nil
 	default:
 		return nil, fmt.Errorf("unsupported LLM provider %q; supported: gemini, sumopod", provider)
 	}
