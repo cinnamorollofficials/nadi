@@ -134,27 +134,7 @@ const PublicLayout = () => {
 
         {/* Sidebar Footer — CTA */}
         <div className="flex-shrink-0 p-6 border-t border-zinc-200 dark:border-white/5 space-y-3">
-          {/* Theme toggle mobile */}
-          <button
-            onClick={toggleTheme}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl border border-zinc-200 dark:border-white/10 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary transition-all active:scale-95"
-          >
-            {theme === "light" ? (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-                Mode Gelap
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l-.707-.707M6.343 6.343l-.707-.707" />
-                </svg>
-                Mode Terang
-              </>
-            )}
-          </button>
+
           
           {localStorage.getItem("token") ? (
             <Link
@@ -262,23 +242,6 @@ const PublicLayout = () => {
 
           {/* Desktop Right Actions */}
           <div className="hidden md:flex items-center gap-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-2.5 rounded-xl bg-zinc-200 dark:bg-slate-800 border border-zinc-300 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:border-primary/40 transition-all active:scale-95 group"
-              title={`Beralih ke mode ${theme === "light" ? "gelap" : "terang"}`}
-            >
-              {theme === "light" ? (
-                <svg className="w-4 h-4 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4 group-hover:rotate-90 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l-.707-.707M6.343 6.343l-.707-.707" />
-                </svg>
-              )}
-            </button>
-
             {localStorage.getItem("token") ? (
               <Link to="/consultations/ai">
                 <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:scale-105 active:scale-95">
