@@ -111,6 +111,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
@@ -314,7 +315,7 @@ const Login = () => {
               <p className="text-xs text-surface-on-variant">
                 New to {app_name}?{" "}
                 <Link
-                  to="/register"
+                  to={`/register${redirect ? `?redirect=${redirect}${mode ? `&mode=${mode}` : ""}` : ""}`}
                   className="text-primary font-bold hover:underline"
                 >
                   Create account

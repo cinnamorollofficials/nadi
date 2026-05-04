@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
 import TextField from "../components/TextField";
@@ -11,6 +11,9 @@ import { ROLES } from "../utils/constants";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const mode = searchParams.get("mode");
   const { logo, registration_open } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
@@ -28,12 +31,16 @@ const Register = () => {
   useEffect(() => {
     document.title = "Daftar — Nadi";
     if (localStorage.getItem("token")) {
+      if (redirect) {
+        navigate(redirect, { state: { mode: mode || "consultation" } });
+        return;
+      }
       const userData = localStorage.getItem("user");
       if (userData) {
         const user = JSON.parse(userData);
-        navigate(user.role_id === ROLES.USER ? "/dashboard" : "/admin");
+        navigate(user.role_id === ROLES.USER ? "/consultations/ai" : "/admin");
       } else {
-        navigate("/dashboard");
+        navigate("/consultations/ai");
       }
     }
   }, [navigate]);
@@ -72,7 +79,13 @@ const Register = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
+      
+      if (redirect) {
+        navigate(redirect, { state: { mode: mode || "consultation" } });
+        return;
+      }
+
+      const destination = data.data.user.role_id === ROLES.USER ? "/consultations/ai" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
@@ -419,10 +432,10 @@ const Register = () => {
                   <p className="text-xs text-surface-on-variant">
                     Already have an account?{" "}
                     <Link
-                      to="/login"
+                      to={`/login${redirect ? `?redirect=${redirect}${mode ? `&mode=${mode}` : ""}` : ""}`}
                       className="text-primary font-bold hover:underline"
                     >
-                      Sign in
+                      Log in
                     </Link>
                   </p>
                 </div>
