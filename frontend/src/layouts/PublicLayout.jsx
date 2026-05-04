@@ -12,7 +12,7 @@ const navLinks = [
     label: "Medicpedia",
     submenu: [
       { to: "/medicpedia/penyakit", label: "Daftar Penyakit" },
-      { to: "/medicpedia/nutrisi", label: "Info Nutrisi" },
+      { to: "/medicpedia/nutrisi", label: "Daftar Nutrisi" },
     ]
   },
   { to: "/faq", label: "FAQ" },
@@ -31,7 +31,7 @@ const PublicLayout = () => {
     <div className="min-h-screen flex flex-col bg-zinc-100 dark:bg-slate-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-white focus:rounded-xl focus:font-bold focus: transition-all"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-6 focus:py-3 focus:bg-primary focus:text-white focus:rounded-sm focus:font-bold focus: transition-all"
       >
         Lanjut ke konten utama
       </a>
@@ -59,7 +59,7 @@ const PublicLayout = () => {
             onClick={() => setMobileOpen(false)}
           >
             {logo && (
-              <div className="w-9 h-9 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20">
+              <div className="w-9 h-9 rounded-sm overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -74,7 +74,7 @@ const PublicLayout = () => {
           </Link>
           <button
             onClick={() => setMobileOpen(false)}
-            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95"
+            className="p-2 rounded-sm text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -99,7 +99,7 @@ const PublicLayout = () => {
                       key={sub.to}
                       to={sub.to}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200
+                      className={`flex items-center gap-3 px-4 py-3 rounded-md font-semibold text-sm transition-all duration-200
                         ${isActive(sub.to)
                           ? "bg-primary/10 text-primary"
                           : "text-slate-600 dark:text-slate-400 hover:bg-zinc-200 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
@@ -116,7 +116,7 @@ const PublicLayout = () => {
                 <Link
                   to={link.to}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold text-sm transition-all duration-200
+                  className={`flex items-center gap-3 px-4 py-3 rounded-md font-semibold text-sm transition-all duration-200
                     ${isActive(link.to)
                       ? "bg-primary/10 text-primary"
                       : "text-slate-600 dark:text-slate-400 hover:bg-zinc-200 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
@@ -141,7 +141,7 @@ const PublicLayout = () => {
               to="/consultations/ai"
               onClick={() => setMobileOpen(false)}
             >
-              <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all hover:scale-[1.02] active:scale-95">
+              <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
                 Konsultasi AI
               </Button>
             </Link>
@@ -150,7 +150,7 @@ const PublicLayout = () => {
               <Link
                 to="/login"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center w-full py-3 rounded-2xl border-2 border-zinc-300 dark:border-white/10 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary transition-all active:scale-95"
+                className="flex items-center justify-center w-full py-3 rounded-md border-2 border-zinc-300 dark:border-white/10 text-sm font-bold text-slate-600 dark:text-slate-300 hover:border-primary/40 hover:text-primary transition-all active:scale-95"
               >
                 Masuk
               </Link>
@@ -158,7 +158,7 @@ const PublicLayout = () => {
                 to="/register"
                 onClick={() => setMobileOpen(false)}
               >
-                <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-2xl transition-all hover:scale-[1.02] active:scale-95">
+                <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
                   Daftar Sekarang
                 </Button>
               </Link>
@@ -174,7 +174,7 @@ const PublicLayout = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
             {logo && (
-              <div className="w-10 h-10 rounded-xl overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20 transition-all group-hover:scale-110 group-hover:border-primary/40  ">
+              <div className="w-10 h-10 rounded-sm overflow-hidden bg-primary/10 flex items-center justify-center p-1.5 border border-primary/20 transition-all group-hover:scale-110 group-hover:border-primary/40  ">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -207,12 +207,12 @@ const PublicLayout = () => {
 
                   {/* Submenu Desktop */}
                   <div className="absolute top-[calc(100%-10px)] left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-50">
-                    <div className="bg-white dark:bg-slate-900 border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl p-2 min-w-[220px]">
+                    <div className="bg-white dark:bg-slate-900 border border-zinc-200 dark:border-white/10 rounded-md shadow-2xl p-2 min-w-[220px]">
                       {link.submenu.map((sub) => (
                         <Link
                           key={sub.to}
                           to={sub.to}
-                          className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-all
+                          className={`flex items-center px-4 py-3 rounded-sm text-sm font-semibold transition-all
                             ${isActive(sub.to)
                               ? "bg-primary/10 text-primary"
                               : "text-slate-600 dark:text-slate-400 hover:bg-zinc-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white"
@@ -244,7 +244,7 @@ const PublicLayout = () => {
           <div className="hidden md:flex items-center gap-4">
             {localStorage.getItem("token") ? (
               <Link to="/consultations/ai">
-                <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:scale-105 active:scale-95">
+                <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
                   Konsultasi AI
                 </Button>
               </Link>
@@ -257,7 +257,7 @@ const PublicLayout = () => {
                   Masuk
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:scale-105 active:scale-95">
+                  <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
                     Daftar Sekarang
                   </Button>
                 </Link>
@@ -268,7 +268,7 @@ const PublicLayout = () => {
           {/* Mobile: Hamburger */}
           <button
             onClick={() => setMobileOpen(true)}
-            className="md:hidden p-2.5 rounded-xl bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-outline-variant/20 text-slate-600 dark:text-slate-400 hover:text-primary transition-all active:scale-95"
+            className="md:hidden p-2.5 rounded-sm bg-zinc-200 dark:bg-white/5 border border-zinc-300 dark:border-outline-variant/20 text-slate-600 dark:text-slate-400 hover:text-primary transition-all active:scale-95"
             aria-label="Buka menu"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +291,7 @@ const PublicLayout = () => {
             <div className="md:col-span-2">
               <Link to="/" className="flex items-center gap-3 mb-6">
                 {logo && (
-                  <div className="w-8 h-8 rounded-lg overflow-hidden bg-white/5 flex items-center justify-center p-1 opacity-50 grayscale hover:grayscale-0 transition-all hover:opacity-100">
+                  <div className="w-8 h-8 rounded-sm overflow-hidden bg-white/5 flex items-center justify-center p-1 opacity-50 grayscale hover:grayscale-0 transition-all hover:opacity-100">
                     <img
                       src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                       alt="Logo"

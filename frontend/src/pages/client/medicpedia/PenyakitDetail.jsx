@@ -150,7 +150,7 @@ const PenyakitDetail = () => {
         </p>
         <Link
           to="/medicpedia/penyakit"
-          className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition"
+          className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition"
         >
           ← Kembali ke Daftar Penyakit
         </Link>
@@ -226,11 +226,11 @@ const PenyakitDetail = () => {
               <img
                 src={data.image}
                 alt={data.name}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-2 border-white/20  flex-shrink-0"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover border-2 border-white/20  flex-shrink-0"
                 onError={(e) => (e.target.style.display = "none")}
               />
             ) : (
-              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-3xl flex-shrink-0">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-md bg-white/10 border border-white/20 flex items-center justify-center text-3xl flex-shrink-0">
                 🩺
               </div>
             )}
@@ -266,7 +266,7 @@ const PenyakitDetail = () => {
       {/* ── Content Layout ── */}
       <div className="container mx-auto px-6 py-6 md:py-10 flex flex-col md:flex-row gap-8 items-start">
         {/* ── Mobile Sticky Shortcuts ── */}
-        <div className="md:hidden sticky top-20 z-20 bg-zinc-50/95 dark:bg-[#0f1117]/95 backdrop- p-2 rounded-2xl flex items-center gap-4 border border-zinc-200/50 dark:border-white/10  shadow-black/5 w-full">
+        <div className="md:hidden sticky top-20 z-20 bg-zinc-50/95 dark:bg-[#0f1117]/95 backdrop- p-2 rounded-md flex items-center gap-4 border border-zinc-200/50 dark:border-white/10  shadow-black/5 w-full">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar">
             {availableSections.map(({ key, label }) => (
               <button
@@ -317,7 +317,7 @@ const PenyakitDetail = () => {
                       prose-strong:text-slate-800 dark:prose-strong:text-white prose-strong:font-semibold
                       prose-ul:my-4 prose-ol:my-4
                       prose-a:text-primary prose-a:break-all hover:prose-a:underline
-                      [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl
+                      [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-md
                       [&_iframe]:max-w-full [&_video]:max-w-full
                       [&_table]:block [&_table]:overflow-x-auto [&_table]:max-w-full [&_table]:w-full
                       [&_*]:max-w-full [&_*]:break-words"
@@ -329,7 +329,7 @@ const PenyakitDetail = () => {
           </div>
 
           {/* ── CTA — Cek Gejala ── */}
-          <div className="bg-gradient-to-br from-primary to-teal-600 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary to-teal-600 rounded-md p-8 md:p-10 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20  pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
               <div className="flex-1">
@@ -346,7 +346,7 @@ const PenyakitDetail = () => {
               </div>
               <button
                 onClick={handleDiskusiAI}
-                className="flex-shrink-0 flex items-center gap-2 bg-white text-primary font-bold px-6 py-3.5 rounded-2xl text-sm hover:scale-105 active:scale-95 transition-all  shadow-black/10 whitespace-nowrap"
+                className="flex-shrink-0 flex items-center gap-2 bg-white text-primary font-bold px-6 py-3.5 rounded-md text-sm hover:scale-105 active:scale-95 transition-all  shadow-black/10 whitespace-nowrap"
               >
                 <svg
                   className="w-4 h-4"
@@ -411,7 +411,7 @@ const PenyakitDetail = () => {
 
         {/* ── Desktop Right Sidebar (Sticky) ── */}
         <div className="hidden md:block w-72 flex-shrink-0 sticky top-24">
-          <div className="bg-white/80 dark:bg-slate-800/60 backdrop- p-6 rounded-3xl border border-zinc-200/50 dark:border-white/10 ">
+          <div className="bg-white/80 dark:bg-slate-800/60 backdrop- p-6 rounded-md border border-zinc-200/50 dark:border-white/10 ">
             <h3 className="font-bold text-lg mb-4 text-slate-900 dark:text-white">
               Daftar Isi
             </h3>
@@ -425,7 +425,7 @@ const PenyakitDetail = () => {
                   <button
                     key={key}
                     onClick={() => scrollTo(key)}
-                    className={`relative text-left pl-7 pr-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                    className={`relative text-left pl-7 pr-4 py-2.5 rounded-md text-sm font-semibold transition-all ${
                       isActive
                         ? "text-primary bg-primary/10  "
                         : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-slate-700/50"
@@ -446,7 +446,7 @@ const PenyakitDetail = () => {
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
               <button
                 onClick={handleDiskusiAI}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-2xl font-bold  shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-md font-bold  shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
               >
                 Tanya Nadi
               </button>

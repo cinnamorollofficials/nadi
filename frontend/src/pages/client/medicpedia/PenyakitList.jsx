@@ -144,7 +144,7 @@ const PenyakitList = () => {
               placeholder="Cari nama penyakit..."
               value={searchInput}
               onChange={handleSearchChange}
-              className="w-full py-4 pl-14 pr-12 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base font-medium border border-transparent dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-300 transition shadow-sm"
+              className="w-full py-4 pl-14 pr-12 rounded-md bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-base font-medium border border-transparent dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-300 transition shadow-sm"
             />
             <svg
               className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 dark:text-slate-500"
@@ -193,7 +193,7 @@ const PenyakitList = () => {
             <button
               id="alpha-all"
               onClick={handleClearAll}
-              className={`px-3 h-8 rounded-lg text-xs font-bold transition-all duration-200 ${
+              className={`px-3 h-8 rounded-sm text-xs font-bold transition-all duration-200 ${
                 !activeLetter && !debouncedSearch
                   ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
                   : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary"
@@ -206,7 +206,7 @@ const PenyakitList = () => {
                 key={letter}
                 id={`alpha-${letter}`}
                 onClick={() => handleLetterClick(letter)}
-                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200 ${
+                className={`w-10 h-10 rounded-sm text-sm font-bold transition-all duration-200 ${
                   activeLetter === letter
                     ? "bg-primary text-white shadow-lg shadow-primary/20 scale-110"
                     : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary dark:hover:bg-primary/20 dark:hover:text-primary"
@@ -299,7 +299,7 @@ const PenyakitList = () => {
             </p>
             <button
               onClick={handleClearAll}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition"
             >
               Tampilkan semua penyakit
             </button>
@@ -310,10 +310,10 @@ const PenyakitList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/penyakit/${item.slug}`}
-                className="group relative bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-2xl p-5 hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300 flex items-center gap-4 shadow-sm hover:shadow-md"
+                className="group relative bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/50 rounded-md p-5 hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-300 flex items-center gap-4 shadow-sm hover:shadow-md"
               >
                 {/* Avatar letter */}
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                <div className="flex-shrink-0 w-10 h-10 rounded-md bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
                   <span className="text-base font-extrabold text-primary">
                     {item.name?.[0]?.toUpperCase() || "?"}
                   </span>
@@ -353,7 +353,7 @@ const PenyakitList = () => {
                 setSearchParams(newParams);
               }}
               disabled={currentPage === 1}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -382,7 +382,7 @@ const PenyakitList = () => {
                       newParams.set("page", page.toString());
                       setSearchParams(newParams);
                     }}
-                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
+                    className={`w-9 h-9 rounded-md text-sm font-bold transition-all ${
                       currentPage === page
                         ? "bg-primary text-white "
                         : "bg-surface-variant/30 hover:bg-surface-variant/50 text-surface-on-variant"
@@ -403,7 +403,7 @@ const PenyakitList = () => {
                 setSearchParams(newParams);
               }}
               disabled={currentPage === totalPages}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
               Berikutnya
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

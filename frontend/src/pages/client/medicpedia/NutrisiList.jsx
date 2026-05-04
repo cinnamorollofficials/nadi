@@ -111,7 +111,7 @@ const NutrisiList = () => {
                 setSearchTerm(e.target.value);
                 setActiveLetter("");
               }}
-              className="w-full py-4 pl-14 pr-6 rounded-2xl text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-emerald-300 transition"
+              className="w-full py-4 pl-14 pr-6 rounded-md text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-emerald-300 transition"
             />
             <svg
               className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant"
@@ -162,7 +162,7 @@ const NutrisiList = () => {
                 key={letter}
                 id={`nutrisi-alpha-${letter}`}
                 onClick={() => handleLetterFilter(letter)}
-                className={`w-10 h-10 rounded-lg text-sm font-bold transition-all duration-200
+                className={`w-10 h-10 rounded-sm text-sm font-bold transition-all duration-200
                                     ${
                                       activeLetter === letter
                                         ? "bg-emerald-600 text-white  scale-110"
@@ -218,7 +218,7 @@ const NutrisiList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/nutrisi/${item.slug}`}
-                className="group relative rounded-2xl overflow-hidden border border-outline-variant/20 hover:border-emerald-500/30 hover: hover:shadow-emerald-500/10 transition-all duration-300"
+                className="group relative rounded-md overflow-hidden border border-outline-variant/20 hover:border-emerald-500/30 hover: hover:shadow-emerald-500/10 transition-all duration-300"
               >
                 {/* Gradient top strip */}
                 <div
@@ -227,7 +227,7 @@ const NutrisiList = () => {
                 <div className="p-6 bg-surface-variant/10 group-hover:bg-emerald-500/5 transition-colors">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${NUTRISI_COLORS[idx % NUTRISI_COLORS.length]} bg-opacity-10 flex items-center justify-center flex-shrink-0`}
+                      className={`w-10 h-10 rounded-md bg-gradient-to-br ${NUTRISI_COLORS[idx % NUTRISI_COLORS.length]} bg-opacity-10 flex items-center justify-center flex-shrink-0`}
                     >
                       <span className="text-white font-black text-base">
                         {item.name?.[0]?.toUpperCase()}
@@ -264,7 +264,7 @@ const NutrisiList = () => {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -288,7 +288,7 @@ const NutrisiList = () => {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`w-9 h-9 rounded-xl text-sm font-bold transition-all ${
+                    className={`w-9 h-9 rounded-md text-sm font-bold transition-all ${
                       currentPage === page
                         ? "bg-emerald-600 text-white "
                         : "bg-surface-variant/30 hover:bg-emerald-500/10 hover:text-emerald-600 text-surface-on-variant"
@@ -303,7 +303,7 @@ const NutrisiList = () => {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-surface-variant/30 hover:bg-surface-variant/50 disabled:opacity-30 text-sm font-medium transition"
             >
               Berikutnya
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -111,7 +111,7 @@ html.dark,
 @layer components {
     /* MD3 Button Styles */
     .btn {
-        @apply px-6 py-3 rounded-full font-medium text-sm transition-all duration-300;
+        @apply px-6 py-3 rounded-lg font-medium text-sm transition-all duration-300;
         @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
 
@@ -154,7 +154,7 @@ html.dark,
         background-color: rgb(var(--md-sys-color-surface-container-high));
         border: 1px solid rgb(var(--md-sys-color-outline));
         color: rgb(var(--md-sys-color-on-surface));
-        @apply w-full px-4 py-3 rounded-[8px] focus:border-primary focus:ring-1 focus:ring-primary;
+        @apply w-full px-4 py-3 rounded-[4px] focus:border-primary focus:ring-1 focus:ring-primary;
         @apply text-sm focus:outline-none transition-all duration-300;
 
         &::placeholder {
@@ -257,8 +257,8 @@ html.dark,
     .text-accent { color: rgb(var(--color-accent-red)); }
     .border-navy-700 { border-color: rgb(var(--color-navy-800) / 0.5); }
     
-    .rounded-4xl { border-radius: 2rem; }
-    .rounded-5xl { border-radius: 3rem; }
+    .rounded-4xl { border-radius: 0.75rem; }
+    .rounded-5xl { border-radius: 1rem; }
     
     .shadow-none {
         box-shadow: none;

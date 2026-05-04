@@ -85,7 +85,7 @@ const FaqPage = () => {
               placeholder="Cari pertanyaan..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/10 border border-white/20 rounded-2xl py-4 px-6 text-white placeholder-white/40 focus:outline-none focus:border-primary/50 focus:bg-white/20 transition-all font-medium backdrop-blur-md"
+              className="w-full bg-white/10 border border-white/20 rounded-md py-4 px-6 text-white placeholder-white/40 focus:outline-none focus:border-primary/50 focus:bg-white/20 transition-all font-medium backdrop-blur-md"
             />
           </div>
         </div>
@@ -101,14 +101,14 @@ const FaqPage = () => {
               <h3 className="px-4 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Kategori</h3>
               {loading ? (
                 <div className="space-y-2">
-                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full rounded-xl" />)}
+                  {[1, 2, 3].map(i => <Skeleton key={i} className="h-12 w-full rounded-sm" />)}
                 </div>
               ) : (
                 categories.map(category => (
                   <button
                     key={category}
                     onClick={() => setActiveCategory(category)}
-                    className={`w-full text-left px-5 py-4 rounded-2xl font-bold uppercase tracking-tight text-sm transition-all flex items-center justify-between group
+                    className={`w-full text-left px-5 py-4 rounded-md font-bold uppercase tracking-tight text-sm transition-all flex items-center justify-between group
                       ${activeCategory === category 
                         ? "bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]" 
                         : "bg-white dark:bg-white/5 text-slate-600 dark:text-white/60 hover:bg-slate-100 dark:hover:bg-white/10"
@@ -128,7 +128,7 @@ const FaqPage = () => {
           <div className="lg:w-3/4">
             {loading ? (
               <div className="space-y-4">
-                {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 w-full rounded-2xl" />)}
+                {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 w-full rounded-md" />)}
               </div>
             ) : activeCategory && groupedFaqs[activeCategory] ? (
               <div className="space-y-4 animate-fade-in">
@@ -141,7 +141,7 @@ const FaqPage = () => {
                   <div
                     key={faq.id}
                     onClick={() => setOpenFaqId(openFaqId === faq.id ? null : faq.id)}
-                    className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-2xl p-6 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 transition-all"
+                    className="bg-white dark:bg-white/5 border border-slate-200 dark:border-outline-variant/20 rounded-md p-6 cursor-pointer group hover:bg-slate-50 dark:hover:bg-white/10 transition-all"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-slate-800 dark:text-white/80 font-bold tracking-tight group-hover:text-primary transition-colors">
@@ -175,7 +175,7 @@ const FaqPage = () => {
             )}
 
             {/* Support CTA */}
-            <div className="mt-16 p-10 bg-slate-900 rounded-[2.5rem] relative overflow-hidden group">
+            <div className="mt-16 p-10 bg-slate-900 rounded-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full  -translate-y-1/2 translate-x-1/3 group-hover:scale-110 transition-transform duration-700" />
               <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="text-center md:text-left">
@@ -183,7 +183,7 @@ const FaqPage = () => {
                   <p className="text-white/60 text-sm font-medium">Tim kami siap membantu Anda 24/7.</p>
                 </div>
                 <Link to="/contact">
-                  <button className="bg-primary text-white font-black px-8 py-4 rounded-xl uppercase tracking-widest text-xs hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all">
+                  <button className="bg-primary text-white font-black px-8 py-4 rounded-sm uppercase tracking-widest text-xs hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all">
                     Hubungi Kami
                   </button>
                 </Link>

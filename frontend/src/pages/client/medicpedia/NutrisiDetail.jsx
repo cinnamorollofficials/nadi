@@ -109,7 +109,7 @@ const NutrisiDetail = () => {
         </p>
         <Link
           to="/medicpedia/nutrisi"
-          className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700 transition"
+          className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-emerald-700 transition"
         >
           ← Kembali ke Daftar Nutrisi
         </Link>
@@ -162,7 +162,7 @@ const NutrisiDetail = () => {
               <img
                 src={data.image}
                 alt={data.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-white/40 dark:border-white/20  flex-shrink-0"
+                className="w-20 h-20 rounded-md object-cover border-2 border-white/40 dark:border-white/20  flex-shrink-0"
                 onError={(e) => (e.target.style.display = "none")}
               />
             )}
@@ -188,7 +188,7 @@ const NutrisiDetail = () => {
                 key={key}
                 id={`nutrisi-nav-${key}`}
                 onClick={() => scrollTo(key)}
-                className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200
                                     ${
                                       activeSection === key
                                         ? "bg-emerald-600 text-white "
@@ -217,7 +217,7 @@ const NutrisiDetail = () => {
             >
               <div className="flex items-center gap-4 mb-8">
                 <div
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center text-xl flex-shrink-0`}
+                  className={`w-12 h-12 rounded-md flex items-center justify-center text-xl flex-shrink-0`}
                 >
                   {icon}
                 </div>
@@ -234,7 +234,7 @@ const NutrisiDetail = () => {
                                     prose-p:text-surface-on/80 prose-p:leading-7
                                     prose-li:text-surface-on/80 prose-li:leading-7
                                     prose-strong:text-surface-on prose-strong:font-semibold
-                                    bg-surface-variant/10 p-6 md:p-8 rounded-3xl"
+                                    bg-surface-variant/10 p-6 md:p-8 rounded-md"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             </section>
