@@ -24,9 +24,21 @@ const Landing = () => {
     const targetPath = `/consultations/ai/${randomBase64}`;
     
     if (token) {
-      navigate(targetPath);
+      navigate(targetPath, { state: { mode: "consultation" } });
     } else {
-      navigate(`/login?redirect=${targetPath}`);
+      navigate(`/login?redirect=${targetPath}&mode=consultation`);
+    }
+  };
+
+  const handleStartSymptomCheck = () => {
+    const token = localStorage.getItem("token");
+    const randomBase64 = btoa(Math.random().toString().slice(2)).substring(0, 12);
+    const targetPath = `/consultations/ai/${randomBase64}`;
+    
+    if (token) {
+      navigate(targetPath, { state: { mode: "symptom_check" } });
+    } else {
+      navigate(`/login?redirect=${targetPath}&mode=symptom_check`);
     }
   };
 
@@ -83,7 +95,7 @@ const Landing = () => {
                   Mulai Konsultasi Gratis
                 </Button>
                 <button
-                  onClick={() => setIsSymptomModalOpen(true)}
+                  onClick={handleStartSymptomCheck}
                   className="flex items-center gap-2.5 px-8 py-4 rounded-md border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"
                 >
                   Cek Gejala

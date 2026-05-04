@@ -13,6 +13,7 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const topic = searchParams.get("topic");
   const redirect = searchParams.get("redirect");
+  const mode = searchParams.get("mode");
   const { logo, app_name } = useSettings();
   const [formData, setFormData] = useState({
     email: "",
@@ -30,6 +31,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
@@ -71,6 +73,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
