@@ -489,7 +489,7 @@ const Landing = () => {
                   Dapatkan Wawasan <br className="hidden md:block" />
                   Kesehatan Mingguan.
                 </h2>
-                <p className="text-teal-50/70 font-bold text-base md:text-xl">
+                <p className="text-blue-50/70 font-bold text-base md:text-xl">
                   Bergabunglah dengan{" "}
                   <span className="text-white underline decoration-white/30 underline-offset-8">
                     12.000+

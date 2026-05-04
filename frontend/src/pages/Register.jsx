@@ -251,7 +251,7 @@ const Register = () => {
 
             {isRegistered ? (
               <div className="text-center py-4 space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-3xl bg-green-500/10 flex items-center justify-center text-green-500 mb-6 shadow-inner">
+                <div className="w-20 h-20 mx-auto rounded-3xl bg-primary/10 flex items-center justify-center text-primary mb-6 shadow-inner">
                   <svg
                     className="w-10 h-10"
                     fill="none"

@@ -253,7 +253,7 @@ const PenyakitDetail = () => {
                 </span>
                 <button
                   onClick={handleDiskusiAI}
-                  className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105  shadow-emerald-500/20 md:hidden"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/80 hover:to-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full transition-all hover:scale-105  shadow-primary/20 md:hidden"
                 >
                   Tanya AI
                 </button>
@@ -329,7 +329,7 @@ const PenyakitDetail = () => {
           </div>
 
           {/* ── CTA — Cek Gejala ── */}
-          <div className="bg-gradient-to-br from-primary to-teal-600 rounded-md p-8 md:p-10 text-white relative overflow-hidden">
+          <div className="bg-gradient-to-br from-primary to-blue-700 rounded-md p-8 md:p-10 text-white relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20  pointer-events-none" />
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
               <div className="flex-1">
@@ -446,7 +446,7 @@ const PenyakitDetail = () => {
             <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-white/10 text-center">
               <button
                 onClick={handleDiskusiAI}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white px-5 py-3 rounded-md font-bold  shadow-emerald-500/20 transition-transform hover:scale-105 w-full"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/80 hover:to-blue-500 text-white px-5 py-3 rounded-md font-bold  shadow-primary/20 transition-transform hover:scale-105 w-full"
               >
                 Tanya Nadi
               </button>
@@ -458,7 +458,7 @@ const PenyakitDetail = () => {
       <div className="md:hidden fixed bottom-6 right-4 z-50">
         <button
           onClick={handleDiskusiAI}
-          className="flex items-center gap-2 bg-gradient-to-br from-emerald-500 to-teal-600 text-white pl-4 pr-5 h-14 rounded-full  hover:scale-105 active:scale-95 transition-all font-bold text-sm"
+          className="flex items-center gap-2 bg-gradient-to-br from-primary to-blue-700 text-white pl-4 pr-5 h-14 rounded-full  hover:scale-105 active:scale-95 transition-all font-bold text-sm"
         >
           <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />

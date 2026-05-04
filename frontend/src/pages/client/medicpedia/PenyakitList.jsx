@@ -129,9 +129,9 @@ const PenyakitList = () => {
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
             Ensiklopedia Penyakit{" "}
-            <span className="text-teal-600 dark:text-teal-400">A-Z</span>
+            <span className="text-primary">A-Z</span>
           </h1>
-          <p className="text-slate-600 dark:text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-blue-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Temukan informasi lengkap mengenai penyakit, gejala, penyebab, cara
             diagnosis dan pencegahannya.
           </p>

@@ -202,7 +202,7 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 			newTitle = "[MULAI_CEK_GEJALA]: Sesi Baru"
 		}
 
-		// Extract disease name from systemPrefix
+		// Extract disease name from systemPrefix (Medicpedia context)
 		if systemPrefix != "" {
 			startIdx := strings.Index(systemPrefix, "topik \"")
 			endIdx := strings.Index(systemPrefix, "\". JANGAN")
@@ -211,12 +211,32 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 			}
 		}
 
-		// Format title
+		// AI Title Generation for Symptom Checker
+		if isInitialTag && userMessage != "[MULAI_CEK_GEJALA]" {
+			// Ask AI to generate a concise title based on the interaction
+			summaryPrompt := fmt.Sprintf("Berdasarkan keluhan user: \"%s\" dan hasil diagnosis AI: \"%s\", berikan judul singkat (maksimal 4 kata) untuk sesi konsultasi ini. Contoh: 'Analisis Gejala Flu'. Berikan HANYA judulnya saja.", userMessage, fullResponse.String())
+
+			var summarizedTitle strings.Builder
+			_, err := s.llmProvider.GenerateResponseStream(ctx, channel.Mode, nil, summaryPrompt, "Pemberi judul rekam medis singkat.", func(chunk string) {
+				summarizedTitle.WriteString(chunk)
+			})
+
+			if err == nil && summarizedTitle.Len() > 0 {
+				genTitle := strings.TrimSpace(summarizedTitle.String())
+				genTitle = strings.Trim(genTitle, "\"")
+				genTitle = strings.TrimPrefix(genTitle, "Judul: ")
+				if genTitle != "" {
+					newTitle = genTitle
+				}
+			}
+		}
+
+		// Final formatting
 		if diseaseName != "" {
 			newTitle = fmt.Sprintf("%s: %s", diseaseName, newTitle)
-		} else if isInitialTag && userMessage != "[MULAI_CEK_GEJALA]" {
-			// If we are replacing the initial tag with real content
-			newTitle = fmt.Sprintf("[MULAI_CEK_GEJALA]: %s", userMessage)
+		} else if isInitialTag {
+			// Keep the tag for internal filtering but with the better title
+			newTitle = fmt.Sprintf("[MULAI_CEK_GEJALA]: %s", newTitle)
 		}
 
 		if len(newTitle) > 60 {
