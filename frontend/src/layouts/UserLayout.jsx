@@ -29,7 +29,7 @@ import Label from "../components/Label";
 import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const { app_name, logo } = useSettings();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -331,7 +331,7 @@ const UserLayout = () => {
         logo={logo}
         onLogout={handleLogout}
         theme={theme}
-        onToggleTheme={toggleTheme}
+
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}

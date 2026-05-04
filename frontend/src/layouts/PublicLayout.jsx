@@ -21,7 +21,7 @@ const navLinks = [
 
 const PublicLayout = () => {
   const { app_name, logo } = useSettings();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 

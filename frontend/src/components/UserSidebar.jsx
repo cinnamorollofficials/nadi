@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Settings, User as UserIcon, Moon, Sun, LogOut, ArrowUpRight, MoreVertical, Pin } from "lucide-react";
+import { Settings, User as UserIcon, LogOut, ArrowUpRight, MoreVertical, Pin } from "lucide-react";
 import LottieLogo from "./LottieLogo";
 import UsageLimit from "./UsageLimit";
 import Dropdown from "./Dropdown";
@@ -19,7 +19,7 @@ const UserSidebar = ({
   onSearch,
   headerAction,
   theme = "light",
-  onToggleTheme,
+
   profileTransition,
   usage,
   showToggle = true,
@@ -457,17 +457,7 @@ const UserSidebar = ({
                     </Link>
                   </li>
                 )}
-                {onToggleTheme && (
-                  <li>
-                    <button
-                      onClick={(e) => onToggleTheme(e)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-surface-on-variant hover:bg-surface-variant/5 hover:text-surface-on"
-                    >
-                      {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                      <span className="text-xs font-semibold">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
-                    </button>
-                  </li>
-                )}
+
                 <div className="my-1 border-t border-outline-variant/10" />
                 <li>
                   <button
@@ -500,7 +490,7 @@ UserSidebar.propTypes = {
   onSearch: PropTypes.func,
   headerAction: PropTypes.node,
   theme: PropTypes.string,
-  onToggleTheme: PropTypes.func,
+
   profileTransition: PropTypes.object,
   usage: PropTypes.object,
   showToggle: PropTypes.bool,

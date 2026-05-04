@@ -10,7 +10,7 @@ import { ROLES } from "../utils/constants";
 import { safeParse } from "../utils/json";
 
 const AdminLayout = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const { app_name, logo } = useSettings();
   const navigate = useNavigate();
   const location = useLocation();
@@ -861,8 +861,6 @@ const AdminLayout = () => {
           </div>
 
           <div className="flex items-center gap-4">
-
-
             <div className="flex items-center gap-3 pl-2 border-l border-outline-variant/30">
               <div className="hidden md:flex flex-col items-end">
                 <span className="text-xs font-bold text-surface-on truncate max-w-[150px]">
