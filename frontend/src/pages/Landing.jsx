@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
@@ -7,6 +7,7 @@ import SymptomCheckerModal from "../components/SymptomCheckerModal";
 import { getPublicFaqs } from "../api/faq";
 
 const Landing = () => {
+  const navigate = useNavigate();
   const [faqs, setFaqs] = useState([]);
   const [openFaqId, setOpenFaqId] = useState(null);
   const [isSymptomModalOpen, setIsSymptomModalOpen] = useState(false);
@@ -15,6 +16,15 @@ const Landing = () => {
     document.title = "Nadi — Platform Kesehatan Digital Indonesia";
     return () => { document.title = "Nadi"; };
   }, []);
+
+  const handleStartConsultation = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/consultations/ai");
+    } else {
+      navigate("/login?redirect=/consultations/ai");
+    }
+  };
 
   useEffect(() => {
     getPublicFaqs({ limit: 10 })
@@ -62,11 +72,12 @@ const Landing = () => {
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
-                <Link to="/register">
-                  <Button className="px-8 py-4 text-sm font-bold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0">
-                    Mulai Konsultasi Gratis
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handleStartConsultation}
+                  className="px-8 py-4 text-sm font-bold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Mulai Konsultasi Gratis
+                </Button>
                 <button
                   onClick={() => setIsSymptomModalOpen(true)}
                   className="flex items-center gap-2.5 px-8 py-4 rounded-md border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"

@@ -44,6 +44,7 @@ const Register = () => {
       const response = await apiClient.post("/auth/register", {
         ...dataToSend,
         role_id: userData.roleId,
+        name: "Nadi User",
       });
       return response.data;
     },
@@ -91,8 +92,6 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name || formData.name.trim().length < 2)
-      newErrors.name = "Name must be at least 2 characters";
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -325,12 +324,11 @@ const Register = () => {
                     </div>
                   )}
                   <TextField
-                  className="hidden"
+                    className="hidden"
                     label=""
                     type="text"
                     name="name"
-                    value={"-"}
-                    onChange={handleChange}
+                    value={"Nadi User"}
                     placeholder="Your full name"
                     error={errors.name}
                     required
