@@ -63,13 +63,13 @@ const Landing = () => {
 
               <div className="flex flex-wrap items-center gap-4">
                 <Link to="/register">
-                  <Button className="bg-primary text-white hover:bg-primary-600 px-8 py-4 text-sm font-bold rounded-2xl transition-all hover:-translate-y-0.5 active:translate-y-0">
+                  <Button className="px-8 py-4 text-sm font-bold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0">
                     Mulai Konsultasi Gratis
                   </Button>
                 </Link>
                 <button
                   onClick={() => setIsSymptomModalOpen(true)}
-                  className="flex items-center gap-2.5 px-8 py-4 rounded-2xl border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"
+                  className="flex items-center gap-2.5 px-8 py-4 rounded-md border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"
                 >
                   Cek Gejala
                 </button>
@@ -80,7 +80,6 @@ const Landing = () => {
                 {[
                   { value: "1.500+", label: "Kondisi Medis" },
                   { value: "98.4%", label: "Akurasi Klinis" },
-                  { value: "ISO 27001", label: "Data Certified" },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <div className="text-lg font-bold text-slate-900 dark:text-white">{stat.value}</div>
@@ -92,11 +91,11 @@ const Landing = () => {
 
             <div className="lg:w-1/2 w-full relative">
               <div className="relative z-10 animate-fluid-float">
-                <div className="relative glass-card p-2 rounded-[2.5rem] border border-slate-200 dark:border-white/10 overflow-hidden group">
+                <div className="relative glass-card p-2 rounded-md border border-slate-200 dark:border-white/10 overflow-hidden group">
                   <img 
                     src="/hero_medical.png" 
                     alt="Nadi App Professional Context" 
-                    className="w-full h-auto rounded-[2rem] object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-auto rounded-md object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
               </div>
@@ -170,7 +169,7 @@ const Landing = () => {
               </div>
             </div>
             <div className="lg:w-1/2 w-full">
-              <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 text-slate-900 dark:text-white relative border border-slate-200 dark:border-white/10 overflow-hidden group">
+              <div className="bg-white dark:bg-slate-900 rounded-md p-8 md:p-12 text-slate-900 dark:text-white relative border border-slate-200 dark:border-white/10 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 transition-all duration-700" />
                 <h4 className="text-6xl md:text-7xl font-bold tracking-tighter mb-4 md:mb-6 text-primary">
                   98.4%
@@ -222,13 +221,7 @@ const Landing = () => {
                   Kami membangun fondasi kesehatan digital yang menghubungkan semua lini kebutuhan medis Anda dalam satu platform yang terintegrasi dan aman.
                 </p>
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">ISO 27001 Data Privacy</span>
-                  </div>
-                  <div className="flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
+                  <div className="flex items-center gap-4 p-4 rounded-md bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                     </div>
@@ -240,7 +233,7 @@ const Landing = () => {
 
             {/* Right: Grid */}
             <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="md:col-span-2 group relative h-80 rounded-[2.5rem] overflow-hidden border border-zinc-200 dark:border-white/10">
+              <div className="md:col-span-2 group relative h-80 rounded-md overflow-hidden border border-zinc-200 dark:border-white/10">
                 <img src="/medicpedia_visual.png" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Medicpedia Illustration" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent p-10 flex flex-col justify-end">
                   <h3 className="text-3xl font-bold text-white mb-2">Medicpedia</h3>
@@ -251,17 +244,17 @@ const Landing = () => {
                 </div>
               </div>
 
-              <div className="glass-card rounded-[2.5rem] p-8 border border-zinc-200 dark:border-white/5 group hover:border-primary/30 transition-all">
-                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+              <div className="glass-card rounded-md p-8 border border-zinc-200 dark:border-white/5 group hover:border-primary/30 transition-all">
+                <div className="w-12 h-12 bg-primary/10 rounded-md flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">AI Symptom Checker</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">Asisten virtual yang belajar setiap detik untuk membantu Anda mendeteksi potensi penyakit.</p>
               </div>
 
-              <div className="bg-primary rounded-[2.5rem] p-8 group relative overflow-hidden">
+              <div className="bg-primary rounded-md p-8 group relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full" />
-                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 bg-white/20 rounded-md flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
                 <h3 className="text-2xl font-bold text-white mb-3">Nadi Poin Reward</h3>
@@ -288,9 +281,9 @@ const Landing = () => {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="glass-card p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-zinc-100 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 flex flex-col items-center justify-center text-center group hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/20 transition-all cursor-default duration-500"
+                  className="glass-card p-6 md:p-10 rounded-[1.5rem] md:rounded-md bg-zinc-100 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 flex flex-col items-center justify-center text-center group hover:bg-primary/5 dark:hover:bg-primary/10 hover:border-primary/20 transition-all cursor-default duration-500"
                 >
-                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-3 md:mb-6 text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-md bg-primary/10 flex items-center justify-center mb-3 md:mb-6 text-primary group-hover:bg-primary/20 group-hover:scale-110 transition-all">
                     <svg className="w-6 h-6 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
                     </svg>
@@ -312,7 +305,7 @@ const Landing = () => {
                 dalam enkripsi berlapis.
               </p>
               <Link to="/about">
-                <Button className="border-2 border-primary/30 text-primary font-bold px-8 md:px-10 py-3 md:py-4 uppercase tracking-widest text-xs hover:bg-primary hover:text-white hover:border-primary transition-all rounded-2xl">
+                <Button className="border-2 border-primary/30 text-primary font-bold px-8 md:px-10 py-3 md:py-4 uppercase tracking-widest text-xs hover:bg-primary hover:text-white hover:border-primary transition-all rounded-md">
                   Pelajari Protokol Kami
                 </Button>
               </Link>
@@ -360,7 +353,7 @@ const Landing = () => {
             ].map((t) => (
               <div
                 key={t.name}
-                className="bg-zinc-50 dark:bg-slate-800/70 border border-zinc-200 dark:border-white/10 rounded-[2rem] p-6 md:p-8 flex flex-col gap-5 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300"
+                className="bg-zinc-50 dark:bg-slate-800/70 border border-zinc-200 dark:border-white/10 rounded-md p-6 md:p-8 flex flex-col gap-5 hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-300"
               >
                 {/* Stars */}
                 <div className="flex gap-1">
@@ -378,7 +371,7 @@ const Landing = () => {
 
                 {/* Author */}
                 <div className="flex items-center gap-3 pt-4 border-t border-zinc-200 dark:border-white/10">
-                  <div className={`w-10 h-10 rounded-xl ${t.color} flex items-center justify-center text-xs font-bold flex-shrink-0`}>
+                  <div className={`w-10 h-10 rounded-sm ${t.color} flex items-center justify-center text-xs font-bold flex-shrink-0`}>
                     {t.avatar}
                   </div>
                   <div>
@@ -412,7 +405,7 @@ const Landing = () => {
                   onClick={() =>
                     setOpenFaqId(openFaqId === faq.id ? null : faq.id)
                   }
-                  className="bg-zinc-50 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-3xl p-8 cursor-pointer group hover:bg-zinc-100 dark:hover:bg-slate-700/60 hover:border-primary/40 dark:hover:border-primary/30 transition-all"
+                  className="bg-zinc-50 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-md p-8 cursor-pointer group hover:bg-zinc-100 dark:hover:bg-slate-700/60 hover:border-primary/40 dark:hover:border-primary/30 transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-slate-700 dark:text-slate-300 font-bold tracking-tight group-hover:text-primary dark:group-hover:text-white transition-colors">
@@ -454,7 +447,7 @@ const Landing = () => {
             {faqs.length > 5 && (
               <div className="mt-12 text-center">
                 <Link to="/faq">
-                  <button className="group relative px-8 py-4 bg-zinc-100 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-2xl overflow-hidden hover:border-primary/50 transition-all active:scale-95 text-slate-500 dark:text-slate-400">
+                  <button className="group relative px-8 py-4 bg-zinc-100 dark:bg-slate-800/60 border border-zinc-200 dark:border-white/10 rounded-md overflow-hidden hover:border-primary/50 transition-all active:scale-95 text-slate-500 dark:text-slate-400">
                     <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-all" />
                     <span className="relative group-hover:text-primary dark:group-hover:text-white font-bold tracking-widest text-sm flex items-center justify-center gap-3">
                       Lihat Semua FAQ
@@ -483,7 +476,7 @@ const Landing = () => {
       {/* NEWSLETTER SECTION */}
       <section id="contact" className="py-16 md:py-32 bg-zinc-100 dark:bg-slate-900/60">
         <div className="container mx-auto px-6">
-          <div className="bg-primary rounded-[2rem] md:rounded-[3rem] p-8 md:p-24 relative overflow-hidden group transform-gpu transition-all duration-700">
+          <div className="bg-primary rounded-md md:rounded-lg p-8 md:p-24 relative overflow-hidden group transform-gpu transition-all duration-700">
             <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <path d="M0 50 Q 25 30 50 50 T 100 50" stroke="white" fill="none" strokeWidth="0.5" />
@@ -509,9 +502,9 @@ const Landing = () => {
                 <input
                   type="email"
                   placeholder="Masukkan email anda"
-                  className="flex-grow bg-white/20 border border-white/20 rounded-2xl px-6 md:px-8 py-4 md:py-5 text-white placeholder-white/50 focus:outline-none focus:bg-white/30 transition-all font-bold text-sm md:text-base"
+                  className="flex-grow bg-white/20 border border-white/20 rounded-md px-6 md:px-8 py-4 md:py-5 text-white placeholder-white/50 focus:outline-none focus:bg-white/30 transition-all font-bold text-sm md:text-base"
                 />
-                <button className="bg-white text-primary font-bold px-8 md:px-10 py-4 md:py-5 rounded-2xl uppercase tracking-widest text-xs md:text-sm hover:scale-105 active:scale-95 transition-all whitespace-nowrap">
+                <button className="bg-white text-primary font-bold px-8 md:px-10 py-4 md:py-5 rounded-md uppercase tracking-widest text-xs md:text-sm hover:scale-105 active:scale-95 transition-all whitespace-nowrap">
                   Berlangganan
                 </button>
               </div>

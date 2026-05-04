@@ -12,7 +12,7 @@ const Label = ({ children, variant = "primary", className = "" }) => {
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 text-[10px] rounded-full font-bold uppercase tracking-wider border ${variants[variant]} ${className}`}
+      className={`inline-flex items-center px-2.5 py-1 text-[10px] rounded-md font-bold uppercase tracking-wider border ${variants[variant]} ${className}`}
     >
       {children}
     </span>

@@ -29,7 +29,7 @@ import Label from "../components/Label";
 import { toast } from "react-hot-toast";
 
 const UserLayout = () => {
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const { app_name, logo } = useSettings();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -225,7 +225,10 @@ const UserLayout = () => {
       const chatId = path.split("/").pop();
       const currentChat = chatHistory?.find((c) => String(c.uid) === String(chatId));
       const rawTitle = currentChat ? currentChat.title : "Konsultasi AI";
-      title = rawTitle.charAt(0).toUpperCase() + rawTitle.slice(1);
+      const cleanTitle = rawTitle.includes("[MULAI_CEK_GEJALA]") 
+        ? rawTitle.replace("[MULAI_CEK_GEJALA]", "Cek Gejala")
+        : rawTitle;
+      title = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
     } else if (path.includes("/consultations/ai")) {
       title = "Konsultasi AI";
     }
@@ -255,7 +258,11 @@ const UserLayout = () => {
       })
       .slice(0, 15) // Show more items now that pinning is available
       .map((chat) => {
-        const title = chat.title.charAt(0).toUpperCase() + chat.title.slice(1);
+        const rawTitle = chat.title;
+        const cleanTitle = rawTitle.includes("[MULAI_CEK_GEJALA]") 
+          ? rawTitle.replace("[MULAI_CEK_GEJALA]", "Cek Gejala")
+          : rawTitle;
+        const title = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
         return {
           id: `chat-${chat.uid}`,
           label: title,
@@ -331,7 +338,7 @@ const UserLayout = () => {
         logo={logo}
         onLogout={handleLogout}
         theme={theme}
-        onToggleTheme={toggleTheme}
+
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         mobileOpen={isMobileSidebarOpen}
@@ -459,7 +466,7 @@ const UserLayout = () => {
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDeleteConfirm}
         title="Hapus Percakapan"
-        message={`Apakah Anda yakin ingin menghapus percakapan "${activeChat?.title}"? Tindakan ini tidak dapat dibatalkan.`}
+        message={`Apakah Anda yakin ingin menghapus percakapan "${activeChat?.title?.replace("[MULAI_CEK_GEJALA]", "Cek Gejala")}"? Tindakan ini tidak dapat dibatalkan.`}
         loading={isActionLoading}
       />
     </div>

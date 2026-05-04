@@ -223,12 +223,12 @@ const Register = () => {
       </div>
 
       {/* RIGHT PANEL - Form Side */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-white dark:bg-slate-950/20">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-slate-200 dark:bg-slate-950/20">
         <div className="lg:hidden absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 rounded-full [130px] animate-pulse" />
         <div className="lg:hidden absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-nadi-rose/10 rounded-full [130px] animate-pulse delay-700" />
 
         <div className="w-full max-w-md relative">
-          <div className="bg-white/80 dark:bg-white/5 backdrop- rounded-3xl border border-outline-variant/30 dark:border-transparent  overflow-hidden p-8">
+          <div className="bg-white dark:bg-white/5 backdrop- rounded-3xl border border-outline-variant/30 dark:border-transparent  overflow-hidden p-8">
             <div className="flex justify-center mb-8">
               <Link to="/" className="group transition-transform active:scale-95">
                 {logo ? (
@@ -325,10 +325,11 @@ const Register = () => {
                     </div>
                   )}
                   <TextField
-                    label="Full Name"
+                  className="hidden"
+                    label=""
                     type="text"
                     name="name"
-                    value={formData.name}
+                    value={"-"}
                     onChange={handleChange}
                     placeholder="Your full name"
                     error={errors.name}
@@ -396,7 +397,7 @@ const Register = () => {
 
                   <div className="relative py-2">
                     <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
+                      <div className="w-full dark:border-transparent"></div>
                     </div>
                     <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant">
                       Or sign up with
@@ -416,7 +417,7 @@ const Register = () => {
                     />
                   </div>
                 </form>
-                <div className="mt-8 pt-6 border-t border-outline-variant/30 dark:border-transparent text-center">
+                <div className="mt-8 pt-6 dark:border-transparent text-center">
                   <p className="text-xs text-surface-on-variant">
                     Already have an account?{" "}
                     <Link
