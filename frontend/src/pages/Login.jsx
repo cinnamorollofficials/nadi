@@ -166,7 +166,7 @@ const Login = () => {
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 p-3 mb-6">
+              <div className="cursor-pointer w-16 h-16 rounded-2xl border border-white/20 bg-white/10 p-3 mb-6">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -277,21 +277,6 @@ const Login = () => {
                     Forgot password?
                   </Link>
                 </div>
-              </div>
-
-              <div className="flex items-center px-1">
-                <label className="flex items-center cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    name="remember_me"
-                    checked={formData.remember_me}
-                    onChange={handleChange}
-                    className="w-4 h-4 rounded border-outline"
-                  />
-                  <span className="text-[11px] text-surface-on-variant font-medium ml-2">
-                    Remember me for 30 days
-                  </span>
-                </label>
               </div>
 
               <button

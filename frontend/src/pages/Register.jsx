@@ -165,7 +165,7 @@ const Register = () => {
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop- p-3 mb-6 ">
+              <div className="cursor-pointer w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop- p-3 mb-6 ">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
