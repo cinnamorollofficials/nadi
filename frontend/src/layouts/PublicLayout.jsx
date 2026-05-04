@@ -141,7 +141,7 @@ const PublicLayout = () => {
               to="/consultations/ai"
               onClick={() => setMobileOpen(false)}
             >
-              <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
+              <Button className="w-full py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
                 Konsultasi AI
               </Button>
             </Link>
@@ -158,7 +158,7 @@ const PublicLayout = () => {
                 to="/register"
                 onClick={() => setMobileOpen(false)}
               >
-                <Button className="w-full bg-primary text-white hover:bg-primary-600 py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
+                <Button className="w-full py-3 text-xs font-bold uppercase tracking-widest rounded-md transition-all hover:scale-[1.02] active:scale-95">
                   Daftar Sekarang
                 </Button>
               </Link>
@@ -244,7 +244,7 @@ const PublicLayout = () => {
           <div className="hidden md:flex items-center gap-4">
             {localStorage.getItem("token") ? (
               <Link to="/consultations/ai">
-                <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
+                <Button className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
                   Konsultasi AI
                 </Button>
               </Link>
@@ -257,7 +257,7 @@ const PublicLayout = () => {
                   Masuk
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-primary text-white hover:bg-primary-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
+                  <Button className="px-6 py-2.5 text-xs font-bold uppercase tracking-widest rounded-sm transition-all hover:scale-105 active:scale-95">
                     Daftar Sekarang
                   </Button>
                 </Link>

@@ -17,7 +17,7 @@ export default {
           '100': '#ccfbf1',
           '400': '#2dd4bf',
           '500': '#14b8a6',
-          '600': '#0d9488',
+          '600': '#2563eb',
         },
         secondary: {
           DEFAULT: ({ opacityValue }) => opacityValue !== undefined ? `rgb(var(--md-sys-color-secondary-container) / ${opacityValue})` : `rgb(var(--md-sys-color-secondary-container))`,
