@@ -215,7 +215,7 @@ const Login = () => {
       </div>
 
       {/* RIGHT PANEL - Form Side */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-slate-50 dark:bg-slate-950/20">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 xl:p-24 relative z-10 bg-slate-200 dark:bg-slate-950/20">
 
         <div className="w-full max-w-sm relative">
           <div className="bg-white dark:bg-white/5 rounded-3xl border border-slate-200 dark:border-white/10 overflow-hidden p-8">
