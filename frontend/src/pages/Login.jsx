@@ -303,9 +303,6 @@ const Login = () => {
               </button>
 
               <div className="relative py-2">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-outline-variant/30 dark:border-transparent"></div>
-                </div>
                 <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest text-surface-on-variant px-2">
                   Or continue with
                 </div>
@@ -325,7 +322,7 @@ const Login = () => {
               </div>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-outline-variant/30 dark:border-transparent text-center">
+            <div className="mt-8 pt-6 dark:border-transparent text-center">
               <p className="text-xs text-surface-on-variant">
                 New to {app_name}?{" "}
                 <Link

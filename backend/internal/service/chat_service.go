@@ -191,10 +191,16 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 		return err
 	}
 
-	// 5. Auto-summarize title if it's a new chat (or if a system prefix was provided)
-	if channel.Title == "New Conversation" || systemPrefix != "" {
+	// 5. Auto-summarize title if it's a new chat or still using technical tags
+	isInitialTag := strings.Contains(channel.Title, "[MULAI_CEK_GEJALA]")
+	if channel.Title == "New Conversation" || isInitialTag || systemPrefix != "" {
 		newTitle := userMessage
 		diseaseName := ""
+
+		// If it's just the start tag, set a temporary descriptive title
+		if newTitle == "[MULAI_CEK_GEJALA]" {
+			newTitle = "[MULAI_CEK_GEJALA]: Sesi Baru"
+		}
 
 		// Extract disease name from systemPrefix
 		if systemPrefix != "" {
@@ -204,14 +210,17 @@ func (s *chatService) ProcessMessage(ctx context.Context, userID uint, channelUI
 				diseaseName = systemPrefix[startIdx+7 : endIdx]
 			}
 		}
-		
+
 		// Format title
 		if diseaseName != "" {
 			newTitle = fmt.Sprintf("%s: %s", diseaseName, newTitle)
+		} else if isInitialTag && userMessage != "[MULAI_CEK_GEJALA]" {
+			// If we are replacing the initial tag with real content
+			newTitle = fmt.Sprintf("[MULAI_CEK_GEJALA]: %s", userMessage)
 		}
 
-		if len(newTitle) > 50 {
-			newTitle = newTitle[:47] + "..."
+		if len(newTitle) > 60 {
+			newTitle = newTitle[:57] + "..."
 		}
 		channel.Title = newTitle
 		s.chatRepo.UpdateChannel(ctx, channel)

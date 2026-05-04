@@ -325,10 +325,11 @@ const Register = () => {
                     </div>
                   )}
                   <TextField
-                    label="Full Name"
+                  className="hidden"
+                    label=""
                     type="text"
                     name="name"
-                    value={formData.name}
+                    value={"-"}
                     onChange={handleChange}
                     placeholder="Your full name"
                     error={errors.name}
