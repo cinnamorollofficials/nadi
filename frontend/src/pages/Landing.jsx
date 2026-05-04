@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import MedicalDisclaimer from "../components/MedicalDisclaimer";
@@ -7,6 +7,7 @@ import SymptomCheckerModal from "../components/SymptomCheckerModal";
 import { getPublicFaqs } from "../api/faq";
 
 const Landing = () => {
+  const navigate = useNavigate();
   const [faqs, setFaqs] = useState([]);
   const [openFaqId, setOpenFaqId] = useState(null);
   const [isSymptomModalOpen, setIsSymptomModalOpen] = useState(false);
@@ -15,6 +16,31 @@ const Landing = () => {
     document.title = "Nadi — Platform Kesehatan Digital Indonesia";
     return () => { document.title = "Nadi"; };
   }, []);
+
+  const handleStartConsultation = () => {
+    const token = localStorage.getItem("token");
+    // Generate a random-looking base64 string for the session
+    const randomBase64 = btoa(Math.random().toString().slice(2)).substring(0, 12);
+    const targetPath = `/consultations/ai/${randomBase64}`;
+    
+    if (token) {
+      navigate(targetPath, { state: { mode: "consultation" } });
+    } else {
+      navigate(`/login?redirect=${targetPath}&mode=consultation`);
+    }
+  };
+
+  const handleStartSymptomCheck = () => {
+    const token = localStorage.getItem("token");
+    const randomBase64 = btoa(Math.random().toString().slice(2)).substring(0, 12);
+    const targetPath = `/consultations/ai/${randomBase64}`;
+    
+    if (token) {
+      navigate(targetPath, { state: { mode: "symptom_check" } });
+    } else {
+      navigate(`/login?redirect=${targetPath}&mode=symptom_check`);
+    }
+  };
 
   useEffect(() => {
     getPublicFaqs({ limit: 10 })
@@ -62,13 +88,14 @@ const Landing = () => {
               </p>
 
               <div className="flex flex-wrap items-center gap-4">
-                <Link to="/register">
-                  <Button className="px-8 py-4 text-sm font-bold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0">
-                    Mulai Konsultasi Gratis
-                  </Button>
-                </Link>
+                <Button 
+                  onClick={handleStartConsultation}
+                  className="px-8 py-4 text-sm font-bold rounded-md transition-all hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  Mulai Konsultasi Gratis
+                </Button>
                 <button
-                  onClick={() => setIsSymptomModalOpen(true)}
+                  onClick={handleStartSymptomCheck}
                   className="flex items-center gap-2.5 px-8 py-4 rounded-md border border-slate-300 dark:border-outline-variant/30 text-slate-700 dark:text-slate-300 hover:border-primary/50 hover:text-primary text-sm font-bold transition-all"
                 >
                   Cek Gejala
@@ -489,7 +516,7 @@ const Landing = () => {
                   Dapatkan Wawasan <br className="hidden md:block" />
                   Kesehatan Mingguan.
                 </h2>
-                <p className="text-teal-50/70 font-bold text-base md:text-xl">
+                <p className="text-blue-50/70 font-bold text-base md:text-xl">
                   Bergabunglah dengan{" "}
                   <span className="text-white underline decoration-white/30 underline-offset-8">
                     12.000+

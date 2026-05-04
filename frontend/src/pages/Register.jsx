@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { GoogleLogin } from "@react-oauth/google";
 import TextField from "../components/TextField";
@@ -11,6 +11,9 @@ import { ROLES } from "../utils/constants";
 
 const Register = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const mode = searchParams.get("mode");
   const { logo, registration_open } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
@@ -28,12 +31,16 @@ const Register = () => {
   useEffect(() => {
     document.title = "Daftar — Nadi";
     if (localStorage.getItem("token")) {
+      if (redirect) {
+        navigate(redirect, { state: { mode: mode || "consultation" } });
+        return;
+      }
       const userData = localStorage.getItem("user");
       if (userData) {
         const user = JSON.parse(userData);
-        navigate(user.role_id === ROLES.USER ? "/dashboard" : "/admin");
+        navigate(user.role_id === ROLES.USER ? "/consultations/ai" : "/admin");
       } else {
-        navigate("/dashboard");
+        navigate("/consultations/ai");
       }
     }
   }, [navigate]);
@@ -44,6 +51,7 @@ const Register = () => {
       const response = await apiClient.post("/auth/register", {
         ...dataToSend,
         role_id: userData.roleId,
+        name: "Nadi User",
       });
       return response.data;
     },
@@ -71,7 +79,13 @@ const Register = () => {
         localStorage.setItem("refresh_token", data.data.refresh_token);
       }
       localStorage.setItem("user", safeStringify(data.data.user));
-      const destination = data.data.user.role_id === ROLES.USER ? "/dashboard" : "/admin";
+      
+      if (redirect) {
+        navigate(redirect, { state: { mode: mode || "consultation" } });
+        return;
+      }
+
+      const destination = data.data.user.role_id === ROLES.USER ? "/consultations/ai" : "/admin";
       navigate(destination);
     },
     onError: (error) => {
@@ -91,8 +105,6 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name || formData.name.trim().length < 2)
-      newErrors.name = "Name must be at least 2 characters";
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -166,7 +178,7 @@ const Register = () => {
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop- p-3 mb-6 ">
+              <div className="cursor-pointer w-16 h-16 rounded-2xl border border-white/20 bg-white/10 backdrop- p-3 mb-6 ">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -251,7 +263,7 @@ const Register = () => {
 
             {isRegistered ? (
               <div className="text-center py-4 space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-3xl bg-green-500/10 flex items-center justify-center text-green-500 mb-6 shadow-inner">
+                <div className="w-20 h-20 mx-auto rounded-3xl bg-primary/10 flex items-center justify-center text-primary mb-6 shadow-inner">
                   <svg
                     className="w-10 h-10"
                     fill="none"
@@ -325,12 +337,11 @@ const Register = () => {
                     </div>
                   )}
                   <TextField
-                  className="hidden"
+                    className="hidden"
                     label=""
                     type="text"
                     name="name"
-                    value={"-"}
-                    onChange={handleChange}
+                    value={"Nadi User"}
                     placeholder="Your full name"
                     error={errors.name}
                     required
@@ -421,10 +432,10 @@ const Register = () => {
                   <p className="text-xs text-surface-on-variant">
                     Already have an account?{" "}
                     <Link
-                      to="/login"
+                      to={`/login${redirect ? `?redirect=${redirect}${mode ? `&mode=${mode}` : ""}` : ""}`}
                       className="text-primary font-bold hover:underline"
                     >
-                      Sign in
+                      Log in
                     </Link>
                   </p>
                 </div>

@@ -15,7 +15,7 @@ const AiConsultation = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
   const [activeChannelId, setActiveChannelId] = useState(id);
-  const [activeMode, setActiveMode] = useState("consultation");
+  const [activeMode, setActiveMode] = useState(location.state?.mode || "consultation");
   const isInitializingRef = useRef(false);
 
   // Create New Channel Mutation
@@ -26,7 +26,11 @@ const AiConsultation = () => {
     },
     onSuccess: (newChannel) => {
       queryClient.invalidateQueries({ queryKey: ["chat-history"] });
-      navigate(`/consultations/ai/${newChannel.uid}`);
+      // Preserve state when navigating to the new UID
+      navigate(`/consultations/ai/${newChannel.uid}`, { 
+        state: location.state,
+        replace: true 
+      });
     },
   });
 
@@ -62,7 +66,10 @@ const AiConsultation = () => {
           })));
         } catch (err) {
           console.error("Failed to fetch messages", err);
-          navigate("/consultations/ai");
+          // If the session ID doesn't exist (e.g. it was a random ID from Landing),
+          // automatically start a fresh new session using the requested mode.
+          const mode = location.state?.mode || "consultation";
+          handleNewChat(mode);
         }
       };
       fetchMessages();
@@ -74,7 +81,10 @@ const AiConsultation = () => {
 
   useEffect(() => {
     setActiveChannelId(id);
-  }, [id]);
+    if (location.state?.mode) {
+      setActiveMode(location.state.mode);
+    }
+  }, [id, location.state?.mode]);
 
   // Handle auto-start for Symptom Checker
   useEffect(() => {

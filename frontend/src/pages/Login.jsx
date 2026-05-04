@@ -13,6 +13,7 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const topic = searchParams.get("topic");
   const redirect = searchParams.get("redirect");
+  const mode = searchParams.get("mode");
   const { logo, app_name } = useSettings();
   const [formData, setFormData] = useState({
     email: "",
@@ -30,6 +31,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
@@ -71,6 +73,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
@@ -108,6 +111,7 @@ const Login = () => {
         navigate(redirect, { 
           state: { 
             disease: topic,
+            mode: mode || "consultation",
             suggestions: topic ? [
               `Apa saja gejala awal ${topic} yang harus diwaspadai?`,
               `Bagaimana cara menangani ${topic} di rumah secara mandiri?`,
@@ -166,7 +170,7 @@ const Login = () => {
         <div className="relative z-10 flex flex-col justify-between p-20 w-full h-full">
           <div className="animate-slide-up">
             {logo ? (
-              <div className="w-16 h-16 rounded-2xl border border-white/20 bg-white/10 p-3 mb-6">
+              <div className="cursor-pointer w-16 h-16 rounded-2xl border border-white/20 bg-white/10 p-3 mb-6">
                 <img
                   src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`}
                   alt="Logo"
@@ -279,21 +283,6 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="flex items-center px-1">
-                <label className="flex items-center cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    name="remember_me"
-                    checked={formData.remember_me}
-                    onChange={handleChange}
-                    className="w-4 h-4 rounded border-outline"
-                  />
-                  <span className="text-[11px] text-surface-on-variant font-medium ml-2">
-                    Remember me for 30 days
-                  </span>
-                </label>
-              </div>
-
               <button
                 type="submit"
                 disabled={loginMutation.isPending}
@@ -326,7 +315,7 @@ const Login = () => {
               <p className="text-xs text-surface-on-variant">
                 New to {app_name}?{" "}
                 <Link
-                  to="/register"
+                  to={`/register${redirect ? `?redirect=${redirect}${mode ? `&mode=${mode}` : ""}` : ""}`}
                   className="text-primary font-bold hover:underline"
                 >
                   Create account

@@ -98,7 +98,7 @@ const NutrisiDetail = () => {
   if (!data) {
     return (
       <div className="min-h-screen bg-surface flex flex-col items-center justify-center text-center px-6">
-        <div className="w-24 h-24 bg-emerald-500/10 rounded-full flex items-center justify-center mb-6">
+        <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
           <span className="text-4xl">🫐</span>
         </div>
         <h1 className="text-2xl font-bold text-surface-on mb-3">
@@ -109,7 +109,7 @@ const NutrisiDetail = () => {
         </p>
         <Link
           to="/medicpedia/nutrisi"
-          className="inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-emerald-700 transition"
+          className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition"
         >
           ← Kembali ke Daftar Nutrisi
         </Link>
@@ -130,12 +130,12 @@ const NutrisiDetail = () => {
       >
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-300 rounded-full  animate-blob" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-300 rounded-full  animate-blob animation-delay-2000" />
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-300 rounded-full  animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/30 rounded-full  animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-16">
           {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-slate-600 dark:text-teal-100/60 mb-6 font-medium">
+          <nav className="flex items-center gap-2 text-sm text-slate-600 dark:text-blue-100/60 mb-6 font-medium">
             <Link
               to="/medicpedia/nutrisi"
               className="hover:text-slate-900 dark:hover:text-white transition"
@@ -155,7 +155,7 @@ const NutrisiDetail = () => {
                 d="M9 5l7 7-7 7"
               />
             </svg>
-            <span className="text-slate-800 dark:text-teal-100/80">{data.name}</span>
+            <span className="text-slate-800 dark:text-blue-100/80">{data.name}</span>
           </nav>
           <div className="flex items-start gap-6">
             {data.image && (
@@ -170,7 +170,7 @@ const NutrisiDetail = () => {
               <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight mb-3 text-slate-900 dark:text-white">
                 {data.name}
               </h1>
-              <p className="text-slate-600 dark:text-teal-100/80 text-sm font-medium">
+              <p className="text-slate-600 dark:text-blue-100/80 text-sm font-medium">
                 Panduan lengkap dalam{" "}
                 {SECTIONS.filter((s) => data[s.key]).length} bagian informatif.
               </p>
@@ -191,8 +191,8 @@ const NutrisiDetail = () => {
                 className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200
                                     ${
                                       activeSection === key
-                                        ? "bg-emerald-600 text-white "
-                                        : "text-surface-on-variant hover:bg-surface-variant/40 hover:text-emerald-700"
+                                        ? "bg-primary text-white "
+                                        : "text-surface-on-variant hover:bg-surface-variant/40 hover:text-primary"
                                     }`}
               >
                 <span>{icon}</span>
@@ -245,7 +245,7 @@ const NutrisiDetail = () => {
         <div className="pt-8 border-t border-outline-variant/30 flex items-center justify-between">
           <Link
             to="/medicpedia/nutrisi"
-            className="flex items-center gap-2 text-surface-on-variant hover:text-emerald-600 transition font-medium text-sm"
+            className="flex items-center gap-2 text-surface-on-variant hover:text-primary transition font-medium text-sm"
           >
             <svg
               className="w-4 h-4"
@@ -264,7 +264,7 @@ const NutrisiDetail = () => {
           </Link>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="flex items-center gap-2 text-surface-on-variant hover:text-emerald-600 transition font-medium text-sm"
+            className="flex items-center gap-2 text-surface-on-variant hover:text-primary transition font-medium text-sm"
           >
             Ke atas
             <svg

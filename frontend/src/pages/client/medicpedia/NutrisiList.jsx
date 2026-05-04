@@ -7,7 +7,7 @@ import Skeleton from "../../../components/Skeleton";
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 const NUTRISI_COLORS = [
-  "from-emerald-500 to-teal-600",
+  "from-primary to-blue-600",
   "from-blue-500 to-indigo-600",
   "from-violet-500 to-purple-600",
   "from-amber-500 to-orange-600",
@@ -89,14 +89,14 @@ const NutrisiList = () => {
       >
         <div className="absolute inset-0 bg-white/30 dark:bg-slate-950/70" />
         <div className="absolute inset-0 opacity-30 dark:opacity-20 mix-blend-overlay pointer-events-none">
-          <div className="absolute top-10 right-10 w-80 h-80 bg-emerald-300 rounded-full  animate-blob" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-400 rounded-full  animate-blob animation-delay-2000" />
+          <div className="absolute top-10 right-10 w-80 h-80 bg-blue-300 rounded-full  animate-blob" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/40 rounded-full  animate-blob animation-delay-2000" />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white">
-            Ensiklopedia Nutrisi <span className="text-teal-600 dark:text-teal-400">A-Z</span>
+            Ensiklopedia Nutrisi <span className="text-primary">A-Z</span>
           </h1>
-          <p className="text-slate-600 dark:text-teal-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+          <p className="text-slate-600 dark:text-blue-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
             Pelajari manfaat, sumber, kebutuhan harian, dan risiko kekurangan
             berbagai nutrisi penting untuk tubuh Anda.
           </p>
@@ -111,7 +111,7 @@ const NutrisiList = () => {
                 setSearchTerm(e.target.value);
                 setActiveLetter("");
               }}
-              className="w-full py-4 pl-14 pr-6 rounded-md text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-emerald-300 transition"
+              className="w-full py-4 pl-14 pr-6 rounded-md text-surface-on bg-white placeholder-surface-on-variant/60 text-base font-medium  focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
             />
             <svg
               className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-on-variant"
@@ -165,8 +165,8 @@ const NutrisiList = () => {
                 className={`w-10 h-10 rounded-sm text-sm font-bold transition-all duration-200
                                     ${
                                       activeLetter === letter
-                                        ? "bg-emerald-600 text-white  scale-110"
-                                        : "bg-surface-variant/40 text-surface-on-variant hover:bg-emerald-500/10 hover:text-emerald-600"
+                                        ? "bg-primary text-white  scale-110"
+                                        : "bg-surface-variant/40 text-surface-on-variant hover:bg-primary/10 hover:text-primary"
                                     }`}
               >
                 {letter}
@@ -218,13 +218,13 @@ const NutrisiList = () => {
               <Link
                 key={item.id}
                 to={`/medicpedia/nutrisi/${item.slug}`}
-                className="group relative rounded-md overflow-hidden border border-outline-variant/20 hover:border-emerald-500/30 hover: hover:shadow-emerald-500/10 transition-all duration-300"
+                className="group relative rounded-md overflow-hidden border border-outline-variant/20 hover:border-primary/30 hover: hover:shadow-primary/10 transition-all duration-300"
               >
                 {/* Gradient top strip */}
                 <div
                   className={`h-2 bg-gradient-to-r ${NUTRISI_COLORS[idx % NUTRISI_COLORS.length]}`}
                 />
-                <div className="p-6 bg-surface-variant/10 group-hover:bg-emerald-500/5 transition-colors">
+                <div className="p-6 bg-surface-variant/10 group-hover:bg-primary/5 transition-colors">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div
                       className={`w-10 h-10 rounded-md bg-gradient-to-br ${NUTRISI_COLORS[idx % NUTRISI_COLORS.length]} bg-opacity-10 flex items-center justify-center flex-shrink-0`}
@@ -234,7 +234,7 @@ const NutrisiList = () => {
                       </span>
                     </div>
                     <svg
-                      className="w-4 h-4 text-surface-on-variant/30 group-hover:text-emerald-500/60 transition-colors mt-1"
+                      className="w-4 h-4 text-surface-on-variant/30 group-hover:text-primary/60 transition-colors mt-1"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -247,7 +247,7 @@ const NutrisiList = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="font-bold text-surface-on group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors text-base mb-2">
+                  <h3 className="font-bold text-surface-on group-hover:text-primary transition-colors text-base mb-2">
                     {item.name}
                   </h3>
                   <p className="text-surface-on-variant text-sm leading-relaxed line-clamp-3">
@@ -290,8 +290,8 @@ const NutrisiList = () => {
                     onClick={() => setCurrentPage(page)}
                     className={`w-9 h-9 rounded-md text-sm font-bold transition-all ${
                       currentPage === page
-                        ? "bg-emerald-600 text-white "
-                        : "bg-surface-variant/30 hover:bg-emerald-500/10 hover:text-emerald-600 text-surface-on-variant"
+                        ? "bg-primary text-white "
+                        : "bg-surface-variant/30 hover:bg-primary/10 hover:text-primary text-surface-on-variant"
                     }`}
                   >
                     {page}
