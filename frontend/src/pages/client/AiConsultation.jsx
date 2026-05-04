@@ -62,7 +62,9 @@ const AiConsultation = () => {
           })));
         } catch (err) {
           console.error("Failed to fetch messages", err);
-          navigate("/consultations/ai");
+          // If the session ID doesn't exist (e.g. it was a random ID from Landing),
+          // automatically start a fresh new session.
+          handleNewChat("consultation");
         }
       };
       fetchMessages();

@@ -19,10 +19,14 @@ const Landing = () => {
 
   const handleStartConsultation = () => {
     const token = localStorage.getItem("token");
+    // Generate a random-looking base64 string for the session
+    const randomBase64 = btoa(Math.random().toString().slice(2)).substring(0, 12);
+    const targetPath = `/consultations/ai/${randomBase64}`;
+    
     if (token) {
-      navigate("/consultations/ai");
+      navigate(targetPath);
     } else {
-      navigate("/login?redirect=/consultations/ai");
+      navigate(`/login?redirect=${targetPath}`);
     }
   };
 
