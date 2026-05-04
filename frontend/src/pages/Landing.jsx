@@ -80,7 +80,6 @@ const Landing = () => {
                 {[
                   { value: "1.500+", label: "Kondisi Medis" },
                   { value: "98.4%", label: "Akurasi Klinis" },
-                  { value: "ISO 27001", label: "Data Certified" },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <div className="text-lg font-bold text-slate-900 dark:text-white">{stat.value}</div>
@@ -222,12 +221,6 @@ const Landing = () => {
                   Kami membangun fondasi kesehatan digital yang menghubungkan semua lini kebutuhan medis Anda dalam satu platform yang terintegrasi dan aman.
                 </p>
                 <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-4 p-4 rounded-md bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">ISO 27001 Data Privacy</span>
-                  </div>
                   <div className="flex items-center gap-4 p-4 rounded-md bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/5">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>

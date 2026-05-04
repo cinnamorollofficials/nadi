@@ -10,7 +10,7 @@ import Label from "../Label";
 const DiseaseButton = ({ name, onClick }) => (
   <button
     onClick={() => onClick?.(name)}
-    className="inline-flex items-center gap-1.5 mt-2 mb-1 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl font-bold text-xs transition-all active:scale-95 cursor-pointer"
+    className="inline-flex items-center gap-1.5 mt-2 mb-1 px-3 py-1.5 bg-primary text-white border-transparent rounded-sm font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-sm"
   >
     <span>{name}</span>
     <ArrowUp size={10} className="rotate-45" />
@@ -106,9 +106,9 @@ const ChatInterface = ({
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="backdrop-blur-md px-1 py-1 rounded-full flex items-center gap-2 shadow-sm pointer-events-auto"
+              className="backdrop-blur-md px-1 py-1 rounded-lg flex items-center gap-2 shadow-sm pointer-events-auto"
             >
-              <Label variant="secondary" className="shadow-lg shadow-secondary/20">
+              <Label variant="primary" className="shadow-lg shadow-primary/20">
                 Symptom Identification Room
               </Label>
             </motion.div>
@@ -117,7 +117,7 @@ const ChatInterface = ({
             <motion.div 
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="backdrop-blur-md px-1 py-1 rounded-full flex items-center gap-2 shadow-sm pointer-events-auto"
+              className="backdrop-blur-md px-1 py-1 rounded-lg flex items-center gap-2 shadow-sm pointer-events-auto"
             >
               <Label variant="primary" className="shadow-lg shadow-primary/20">
                 Topik: {disease}
@@ -135,7 +135,7 @@ const ChatInterface = ({
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center justify-center h-full text-center space-y-6"
             >
-              <div className={`w-16 h-16 rounded-3xl flex items-center justify-center overflow-hidden p-3 shadow-inner ${isSymptomMode ? 'bg-secondary/10 text-secondary' : 'bg-primary/10 text-primary'}`}>
+              <div className={`w-16 h-16 rounded-md flex items-center justify-center overflow-hidden p-3 shadow-inner ${isSymptomMode ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary'}`}>
                 {logo && !isSymptomMode ? (
                   <img src={`${import.meta.env.VITE_API_URL}/public/storage/${logo}`} alt="Nadi AI" className="w-full h-full object-contain" />
                 ) : (
@@ -166,7 +166,7 @@ const ChatInterface = ({
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.1 * (i + 1) }}
                       onClick={() => onSendMessage(s)}
-                      className="text-left px-5 py-4 bg-surface-container-highest dark:bg-surface-container-high hover:bg-primary/10 hover:text-primary border border-outline-variant/30 rounded-2xl text-sm font-semibold transition-all group active:scale-95"
+                      className="text-left px-5 py-4 bg-primary text-white hover:brightness-110 border-transparent rounded-md text-sm font-semibold transition-all group active:scale-95 shadow-md shadow-primary/10"
                     >
                       <span className="flex items-center justify-between">
                         {s}
@@ -198,7 +198,7 @@ const ChatInterface = ({
                 className={`flex flex-col ${isBot ? "items-start" : "items-end"} gap-2`}
               >
                 <div className={`flex max-w-[85%] ${isBot ? "flex-row" : "flex-row-reverse"} gap-3`}>
-                  <div className={`flex-shrink-0 w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden transition-colors ${
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-md flex items-center justify-center overflow-hidden transition-colors ${
                     !isBot ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-400 border border-zinc-200 dark:border-white/5" : "bg-transparent text-primary p-0"
                   }`}>
                     {!isBot ? (
@@ -210,7 +210,7 @@ const ChatInterface = ({
                     )}
                   </div>
                   
-                  <div className={`px-5 py-4 rounded-[2rem] leading-relaxed transition-all ${
+                  <div className={`px-5 py-4 rounded-md leading-relaxed transition-all ${
                     !isBot 
                       ? "bg-zinc-100 dark:bg-black/20 text-slate-900 dark:text-slate-200 border border-zinc-200 dark:border-white/5 rounded-tr-none" 
                       : "bg-transparent text-slate-900 dark:text-slate-100 rounded-tl-none"
@@ -231,7 +231,7 @@ const ChatInterface = ({
                       <button
                         key={i}
                         onClick={() => onDiseaseClick?.(d)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl font-semibold text-xs transition-all active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary text-white border-transparent rounded-sm font-semibold text-xs transition-all active:scale-95 shadow-sm"
                       >
                         {d}
                         <ArrowUp size={10} className="rotate-45" />
@@ -250,24 +250,24 @@ const ChatInterface = ({
               className="flex justify-start"
             >
               <div className="flex flex-row gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center overflow-hidden p-0.5">
+                <div className="flex-shrink-0 w-10 h-10 rounded-md bg-primary/10 flex items-center justify-center overflow-hidden p-0.5">
                   <LottieLogo className="w-9 h-9" />
                 </div>
-                <div className="p-4 bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-3xl rounded-tl-none flex items-center gap-1 border border-outline-variant/60 dark:border-outline-variant/20 shadow-sm">
+                <div className="p-4 bg-surface-container-highest dark:bg-surface-container-high text-surface-on rounded-md rounded-tl-none flex items-center gap-1 border border-outline-variant/60 dark:border-outline-variant/20 shadow-sm">
                   <motion.span
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1 }}
-                    className="w-2 h-2 bg-primary rounded-full"
+                    className="w-2 h-2 bg-primary rounded-lg"
                   />
                   <motion.span
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1, delay: 0.2 }}
-                    className="w-2 h-2 bg-primary rounded-full"
+                    className="w-2 h-2 bg-primary rounded-lg"
                   />
                   <motion.span
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1, delay: 0.4 }}
-                    className="w-2 h-2 bg-primary rounded-full"
+                    className="w-2 h-2 bg-primary rounded-lg"
                   />
                 </div>
               </div>
@@ -280,7 +280,7 @@ const ChatInterface = ({
               animate={{ opacity: 1 }}
               className="flex flex-col items-center gap-3 p-4"
             >
-              <div className="bg-error/10 text-error px-4 py-2 rounded-2xl flex items-center gap-2 text-sm border border-error/20 max-w-md text-center">
+              <div className="bg-error/10 text-error px-4 py-2 rounded-md flex items-center gap-2 text-sm border border-error/20 max-w-md text-center">
                 <AlertCircle size={16} className="shrink-0" />
                 {error}
               </div>
@@ -301,7 +301,7 @@ const ChatInterface = ({
         <form onSubmit={handleSubmit} className="relative group max-w-4xl mx-auto flex items-center">
           <div className="relative w-full">
             {isLimitReached ? (
-              <div className="w-full bg-error/5 dark:bg-error/10 text-error px-7 py-4 rounded-full border border-error/20 flex items-center justify-between animate-pulse shadow-sm">
+              <div className="w-full bg-error/5 dark:bg-error/10 text-error px-7 py-4 rounded-lg border border-error/20 flex items-center justify-between animate-pulse shadow-sm">
                 <div className="flex items-center gap-3">
                   <AlertCircle size={18} />
                   <span className="text-sm font-bold">Batas harian tercapai. Reset besok.</span>
@@ -323,7 +323,7 @@ const ChatInterface = ({
                   onChange={(e) => setCharCount(e.target.value.length)}
                   placeholder="Ketik pesan Anda di sini..."
                   disabled={isTyping}
-                  className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-full border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm pr-24"
+                  className="w-full bg-surface-container-highest dark:bg-surface-container-highest text-surface-on px-7 py-4 rounded-lg border border-outline-variant/20 focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all disabled:opacity-50 text-base shadow-sm pr-24"
                 />
                 <div className="absolute right-14 top-1/2 -translate-y-1/2 flex items-center gap-3 h-10 pr-2 border-r border-outline-variant/30 mr-2">
                    {usage && (
@@ -338,7 +338,7 @@ const ChatInterface = ({
                 <button
                   type="submit"
                   disabled={isTyping || charCount === 0}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-full flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-primary text-on-primary rounded-lg flex items-center justify-center hover:brightness-110 active:scale-95 transition-all disabled:bg-surface-variant disabled:text-surface-on-variant"
                 >
                   {isTyping ? (
                     <Loader2 className="animate-spin" size={18} />

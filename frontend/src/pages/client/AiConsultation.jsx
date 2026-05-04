@@ -6,6 +6,7 @@ import ChatInterface from "../../components/Chat/ChatInterface";
 import { useChat } from "../../hooks/useChat";
 import { Bot, History as HistoryIcon, PlusCircle, LayoutDashboard } from "lucide-react";
 import { motion } from "framer-motion";
+import Label from "../../components/Label";
 
 const AiConsultation = () => {
   const { user, refreshUserData } = useOutletContext();
@@ -212,73 +213,39 @@ const AiConsultation = () => {
                animate={{ opacity: 1, y: 0 }}
                className="max-w-2xl w-full text-center"
              >
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold mb-6 border border-primary/20">
-                  <Bot size={14} className="animate-bounce" />
-                  <span>CERDAS • PERSONAL • AKURAT</span>
-                </div>
-                
                 <h2 className="text-3xl md:text-4xl font-black text-surface-on tracking-tight mb-4">
-                  Halo! Saya <span className="text-primary italic">Nadi AI</span>.
+                  Halo! Saya <span className="text-primary">Nadi AI</span>.
                 </h2>
                 <p className="text-surface-on-variant mb-12 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
                   Pilih cara Anda ingin memulai hari ini. Saya siap membantu Anda memahami kondisi kesehatan Anda dengan lebih baik.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+                <div className="flex flex-wrap justify-center gap-4">
                   {/* Mode: Consultation */}
                   <motion.button
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleNewChat("consultation")}
                     disabled={createChannelMutation.isPending}
-                    className="p-6 rounded-3xl bg-surface border border-surface-variant/50 hover:border-primary/50 transition-all shadow-sm hover:shadow-xl hover:shadow-primary/10 group flex flex-col h-full"
+                    className="group"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:bg-primary group-hover:text-on-primary transition-colors">
-                      <Bot size={30} />
-                    </div>
-                    <h4 className="text-lg font-bold text-surface-on mb-2">AI Consultation</h4>
-                    <p className="text-xs text-surface-on-variant leading-relaxed mb-6 flex-1">
-                      Tanyakan apa saja tentang kesehatan, nutrisi, atau penjelasan medis secara umum dengan bahasa santai.
-                    </p>
-                    <div className="flex items-center text-xs font-bold text-primary group-hover:translate-x-1 transition-transform">
-                      Mulai Konsultasi →
-                    </div>
+                    <Label className="px-10 py-5 text-sm rounded-sm transition-all bg-primary text-white border-transparent shadow-sm">
+                      AI Consultation
+                    </Label>
                   </motion.button>
 
                   {/* Mode: Symptom Checker */}
                   <motion.button
-                    whileHover={{ y: -5, scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => handleNewChat("symptom_check")}
                     disabled={createChannelMutation.isPending}
-                    className="p-6 rounded-3xl bg-surface border border-surface-variant/50 hover:border-secondary/50 transition-all shadow-sm hover:shadow-xl hover:shadow-secondary/10 group flex flex-col h-full"
+                    className="group"
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary mb-6 group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
-                      <LayoutDashboard size={30} />
-                    </div>
-                    <h4 className="text-lg font-bold text-surface-on mb-2">Symptom Checker</h4>
-                    <p className="text-xs text-surface-on-variant leading-relaxed mb-6 flex-1">
-                      Bantu saya menganalisis gejala Anda melalui tanya jawab terstruktur untuk perkiraan kondisi kesehatan.
-                    </p>
-                    <div className="flex items-center text-xs font-bold text-secondary group-hover:translate-x-1 transition-transform">
-                      Cek Gejala Sekarang →
-                    </div>
+                    <Label className="px-10 py-5 text-sm rounded-sm transition-all bg-primary text-white border-transparent shadow-sm">
+                      Symptom Checker
+                    </Label>
                   </motion.button>
-                </div>
-
-                <div className="mt-16 pt-8 border-t border-surface-variant/30 flex flex-wrap justify-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all">
-                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
-                      Privasi Terjaga
-                   </div>
-                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
-                      Respons Cepat
-                   </div>
-                   <div className="flex items-center gap-2 font-black text-xs tracking-widest uppercase">
-                      <div className="w-2 h-2 rounded-full bg-purple-500" />
-                      Edukasi Medis
-                   </div>
                 </div>
              </motion.div>
           </div>

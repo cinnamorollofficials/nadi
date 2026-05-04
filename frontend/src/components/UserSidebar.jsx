@@ -425,25 +425,6 @@ const UserSidebar = ({
             ${expandedSections["Settings"] ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-4 pointer-events-none"}`}
           >
             <div className="glass-card shadow-2xl rounded-2xl border border-outline-variant/20 p-1.5 overflow-hidden mb-2">
-              <div className="p-3 mb-2 rounded-2xl bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent border border-purple-500/10 relative overflow-hidden group/upgrade">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-medical-grid" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h4 className="text-sm font-bold text-surface-on flex items-center gap-1.5">
-                      Upgrade to <span className="bg-black text-white text-[10px] px-1.5 py-0.5 rounded-md tracking-wider font-extrabold uppercase">PRO</span>
-                    </h4>
-                  </div>
-                  <p className="text-[11px] text-surface-on-variant leading-relaxed mb-3 opacity-70 font-medium">Upgrade for image uploads, smarter AI, and more Pro Search.</p>
-                  <button className="w-full bg-white dark:bg-white/10 py-2.5 px-4 rounded-xl flex items-center justify-between text-[12px] font-bold text-surface-on shadow-sm border border-black/5 hover:bg-slate-50 transition-all">
-                    <span>Learn More</span>
-                    <ArrowUpRight size={14} className="opacity-50" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="px-3 py-2 border-b border-outline-variant/10 mb-1">
-                <p className="text-[10px] font-bold text-surface-on-variant uppercase tracking-widest">Account Setting</p>
-              </div>
               <ul className="space-y-0.5">
                 {profileTransition && (
                   <li>
