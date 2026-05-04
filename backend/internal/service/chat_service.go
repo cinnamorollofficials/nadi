@@ -50,6 +50,27 @@ func NewChatService(
 }
 
 func (s *chatService) CreateChannel(ctx context.Context, userID uint, mode entity.ChatMode) (*entity.ChatChannel, error) {
+	// 1. Optimization: Reuse existing fresh channels to avoid clutter
+	// A channel is "fresh" if it has no user interaction yet.
+	channels, err := s.chatRepo.GetChannelsByUserID(ctx, userID)
+	if err == nil {
+		for _, ch := range channels {
+			if ch.Status != "active" || ch.Mode != mode {
+				continue
+			}
+
+			// For consultation: 0 messages is fresh
+			// For symptom_check: <= 2 messages (auto-trigger + AI greeting) is fresh
+			isFresh := (mode == entity.ChatModeConsultation && ch.MessageCount == 0) ||
+				(mode == entity.ChatModeSymptomCheck && ch.MessageCount <= 2)
+
+			if isFresh {
+				return &ch, nil
+			}
+		}
+	}
+
+	// 2. Otherwise, create a new channel
 	channel := &entity.ChatChannel{
 		UID:    utils.GenerateUID(),
 		UserID: userID,
@@ -57,7 +78,7 @@ func (s *chatService) CreateChannel(ctx context.Context, userID uint, mode entit
 		Mode:   mode,
 		Status: "active",
 	}
-	err := s.chatRepo.CreateChannel(ctx, channel)
+	err = s.chatRepo.CreateChannel(ctx, channel)
 	return channel, err
 }
 
