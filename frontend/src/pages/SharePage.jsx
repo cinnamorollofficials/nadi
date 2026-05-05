@@ -94,7 +94,6 @@ const Skeleton = () => (
 
 const SharePage = () => {
     const { token } = useParams();
-    const { theme } = useTheme();
 
     // page state: 'loading' | 'requires_password' | 'ready' | 'error'
     const [pageState, setPageState] = useState('loading');
